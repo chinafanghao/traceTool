@@ -1,0 +1,43 @@
+<html>
+	<head>
+	<script>
+				var createArray=new Array();
+				var name="global";
+				function addKeyWord(keyword)
+				{
+					var string="<span style=\"font-color:blue\">"+keyword+"</span>";
+					return string;
+				}
+				function addFillPart(defaultValue)
+				{
+					var string="<input type=\"text\" size=15 maxlength=25 value=\""+defaultValue+"\">";
+					return string;
+				}
+				function addSymbol(symbol)
+				{
+					var string="<span style=\"font-color:black\">"+symbol+"</span>";
+					return string;
+				}
+				createArray[0]="<div>";
+				createArray[0]=createArray[0]+"<p>"+addKeyWord("use-case")+addFillPart("use-case-ID")+addSymbol("={")+"</p>";
+				createArray[0]=createArray[0]+"<p>"+addKeyWord("name")+addSymbol("=\"")+addFillPart("use-case-name")+addSymbol("\";")+"</p>";
+				createArray[0]=createArray[0]+"<p>"+addKeyWord("description")+addSymbol("=\"")+addFillPart("use-case-description")+addSymbol("\";}")+"</p>";
+				createArray[0]=createArray[0]+"</div>";
+				function createAction(index)
+				{
+					var TRLE=window.top.showWindow.buttomFrame;
+					var element=TRLE.document.getElementById("TDLShowOrEdit");
+					element.appendChild(createArray[index]);
+					TRLE.document.write(createArray[0]);
+				}
+				function create_use_case()
+				{
+					var element;
+				}
+			</script></head>
+	<body>
+		<script>
+		alert(createArray[0]);
+		</script
+	</body>
+</html>

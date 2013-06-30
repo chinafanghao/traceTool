@@ -1,0 +1,21 @@
+<% posts.forEach(function(post, index) { 
+  if (index % 3 == 0) { %>
+    <div class="row">
+<%} %>
+  <div class="span4">
+    <h2><a href="/u/<%= post.user %>"><%= post.user %></a> 说</h2>
+    <p><small><%= post.time %></small></p>
+    <p><%= post.featurename %></p>
+    <p><%= post.descriptions %></p>
+    <p><%= post.optionality %></p>
+    <p><%= post.post %></p>
+    <p><%= post.level %></p>
+    <p><%= post.parents %></p>
+  </div>
+<% if (index % 3 == 2) { %>
+    </div><!-- end row -->
+<% } %>
+<%}) %>
+<% if (posts.length % 3 != 0) { %>
+  </div><!-- end row -->
+<% } %>

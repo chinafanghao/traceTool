@@ -1,0 +1,47 @@
+    <script>
+    	function treeClick(img1)
+    {	
+    	var img1src=document.getElementById(img1).src;
+      var root=document.getElementById("51a748aa720dcaf009000001");
+    	if(img1src.indexOf("pointer1.png")!=-1)
+    	{
+    		img1src=img1src.replace("pointer1.png","pointer2.png");
+    		document.getElementById(img1).src=img1src;
+        console.log(document.forms[0].userName.value);
+    	}
+    	else
+    	{
+    		img1src=img1src.replace("pointer2.png","pointer1.png");
+    		document.getElementById(img1).src=img1src;
+    	}
+    }
+    </script>
+    <% 
+
+    %>
+    <ul class="nav nav-list" id="51a748aa720dcaf009000001">
+              <li  >
+              	  <a href="javascript:treeClick('img1')">
+              		<img src="/img/pointer1.png" id="img1">
+              		<img src="/img/files.png">
+              		On-line activity diagram editor
+              	  </a>
+              </li>
+              <form name="forms">
+              <%
+                posts.forEach(function(post, index) { 
+                    myArray=post.post.split(',');
+              %>
+    				<div class="row">
+						<div class="span4">
+    						<p><%= post.post%></p>
+                <p><%= myArray[1]%></p>
+                <input type=hidden name="userName" value="<%=myArray[1]%>" >
+  						</div>
+
+    				</div><!-- end row -->
+
+													<%}) %>
+
+              </form>              
+            </ul>

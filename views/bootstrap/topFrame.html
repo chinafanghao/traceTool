@@ -1,0 +1,87 @@
+<html>
+	<head>
+		<script>var name="topFrame";
+			// trace_rule_language_list.html
+				var createArray=new Array();
+
+				var actionName=new Array();
+				actionName[0]="create-use-case";
+				actionName[1]="create-activity";
+				actionName[2]="create-decision";
+				actionName[3]="create-condition";
+				actionName[4]="insert-sequence";
+				actionName[5]="insert-decision";
+				actionName[6]="fill";
+
+				var actionHtml=new Array();
+				actionHtml[0]="create_use_case.html";
+				actionHtml[1]="create_activity.html";
+				actionHtml[2]="create_decision.html";
+				actionHtml[3]="create_condition.html";
+				actionHtml[4]="insert_sequence.html";
+				actionHtml[5]="insert_decision.html";
+				actionHtml[6]="fill.html";
+
+				var name="global";
+				function addKeyWord(keyword)
+				{
+					var string="<span style=\"font-color:blue\">"+keyword+"</span>";
+					return string;
+				}
+				function addFillPart(defaultValue)
+				{
+					var string="<input type=\"text\" size=10 maxlength=25 value=\""+defaultValue+"\">";
+					return string;
+				}
+				function addSymbol(symbol)
+				{
+					var string="<span style=\"font-color:black\">"+symbol+"</span>";
+					return string;
+				}
+				
+				createArray[0]="<p>"+addKeyWord("use-case")+addFillPart("use-case-ID")+addSymbol("={")+"</p>";
+				createArray[0]=createArray[0]+"<p style=\"margin-left:40px\">"+addKeyWord("name")+addSymbol("=\"")+addFillPart("use-case-name")+addSymbol("\";")+"</p>";
+				createArray[0]=createArray[0]+"<p style=\"margin-left:40px\">"+addKeyWord("description")+addSymbol("=\"")+addFillPart("use-case-description")+addSymbol("\";}")+"</p>";
+				
+				function createAction(index)
+				{
+					var TRLE=window.top.showWindow.buttomFrame.trace_rule_language_edit;
+					var element=TRLE.document.getElementById("TDLShowOrEdit");
+					var div = document.createElement("div");
+					div.innerHTML = createArray[index];
+					element.appendChild(div);
+				}
+
+				function setTraceRuleLanguageEdit(index)
+				{
+					window.top.showWindow.buttomFrame.trace_rule_language_edit.href=actionHtml[index];
+				}
+				function createTDL(index)
+				{
+					var TRLL=window.top.showWindow.buttomFrame.trace_rule_language_list;
+					var element=TRLL.document.getElementById("TRLLShoworEdit");
+					var li=document.createElement("p");
+					var lip="<a onclick=\"setTraceRuleLanguageEdit("+index+")\" style=\"cursor:pointer\">"+actionName[index]+"</a>";
+					li.innerHTML=lip;
+					element.appendChild(li);alert("hello");
+					window.top.showWindow.buttomFrame.trace_rule_language_edit.href=actionHtml[index];
+				}
+                // trace_rule_list.html
+
+				function addTraceRule(traceRuleName)
+				{
+					var TRL=window.top.showWindow.buttomFrame.trace_rule_list;
+					var element=TRL.document.getElementById("TRLShowOrEdit");
+					var li=document.createElement("li");
+					var lip="<a onclick=\"editTraceRule()\" style=\"cursor:pointer\">"+traceRuleName+"</a>";
+					li.innerHTML=lip;
+					element.appendChild(li);
+
+				}
+		</script>
+		</head>
+	<frameset rows="0,*" ID=topFrame border="0" >
+		<frame src="globalFunction.html" name="globalFunction" >
+		<frame src="showWindow.html" name="showWindow">
+		</frameset>
+	</html>

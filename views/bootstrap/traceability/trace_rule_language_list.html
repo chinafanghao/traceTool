@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 1px;
+          padding-right: 1px;
+        }
+      }
+
+       #right_mouse_container {
+            text-align : center;
+           
+            margin : 0 auto;
+             
+        }
+        .right_mouse_skin {
+            width : 130px;
+            border : 1px solid gray;
+            padding : 2px;
+            background-color: #FFFFFF;
+            visibility : hidden;
+            position : absolute;
+        }
+        div.menuitems {
+            margin : 1px 0;
+        }
+        div.menuitems a {
+            text-decoration : none;
+        }
+        div.menuitems:hover {
+            background-color : #c0c0c0;
+            cursor: pointer;
+        }
+    </style>
+    <link href="../css/bootstrap-responsive.min.css" rel="stylesheet">
+    <script src="http://api.51ditu.com/js/ajax.js"></script>
+    <script>
+      var globalFunction=window.top;
+      function createAction(index)
+        {
+          globalFunction.createAction(index);
+        }
+      function createTDL(index)
+      {
+          globalFunction.createTDL(index);
+      }
+      window.onload = function() {
+     
+        var container = document.getElementById('right_mouse_container');   
+        var menu = document.getElementById('menu');
+     
+        /*显示菜单*/
+          function showMenu() {
+ 
+             var evt = window.event || arguments[0];
+         
+             /*获取当前鼠标右键按下后的位置，据此定义菜单显示的位置*/
+              var rightedge = container.clientWidth-evt.clientX;
+              var bottomedge = container.clientHeight-evt.clientY;
+ 
+             /*如果从鼠标位置到容器右边的空间小于菜单的宽度，就定位菜单的左坐标（Left）为当前鼠标位置向左一个菜单宽度*/
+           /*  if (rightedge < menu.offsetWidth)                
+                 menu.style.left = container.scrollLeft + evt.clientX - menu.offsetWidth + "px";             
+             else
+             /*否则，就定位菜单的左坐标为当前鼠标位置*/
+                  menu.style.left = container.scrollLeft + evt.clientX + "px";
+         
+             /*如果从鼠标位置到容器下边的空间小于菜单的高度，就定位菜单的上坐标（Top）为当前鼠标位置向上一个菜单高度*/
+          /*    if (bottomedge < menu.offsetHeight)
+                 menu.style.top = container.scrollTop + evt.clientY - menu.offsetHeight + "px";
+              else
+              /*否则，就定位菜单的上坐标为当前鼠标位置*/
+                 menu.style.top = container.scrollTop + evt.clientY + "px";
+             
+              /*设置菜单可见*/
+             menu.style.visibility = "visible";              
+             LTEvent.addListener(menu,"contextmenu",LTEvent.cancelBubble);
+         }
+         /*隐藏菜单*/
+         function hideMenu() {
+              menu.style.visibility = 'hidden';
+          }                               
+          LTEvent.addListener(container,"contextmenu",LTEvent.cancelBubble);
+         LTEvent.addListener(container,"contextmenu",showMenu);
+         LTEvent.addListener(document,"click",hideMenu);                     
+      }
+    </script>
+  </head>
+
+  <body class="body2">
+
+
+    <div class="container-fluid" id="right_mouse_container">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav" id="TRLLShoworEdit">
+            <h3><center>追踪规则语句</center></h3>
+            <ul class="nav nav-list">
+    
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+ 
+      </div><!--/row-->
+
+    </div><!--/.fluid-container-->
+    <!--右键菜单-->
+    <div id="menu" class="right_mouse_skin">
+        <div class="menuitems">
+            <a onclick="createTDL(0);">Create-use-case</a>
+        </div>
+        <div class="menuitems">
+            <a href="javascript:history.back();">Create-activity</a>
+        </div>
+        <div class="menuitems">
+            <a href="javascript:history.back();">Create-decision</a>
+        </div>
+        <div class="menuitems">
+            <a href="javascript:history.back();">Create-condition</a>
+        </div>
+        <hr>
+        <div class="menuitems">
+            <a href="http://uu.51ditu.com" target="_blank">Insert-sequence</a>
+        </div>
+        <div class="menuitems">
+            <a href="http://lushu.51ditu.com" target="_blank">Insert-decision</a>
+        </div>
+        <hr>
+        <div class="menuitems">
+            <a href="http://www.lingtu.com" target="_blank">Fill</a>
+        </div>
+    </div>
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./example_files/jquery.min.js"></script>
+    <script src="./example_files/bootstrap.min.js"></script>
+
+  
+
+</body></html>
