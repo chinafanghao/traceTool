@@ -8,7 +8,7 @@ GitHub命令精简教程
 
 Github其实也可以作为文件分享的地方，但是免费空间只有300M，所以不能存放大文件，否则可以成为一个分享资源的下载站，而且非常方便。
 常用命令：
-git add .   //添加所有的文件到索引
+<p>git add .   //添加所有的文件到索引</p>
 git commit  //向本地源码库提交，会打开默认vi编辑器写 “注释”
 git remote add origin git@github.com:viprs/Hello-World.git   //添加远程目标为origin
 git push origin master  //把本地源码库push到Github上
