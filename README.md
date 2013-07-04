@@ -1,6 +1,7 @@
 traceTool
 =========
 It's a tool building for software feature traceability.
+It is built by node.js.
 
 ps.
 
