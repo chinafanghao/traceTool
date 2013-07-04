@@ -198,3 +198,22 @@ exports.traceability=function(req,res){
 		 error : req.flash('error').toString()
 	});
 };
+
+exports.guardname=function(req,res){
+	res.render('guardname',{
+		layout:false,
+		title: 'guardname',
+		 user : req.session.user,
+		 success : req.flash('success').toString(),
+		 error : req.flash('error').toString()
+	});
+};
+
+exports.showguard=function(req,res){
+	res.render('showguard',{
+		title: 'showguard',
+		 user : req.session.user,
+		 success : req.flash('success').toString(),
+		 error : req.flash('error').toString()
+	});
+};

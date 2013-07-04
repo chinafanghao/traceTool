@@ -68,6 +68,8 @@ app.get('/showtree',routes.showtree);
 app.get('/showrelation',routes.showrelation);
 app.get('/showinfo',routes.showinfo);
 app.get('/traceability',routes.traceability);
+app.get('/guardname',routes.guardname);
+app.get('/showguard',routes.showguard);
 
 http.createServer(app).listen(app.get('port'), function(){
 	console.log("Express server listening on port " + app.get('port'));
