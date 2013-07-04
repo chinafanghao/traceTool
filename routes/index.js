@@ -211,6 +211,7 @@ exports.guardname=function(req,res){
 
 exports.showguard=function(req,res){
 	res.render('showguard',{
+		layout:false,
 		title: 'showguard',
 		 user : req.session.user,
 		 success : req.flash('success').toString(),
