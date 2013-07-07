@@ -227,3 +227,28 @@ exports.configuration=function(req,res){
 		 error : req.flash('error').toString()
 	});
 };
+
+exports.configuratemodeltree=function(req,res){
+	res.render('configuratemodeltree',{ 
+		 layout: false,
+		 title: 'Configurate Feature Model',
+		 user : req.session.user,
+		 success : req.flash('success').toString(),
+		 error : req.flash('error').toString()
+	});
+};
+
+exports.editfeaturetree=function(req,res){
+Post.getChild(req.body.ind, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		res.render('editfeaturetree', {
+			layout: false,
+			posts : posts,
+			user : req.session.user,
+			success : req.flash('success').toString(),
+			error : req.flash('error').toString()
+		});
+	});
+};
