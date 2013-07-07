@@ -218,3 +218,12 @@ exports.showguard=function(req,res){
 		 error : req.flash('error').toString()
 	});
 };
+
+exports.configuration=function(req,res){
+	res.render('configuration',{ 
+		 title: 'configuration',
+		 user : req.session.user,
+		 success : req.flash('success').toString(),
+		 error : req.flash('error').toString()
+	});
+};

@@ -915,7 +915,8 @@ form.bs-docs-example {
     max-width: 970px;
   }
   .bs-docs-sidenav {
-    width: 258px;
+    width: 210px;
+   /* width: 258px;*/
   }
   .bs-docs-sidenav > li > a {
     width: 230px \9; /* Override the previous IE8-9 hack */
