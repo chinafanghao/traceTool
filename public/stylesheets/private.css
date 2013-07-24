@@ -1,0 +1,26 @@
+@media (min-width: 1200px) {
+
+    .span6-compact {
+        width: 600px;
+        float: left;
+        margin-left: 12px;
+
+    }
+
+    .span3-compact {
+        width: 275px;
+        float: left;
+        margin-left: 12px;
+    }
+}
+
+
+
+.bs-docs-sidenav .icon-remove-sign-right {
+    background-position: -48px -96px;
+
+    float: right;
+    margin-top: 2px;
+    margin-right: 6px;
+    opacity: .25;
+}

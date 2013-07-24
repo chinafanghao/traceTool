@@ -1,0 +1,353 @@
+    <!doctype html>
+
+    <script>
+      function showAP(p1,p2,p3)
+      {  
+            //var srcEventElement=window.event.srcElement;
+                    
+            var srcEventElement1=document.getElementById(p1);
+            var srcEventElement2=document.getElementById(p2);
+            var srcEventElement3=document.getElementById(p3);
+            srcEventElement1.style.visibility='visible';
+            srcEventElement2.style.visibility='visible';
+            srcEventElement3.style.visibility='visible';
+      }
+        function hiddenAP(p1,p2,p3)
+      {  
+            //var srcEventElement=window.event.srcElement;
+                    
+            var srcEventElement1=document.getElementById(p1);
+            var srcEventElement2=document.getElementById(p2);
+            var srcEventElement3=document.getElementById(p3);
+            srcEventElement1.style.visibility='hidden';
+            srcEventElement2.style.visibility='hidden';
+            srcEventElement3.style.visibility='hidden';
+      }
+
+        function changeReadOnly(p1,p2,p3,p4,p5)
+      {
+        var srcEventElement1=document.getElementById(p1);
+        var srcEventElement2=document.getElementById(p2);
+        var srcEventElement3=document.getElementById(p3);
+        srcEventElement1.readonly='false';
+        srcEventElement2.readonly='false';
+        srcEventElement3.readonly='false';
+
+         var srcEventElement4=document.getElementById(p4);
+         var srcEventElement5=document.getElementById(p5);
+         srcEventElement4.style.visibility='visible';
+         srcEventElement5.style.visibility='visible';
+      }
+    
+        $(function() {
+          $( "#radio" ).buttonset();
+        });
+
+        $(function() {
+          $( "#accordions" )
+        .accordion({
+          header: "> div > h3",
+          collapsible:true
+          })
+        .sortable({
+          axis: "y",
+          handle: "h3",
+          stop: function( event, ui ) {
+           // IE doesn't register the blur when sorting
+           // so trigger focusout handlers to remove .ui-state-focus
+          ui.item.children( "h3" ).triggerHandler( "focusout" );
+          }
+        });      
+      });
+
+      $(function(){
+      $( "#accordionss" )
+       .accordion({
+         header: "> div > h2",
+         fillSpace:false,
+         collapsible:true
+        })
+        .sortable({
+         axis: "y",
+         handle: "h3",
+          stop: function( event, ui ) {
+           // IE doesn't register the blur when sorting
+           // so trigger focusout handlers to remove .ui-state-focus
+           ui.item.children( "h2" ).triggerHandler( "focusout" );
+          }
+        });
+      });
+
+      $(function(){
+        $( "#accordion3" )
+        .accordion({
+          header: "> div > h3"
+       })
+       .sortable({
+          axis: "y",
+          handle: "h3",
+          stop: function( event, ui ) {
+          // IE doesn't register the blur when sorting
+          // so trigger focusout handlers to remove .ui-state-focus
+            ui.item.children( "h3" ).triggerHandler( "focusout" );
+          }
+        });
+      });
+  
+      $(function() {
+       $( "#accordion" ).accordion({
+          collapsible: true
+        });
+     });
+    
+      $(function() {
+       $( "#tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+       $( "#tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+        });
+    </script>
+
+  <style>
+    .ui-tabs-vertical { width: 73em; }
+    .ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 17em; }
+    .ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+    .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+    .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
+    .ui-tabs-vertical .ui-tabs-panel { padding: 0em; float: right; width: 53em;}
+
+    .group {zoom: 1}
+    .group1 {zoom: 1}
+  </style>
+
+
+    <div class="container-fluid" style="padding-top:0px">
+        <div class="container-fluid">
+          <table>
+            <tr>
+              <td style="width:16em"><h4><center>Guard List</center></h4></td>
+              <td style="width:70em"><h4><center>Operation Sequence</center></h4></td>
+            </tr>
+          </table>
+    
+        <div class="row">
+          <div class="span2">
+            <ul class="nav nav-list bs-docs-sidenav affix-top" style="margin-top:10px;margin-left: -1.5em;width:18em">
+               <li class="active"><a href="#global"><i class="icon-chevron-right"></i>Login</a></li>
+               <li class=""><a href="#gridSystem"><i class="icon-chevron-right"></i> Message</a></li>
+               <li class=""><a href="#fluidGridSystem"><i class="icon-chevron-right"></i>Information Submittion</a></li>
+            </ul>
+          </div>
+          <div class="span6">
+
+            <!-- Global Bootstrap settings
+            ================================================== -->
+            <section id="global" style="margin-top:-1.5em;margin-left: 5em;width:60em;">
+                <div id="accordions">
+              <div class="group">
+                <h3 onmouseover="showAP('g1m','g1p','g1e')" onmouseout="hiddenAP('g1m','g1p','g1e')">Case Name  
+                     <i id="g1m" class="icon-minus" style="float:right;margin-right:6px;visibility:hidden"></i>
+                     <i id="g1p" class="icon-plus" style="float:right;margin-right:6px;visibility:hidden"></i>
+                     <i id="g1e" class="icon-edit" style="float:right;margin-right:6px;visibility:hidden" onclick="alert('hello')"></i>
+                </h3>
+
+                <div>
+                    <form class="form-inline">
+                      <fieldset>
+                        <div class="row">
+                          <div class="span2">
+                            <label contenteditable="true">
+                              <h4>Case ID:</h4>
+                            </label>
+                          </div>
+                          <div class="span4">
+                            <input placeholder="use-case-ID" type="text" readonly="true" id="use-case-ID-g1"/>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="span2">
+                            <label contenteditable="true">
+                              <h4>Case Name:</h4>
+                            </label>
+                          </div>
+                          <div class="span4">
+                            <input placeholder="Login" type="text" readonly="true" id="text2-g1"/>
+                          </div>
+                        </div>
+                        <div class="row">
+                            <div class="span2">
+                              <label contenteditable="true">
+                                <h4>Description:</h4>
+                              </label>
+                            </div>
+                            <div class="span4">
+                              <input placeholder="the description of use case" type="text" readonly="true" id="text3-g1"/>
+                            </div>
+                        </div>
+                        <p></p>
+                        <button class="btn" contenteditable="true" type="submit" id="submit-g1"style="visibility:hidden">保存</button>
+                        <button class="btn" contenteditable="true" type="reset" id="reset-g1" style="visibility:hidden">重置</button>
+                    
+                      </fieldset>
+                    </form>
+                </div>
+              </div>
+
+              <div class="group">
+                <h3 onmouseover="showAP('g2m','g2p','g2e')" onmouseout="hiddenAP('g2m','g2p','g2e')" >Activity A5 
+                    <i id="g2m" class="icon-minus" style="float:right;margin-right:6px;visibility:hidden"></i>
+                    <i id="g2p" class="icon-plus" style="float:right;margin-right:6px;visibility:hidden"></i>
+                    <i id="g2e" class="icon-edit" style="float:right;margin-right:6px;visibility:hidden"></i> 
+                </h3>
+                <div>
+                  <form class="form-inline">
+                    <fieldset>
+                      <div class="row">
+                        <div class="span2">
+                          <label contenteditable="true">
+                            <h4>Name:</h4>
+                          </label>
+                        </div>
+                        <div class="span4">
+                          <input placeholder="Acitivity Name" type="text" />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="span2">
+                          <label contenteditable="true">
+                            <h4>Description:</h4>
+                          </label>
+                        </div>
+                        <div class="span4">
+                          <input placeholder="Activity Description" type="text" />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="span2">
+                          <label contenteditable="true">
+                            <h4>Executor:</h4>
+                          </label>
+                        </div>
+                        <div class="span4">
+                          <input placeholder="Actor" type="text" />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                      <div class="span2">
+                        <label contenteditable="false">
+                          <h4>Virtual:</h4>
+                        </label>
+                      </div>
+                      <div class="span4">
+                        <div id="radio">
+                          <input type="radio" id="radio1" name="radio" />
+                            <label for="radio1">True</label>
+                          <input type="radio" id="radio2" name="radio" checked="checked" />
+                            <label for="radio2">False</label>
+                        </div>
+                       </div>
+                      </div>
+                      <p></p>
+                      <button class="btn" contenteditable="true" type="submit">保存</button>
+                      <button class="btn" contenteditable="true" type="reset">重置</button> 
+                    </fieldset>
+                  </form>
+                </div>
+              </div>
+
+              <div class="group">
+                <h3 onmouseover="showAP('g3m','g3p','g3e')" onmouseout="hiddenAP('g3m','g3p','g3e')">Condition C9 
+                  <i id="g3m" class="icon-minus" style="float:right;margin-right:6px;visibility:hidden">
+                  </i>
+                  <i id="g3p" class="icon-plus" style="float:right;margin-right:6px;visibility:hidden">
+                  </i>
+                  <i id="g3e" class="icon-edit" style="float:right;margin-right:6px;visibility:hidden"></i>
+                </h3>
+
+                <div>
+                  <form class="form-inline">
+                    <fieldset>
+                      <div class="row">
+                        <div class="span2">
+                          <label contenteditable="true">
+                            <h4>Condition:</h4>
+                          </label>
+                        </div>
+                        <div class="span4">
+                          <input placeholder="condition-ID" type="text" />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="span2">
+                          <label contenteditable="true">
+                            <h4>name:</h4>
+                          </label>
+                        </div>
+                        <div class="span4">
+                          <input placeholder="condition name" type="text" />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="span2">
+                          <label contenteditable="true">
+                            <h4>description:</h4>
+                          </label>
+                        </div>
+                        <div class="span4">
+                          <input placeholder="the description of condition" type="text" />
+                        </div>
+                      </div>
+                      <button class="btn" contenteditable="true" type="submit">保存</button>
+                      <button class="btn" contenteditable="true" type="reset">重置</button> 
+                     </fieldset>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            </section>
+
+
+            <!-- Grid system
+            ==================================================  
+            <section id="gridSystem">
+          <div class="page-header">
+            <h3>activity5</h3>
+          </div>
+          <form class="form-inline">
+            <fieldset>
+              <label contenteditable="true">use case:</label> 
+              <input placeholder="Type something…" type="text" />
+              <label contenteditable="true">name:</label> <input placeholder="Type something…" type="text" />
+              <label contenteditable="true">description:</label> <input placeholder="Type something…" type="text" />
+              <button class="btn" contenteditable="true" type="submit">提交</button></fieldset>
+              <button class="btn" contenteditable="true" type="reset">重置</button></fieldset>
+          </form>
+            </section>-->
+           
+
+
+            <!-- Fluid grid system
+            ================================================== 
+            <section id="fluidGridSystem">
+          <div class="page-header">
+            <h3>Condition C9</h3>
+          </div>
+          <form class="form-inline">
+          <fieldset><label contenteditable="true">use case:</label> <input placeholder="Type something…" type="text" />
+          <fieldset><label contenteditable="true">name:</label> <input placeholder="Type something…" type="text" />
+          <fieldset><label contenteditable="true">description:</label> <input placeholder="Type something…" type="text" />
+          <button class="btn" contenteditable="true" type="submit">提交</button></fieldset>
+          <button class="btn" contenteditable="true" type="reset">重置</button></fieldset>
+          </form>
+            </section>-->
+          
+          </div>
+
+        </div> 
+    </div>
+
+
+
+       
