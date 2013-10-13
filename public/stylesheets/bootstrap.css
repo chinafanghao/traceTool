@@ -8,6 +8,14 @@
  * Designed and built with all the love in the world @twitter by @mdo and @fat.
  */
 
+
+.myBorderRadius {
+    border:1px solid #c3c3c3;
+    -webkit-border-radius: 10px;
+     -moz-border-radius: 10px;
+          border-radius: 10px;
+}
+
 .clearfix {
   *zoom: 1;
 }

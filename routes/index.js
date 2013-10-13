@@ -112,6 +112,34 @@ exports.login = function(req, res) {
     });
 };
 
+exports.F = function(req, res) {
+	res.render('F', {
+		title: '用户登录',
+		user : req.session.user,
+		success : req.flash('success').toString(),
+		error : req.flash('error').toString()
+    });
+};
+
+exports.T = function(req, res) {
+	res.render('T', {
+		title: '用户登录',
+		user : req.session.user,
+		success : req.flash('success').toString(),
+		error : req.flash('error').toString()
+    });
+};
+
+exports.C = function(req, res) {
+	res.render('C', {
+		title: '用户登录',
+		user : req.session.user,
+		success : req.flash('success').toString(),
+		error : req.flash('error').toString()
+    });
+};
+
+
 exports.doLogin = function(req, res) {
 	//生成口令的散列值
     var md5 = crypto.createHash('md5');

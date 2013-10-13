@@ -62,12 +62,13 @@
     <link href="/javascripts/jquery-ui-1.10.3/themes/base/jquery-ui.css"  rel="stylesheet"/>
         <script src="/javascripts/jquery-ui-1.10.3/jquery-1.9.1.js"></script>
         <script src="/javascripts/jquery-ui-1.10.3/ui/jquery-ui.js"></script>
+        <script type="text/javascript" src="/js/jquery.js"></script>
           <link rel="stylesheet" href="/resources/demos/style.css" />
 	<!--[if lt IE 9]>
 	<script src="/javascripts/html5.js" type='text/javascript'></script>
 	<![endif]-->
 	<script>
-
+/*
 		function changePage(index)
 		{  
 			switch(index)
@@ -83,11 +84,32 @@
 				break;
 			}
 		}
-
+*/
     function showRoute()
     {
       document.write(window.location.href);
     }
+
+    $(function(){
+        $("#tabs li").each(function(index){
+          $(this).click(function(){
+            $("#tabs li.active").removeClass("active");
+            $(this).addClass("active");
+            switch(index)
+            {
+              case 0:
+              window.location.href="/F";
+              break;
+              case 1:
+              window.location.href="/T";
+              break;
+              case 2:
+              window.location.href="/C";
+              break;
+            }
+          })
+        })
+    })
 	</script>
   </head>
   <body>
@@ -95,11 +117,6 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
       <!--   <a class="brand" href="/">ProjectName</a> -->
           <div class="nav-collapse">
             <ul class="nav">
@@ -128,26 +145,6 @@
           <%= error %>
         </div>
       <% } %>
-
-<div class="container-fluid">
-  <div class="row-fluid">
-    <div  class="span12">
-      <div class="tabbable" id="tabs-947152">
-        <ul class="nav nav-tabs">
-          <li class="active">
-            <a data-toggle="tab" onclick="changePage(0)" style="cursor:pointer">Feature Model</a>
-          </li>
-          <li>
-            <a data-toggle="tab" href="#panel-762557" onclick="changePage(1)" style="cursor:pointer">Traceability</a>
-          </li>
-          <li>
-            <a data-toggle="tab" href="#panel-762557" onclick="changePage(2)" style="cursor:pointer">Configuration</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
 
 
       <%- body %>
