@@ -9,12 +9,12 @@
       }
 
     div.c{padding-left:1%}
-    div.left{float:left;width:20%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
-    div.center{float:left;width:20%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
-    div.right{float:left;width:55%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.left{float:left;width:18%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.center{float:left;width:15%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.right{float:left;width:62%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
     div.titles{
       text-align: center;
-      font-size: 20px;
+      font-size: 125%;
       font-weight: bold;
       margin-top: 12px;
       font-family: "David";
@@ -41,6 +41,20 @@
 
     .getFocus{
       border:1px solid #c3c3c3;
+    }
+
+    tr td{width: 16%;text-align: center;}
+    .td1{width: 26%}
+    .td2{width: 14%}
+    .td3{width: 14%}
+    .td4{width: 6%}
+    .td5{width: 26%}
+    .td6{width: 14%}
+
+    table{border: 1px solid #c3c3c3;}
+
+    .FontColor{
+      color: blue;
     }
 </style>
 
@@ -84,6 +98,17 @@
 
       $( "#radio" ).buttonset();
 
+      $("p.click").hover(function(){
+          $(this).css("cursor","pointer");
+      })
+
+      $("p.click").each(function(index){
+          $(this).click(function(){
+            $("p.FontColor").removeClass("FontColor");
+            $("p[value="+$(this).html()+"]").addClass("FontColor");
+            $(this).removeClass("FontColor");
+          })
+        })
   })
 
 </script>
@@ -129,10 +154,10 @@
 
     <div class="center">
       <div class="myBorderRadiusPlus">
-    <div class="titles">
+    <h4 align="center" class="myFont"> 
       Use Case Name
-    </div>
-    <div class="myh4" style="margin-top:8px;text-align:center">
+    </h4>
+    <div class="myh4" style="margin-top:8px">
       
       <ul class="nav nav-list" id="guardlist">
     
@@ -149,8 +174,284 @@
     <div class="right">
       <div class="myBorderRadius">
         <h4 align="center" class="myFont"> Use Case </h4>
-        <div style="border-top: 1px solid #c3c3c3; overflow:auto;text-align:center">
-          <img src="/images/Login.jpg">
+        <div style="overflow:auto;text-align:center">
+          <!--<img src="/images/Login.jpg"> -->
+          <!--
+           <table class="table" contenteditable="true">
+              <tr>
+                <td style="text-align:center;font-size:120%;width:37.3%;border-right:1px solid #c3c3c3;">User</td>
+                
+                <td></td>
+                <td style="text-align:left;font-size:120%">System</td>
+                <td></td>
+                <td></td>
+              </tr>
+
+           </table>
+           <table class="table" contenteditable="true">
+              <tr>
+                <td  class="td1"style="text-align:center">Description</td>
+                <td class="td2" style="border-right:1px solid #c3c3c3;text-align:center">Target</td>
+                <td class="td3" style="text-align:center">Type</td>
+                <td class="td4" style="text-align:center">Value</td>
+                <td class="td5" style="text-align:center">Description</td>
+                <td class="td6" style="text-align:center">Target</td>
+              </tr>
+
+               <tr>
+                <td class="td1">Press the 'sign in' button【A1】</td>
+                <td class="td2" style="border-right:1px solid #c3c3c3;">【decision 2】</td>
+                <td class="td3"></td>
+                <td class="td4"></td>
+                <td class="td5"></td>
+                <td class="td6"></td>
+              </tr>
+          
+              <tr>
+                <td></td>
+                <td style="border-right:1px solid #c3c3c3;"></td>
+                <td>【decision 2】</td>
+                <td>No</td>
+                <td>Has the user set on automatic login?</td>
+                <td>【A4】</td>
+              </tr>
+
+              <tr>
+                <td></td>
+                <td style="border-right:1px solid #c3c3c3;"></td>
+                <td>【decision 2】</td>
+                <td>Yes</td>
+                <td>Has the user set on automatic login?</td>
+                <td>【A23】</td>
+              </tr>
+
+               <tr>
+                <td></td>
+                <td style="border-right:1px solid #c3c3c3;"></td>
+                <td>【A4】</td>
+                <td></td>
+                <td>Display the login page. Ask the user to input user</td>
+                <td>【A5】</td>
+              </tr>
+
+               <tr>
+                <td></td>
+                <td style="border-right:1px solid #c3c3c3;"></td>
+                <td>【A5】</td>
+                <td></td>
+                <td>Display an image showing characters.Ask the user to input the characters.</td>
+                <td>【A7】</td>
+              </tr>
+
+              <tr>
+                <td>Input username.【A7】</td>
+                <td style="border-right:1px solid #c3c3c3;">【A8】</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+
+              <tr>
+                <td>Input password with keyborad.【A8】</td>
+                <td style="border-right:1px solid #c3c3c3;">【A9】</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+
+              <tr>
+                <td></td>
+                <td style="border-right:1px solid #c3c3c3;"></td>
+                <td>【A9】</td>
+                <td></td>
+                <td>Display the input username, display the input password with asterisks.</td>
+                <td>【Decision 9】</td>
+              </tr>
+
+           </table>
+          -->
+          <table border="1" cellpadding="0" cellspacing="0" width="100%">
+              <tr style="border-left:0">
+                <td colspan="4">
+                  <p align="center">USER</p>
+                </td>
+                <td colspan="4">
+                  <p align="center">SYSTEM</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:9%;">
+                  <p align="center">ID</p>
+                </td>
+                <td style="width:24%;">
+                  <p align="center">Description</p>
+                </td>
+                <td style="width:7%;">
+                  <p align="center">Value</p>
+                </td>
+                <td style="width:10%;">
+                  <p align="center">Target</p>
+                </td>
+                <td style="width:9%;">
+                  <p align="center">ID</p>
+                </td>
+                <td style="width:24%;">
+                  <p align="center">Description</p>
+                </td>
+                <td style="width:7%;">
+                  <p align="center">Value</p>
+                </td>
+                <td style="width:10%;">
+                  <p align="center">Target</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:9%;">
+                  <p class="FontColor" value="A1">A1</p>
+                </td>
+                <td style="width:24%;">
+                  <p>Press the 'sign in' button</p>
+                </td>
+                <td style="width:7%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:10%;">
+                  <p class="click" value="Decision2">Decision2</p>
+                </td>
+                <td rowspan="2" style="width:9%;">
+                  <p value="Decision2">Decision2</p>
+                </td>
+                <td rowspan="2" style="width:24%;">
+                  <p style="text-align:left">Has the user set on automatic login?</p>
+                </td>
+                <td style="width:7%;">
+                  <p>No</p>
+                </td>
+                <td style="width:10%;">
+                  <p class="click" value="A4">A4</p>
+                  </td>
+              </tr>
+              <tr>
+                <td style="width:9%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:24%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:7%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:10%;">
+                  <p class="click">&nbsp;</p>
+                </td>
+                <td style="width:7%;">
+                  <p>Yes</p>
+                </td>
+                <td style="width:10%;">
+                  <p class="click" value="A23">A23</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:9%;">
+                  <p value="A4">A4</p>
+                </td>
+                <td style="width:24%;">
+                  <p>Input username.</p>
+                </td>
+                <td style="width:7%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:10%">
+                  <p class="click" value="A5">A5</p>
+                </td>
+                <td style="width:9%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:24%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:7%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:24%;">
+                  <p>&nbsp;</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:9%;">
+                  <p value="A5">A5</p>
+                </td>
+                <td style="width:24%;">
+                  <p>Input password with keyborad.</p>
+                </td>
+                <td style="width:7%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:10%">
+                  <p class="click" value="A6">A6</p>
+                </td>
+                <td style="width:9%;">
+                  <p Value="A6">A6</p>
+                </td>
+                <td style="width:24%;">
+                  <p>Display the input username, display the input password with asterisks.</p>
+                </td>
+                <td style="width:7%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:10%;">
+                  <p class="click" value="Decision9">Decision9</p>
+                </td>
+              </tr>
+              <tr>
+                <td rowspan="2" style="width:9%;">
+                  <p value="Decision9">Decision9</p>
+                </td>
+                <td  rowspan="2" style="width:24%;">
+                  <p>Is the image clear?</p>
+                </td>
+                <td style="width:7%;">
+                  <p>Yes</p>
+                </td>
+                <td style="width:10%;">
+                  <p class="click" value="A7">A7</p>
+                </td>
+                <td style="width:9%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:24%;">
+                  <p style="text-align:left">&nbsp;</p>
+                </td>
+                <td style="width:7%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:10%;">
+                  <p class="click">&nbsp</p>
+                  </td>
+              </tr>
+              <tr>
+                <td style="width:7%;">
+                  <p>No</p>
+                </td>
+                <td style="width:10%;">
+                  <p class="click" value="A24">A24</p>
+                </td>
+                <td style="width:9%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:24%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:7%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:10%;">
+                  <p class="click">&nbsp;</p>
+                </td>
+              </tr>
+          </table>
         </div>
       </div>
     </div>
