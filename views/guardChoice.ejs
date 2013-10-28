@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+          <table border="1" cellpadding="0" cellspacing="0" width="100%">
+              <tr style="border-left:0">
+                <td colspan="1">
+                  <p style="text-align:center">Feature Name</p>
+                </td>
+                <td colspan="2">
+                  <p style="text-align:center">If Negation</p>
+                </td>
+              </tr>
+              <% posts.forEach(function(post, index) {
+                %>
+                <% 
+              	if(post.types==0){
+              	%>
+              <tr>
+                <td style="width:64%;">
+                  <input type="checkbox" style="font-size:30px;text-align:center;" value="<%= post.featurename %>" name="featurename"/><%= post.featurename %>
+                </td>
+                <td style="width:18%;">
+                  <input type="radio" name="<%= post.featurename %>" value="yes">Yes
+                </td>
+                <td style="width:18%;">
+                  <input type="radio" name="<%= post.featurename %>" value="no">No
+                </td>
+              </tr>
+              <%}}) %>
+          </table>
+ 
+

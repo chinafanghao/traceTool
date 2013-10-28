@@ -45,8 +45,8 @@ exports.user = function(req, res) {
 };
 
 exports.post = function(req, res) {
-	var currentUser = req.session.user;
-	var post = new Post(currentUser.name,req.body.featurename,req.body.descriptions,req.body.optionality,req.body.post,req.body.level,req.body.parents);
+	var currentUser = req.session.user;console.log(req.body.featurename+"$");
+	var post = new Post(currentUser.name,req.body.featurename,req.body.descriptions,req.body.optionality,req.body.post,req.body.level,req.body.parents,req.body.time,req.body.types,req.body.contents);
 	post.save(function(err) {
 		if (err) {
 			req.flash('error', err);
@@ -56,6 +56,24 @@ exports.post = function(req, res) {
 		res.redirect('/u/' + currentUser.name);
 	});
 };
+
+exports.del = function(req,res){
+		Post.del(req.session.user.name, req.body.featurename,req.body.types,function(err, posts) {
+			
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			res.render('user', {
+				title: req.session.user.name,
+				posts: posts,
+				user : req.session.user,
+				success : req.flash('success').toString(),
+				error : req.flash('error').toString()
+			});
+		});
+	
+}
 
 exports.reg = function(req, res) {
 	res.render('reg', {
@@ -122,12 +140,18 @@ exports.F = function(req, res) {
 };
 
 exports.T = function(req, res) {
-	res.render('T', {
-		title: '用户登录',
-		user : req.session.user,
-		success : req.flash('success').toString(),
-		error : req.flash('error').toString()
-    });
+	Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		res.render('T', {
+			title: 'Traceability',
+			posts : posts,
+			user : req.session.user,
+			success : req.flash('success').toString(),
+			error : req.flash('error').toString()
+		});
+	});
 };
 
 exports.C = function(req, res) {

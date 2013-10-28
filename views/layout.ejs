@@ -90,6 +90,25 @@
       document.write(window.location.href);
     }
 
+    function encodeName(featurename){
+      var name="";
+      var names=new Array();
+      names=featurename.split(" ");
+      for(i=0;i<names.length;i++)
+      { alert(names[i]);
+        if(name!=""){
+          name=name+"*";
+        }
+        name=name+names[i]
+      }
+      return name;
+    }
+
+    function decodeName(featurename){
+      var name=featurename.replace("*"," ");
+      return name;
+    }
+
     $(function(){
         $("#tabs li").each(function(index){
           $(this).click(function(){

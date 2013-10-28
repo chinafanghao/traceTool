@@ -1,6 +1,6 @@
 var mongodb = require('./db');
 
-function Post(username, featurename,descriptions,optionality,post,level,parents,time) { //post means refinements list
+function Post(username, featurename,descriptions,optionality,post,level,parents,time,types,contents,_id) { //post means refinements list
 	this.user = username;
 	this.featurename=featurename;
 	this.descriptions=descriptions;
@@ -13,6 +13,10 @@ function Post(username, featurename,descriptions,optionality,post,level,parents,
 	} else {
 		this.time = new Date();
 	}
+	
+	this.types=types;
+	this.contents=contents;
+	this._id=_id;
 };
 module.exports = Post;
 
@@ -26,7 +30,9 @@ Post.prototype.save = function save(callback) {
 		post: this.post,
 		level:this.level,
 		parents:this.parents,
-		time: this.time
+		time: this.time,
+		types: this.types,
+		contents: this.contents
 	};
 
 	mongodb.open(function(err, db) {
@@ -48,6 +54,45 @@ Post.prototype.save = function save(callback) {
 		});
 	});
 };
+/*
+Post.get = function get(username, callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('posts', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query = {};
+			if (username) {
+				query.user = username;
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var posts = [];
+				
+				docs.forEach(function(doc, index) {
+					var post = new Post(doc.user, doc.featurename,doc.descriptions,doc.optionality,doc.post,doc.level,doc.parents, doc.time, doc._id);
+					posts.push(post);
+				});
+
+				callback(null, posts);
+			});
+		});
+	});
+};
+*/
 
 Post.get = function get(username, callback) {
 	mongodb.open(function(err, db) {
@@ -67,7 +112,7 @@ Post.get = function get(username, callback) {
 				query.user = username;
 			}
 
-			collection.find(query, {limit:9}).sort({time: -1}).toArray(function(err, docs) {
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -77,7 +122,7 @@ Post.get = function get(username, callback) {
 				var posts = [];
 				
 				docs.forEach(function(doc, index) {
-					var post = new Post(doc.user, doc.featurename,doc.descriptions,doc.optionality,doc.post,doc.level,doc.parents, doc.time);
+					var post = new Post(doc.user, doc.featurename,doc.descriptions,doc.optionality,doc.post,doc.level,doc.parents, doc.time, doc.types, doc.contents, doc._id);
 					posts.push(post);
 				});
 
@@ -116,7 +161,7 @@ Post.getChild = function get(featurename, callback) {
 				var posts = [];
 				
 				docs.forEach(function(doc, index) {
-					var post = new Post(doc.user, doc.featurename,doc.descriptions,doc.optionality,doc.post,doc.level,doc.parents, doc.time);
+					var post = new Post(doc.user, doc.featurename,doc.descriptions,doc.optionality,doc.post,doc.level,doc.parents, doc.time, doc.types,doc.contents, doc._id);
 					posts.push(post);
 				});
 
@@ -208,3 +253,45 @@ Post.getChild= function get(featurename, callback) {
 	});
 };
 */
+Post.del = function del(username, featurename,types,callback) {
+	console.log(username+" "+featurename+" "+types+"#");
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('posts', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query_del = {"user":username,"featurename":featurename,"types":types};
+			console.log(query_del);
+			collection.remove(query_del);
+
+			var query = {};
+			if (username) {
+				query.user = username;
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var posts = [];
+				
+				docs.forEach(function(doc, index) {
+					var post = new Post(doc.user, doc.featurename,doc.descriptions,doc.optionality,doc.post,doc.level,doc.parents, doc.time, doc.types, doc.contents, doc._id);
+					posts.push(post);
+				});
+
+				callback(null, posts);
+			});
+		});
+	});
+};
