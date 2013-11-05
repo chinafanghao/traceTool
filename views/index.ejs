@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+ 
+<% if (!user) { %>
+  <div class="hero-unit">
+    <h1>Trace rule tool</h1>
+    <p>This is a trace rule tool</p>
+    <p>
+      <a class="btn btn-primary btn-large" href="/login">Login</a>
+      <a class="btn btn-large" href="/reg">Register</a>
+    </p>
+  </div>
+<% } else { %>
+   <%- partial('say') %> 
+<% } %>
+<%- partial('posts', {posts:posts}) %> 

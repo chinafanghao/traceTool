@@ -1,0 +1,534 @@
+    <!doctype html>
+
+    <script>
+      var origin_value;
+
+      function showAP(p1,p2)
+      {  
+            //var srcEventElement=window.event.srcElement;
+                    
+            var srcEventElement1=document.getElementById(p1);
+            var srcEventElement2=document.getElementById(p2);
+            
+            srcEventElement1.style.visibility='visible';
+            srcEventElement2.style.visibility='visible';
+            
+      }
+        function hiddenAP(p1,p2,p3)
+      {  
+            //var srcEventElement=window.event.srcElement;
+                    
+            var srcEventElement1=document.getElementById(p1);
+            var srcEventElement2=document.getElementById(p2);
+            
+            srcEventElement1.style.visibility='hidden';
+            srcEventElement2.style.visibility='hidden';
+            
+      }
+
+        function showEdit(id)
+        {
+            var srcEventElement=document.getElementById(id);
+            if(document.activeElement.tagName.toLowerCase()!='input')
+            { 
+              srcEventElement.style.visibility='visible';
+            }
+        }
+
+        function hiddenEdit(id)
+        {
+            var srcEventElement=document.getElementById(id);
+            srcEventElement.style.visibility='hidden';
+        }
+
+        function OS_edit(text,save,cancel)
+        {
+            var srcEventElement1=document.getElementById(text);
+            var srcEventElement2=document.getElementById(save);
+            var srcEventElement3=document.getElementById(cancel);
+            origin_value=srcEventElement1.value;
+            srcEventElement1.readOnly=false;
+            srcEventElement1.focus();
+            srcEventElement2.style.visibility='visible';
+            srcEventElement3.style.visibility='visible';
+        }
+
+        function OS_save(text,save,cancel)
+        {
+            var srcEventElement1=document.getElementById(text);
+            var srcEventElement2=document.getElementById(save);
+            var srcEventElement3=document.getElementById(cancel);
+            srcEventElement1.readOnly=true;
+            srcEventElement2.style.visibility='hidden';
+            srcEventElement3.style.visibility='hidden';
+        }
+
+        function OS_cancel(text,save,cancel)
+        {
+            var srcEventElement1=document.getElementById(text);
+            var srcEventElement2=document.getElementById(save);
+            var srcEventElement3=document.getElementById(cancel);
+            srcEventElement1.value=origin_value;
+            srcEventElement1.readOnly=true;
+            srcEventElement2.style.visibility='hidden';
+            srcEventElement3.style.visibility='hidden';
+        }
+
+        function removeAccord(id)
+        {
+          var srcEventElement=document.getElementById(id);
+          srcEventElement.parentNode.removeChild(srcEventElement);
+        }
+
+        function changeReadOnly(p1,p2,p3,p4,p5)
+      {
+        var srcEventElement1=document.getElementById(p1);
+        var srcEventElement2=document.getElementById(p2);
+        var srcEventElement3=document.getElementById(p3);
+        srcEventElement1.readonly='false';
+        srcEventElement2.readonly='false';
+        srcEventElement3.readonly='false';
+
+         var srcEventElement4=document.getElementById(p4);
+         var srcEventElement5=document.getElementById(p5);
+         srcEventElement4.style.visibility='visible';
+         srcEventElement5.style.visibility='visible';
+      }
+    
+        $(function() {
+          $( "#radio" ).buttonset();
+        });
+
+        $(function() {
+          $( "#accordion" ).accordion({
+            collapsible: true
+          });
+        });
+ 
+        $(function() {
+          $( "#accordion1" ).accordion({
+            collapsible: true
+          });
+        });
+
+        $(function() {
+          $( "#accordion2" ).accordion({
+            collapsible: true
+          });
+        });
+
+      $(function() {
+       $( "#tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+       $( "#tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+        });
+
+      $(function() {
+        $( "#currency" ).change(function() {
+        $( "#spinner" ).spinner( "option", "culture", $( this ).val() );
+        });
+ 
+        $( "#spinner" ).spinner({
+          min: 5,
+          max: 2500,
+          step: 25,
+          start: 1000,
+          numberFormat: "C"
+        });
+      });
+    </script>
+
+  <style>
+    .ui-tabs-vertical { width: 73em; }
+    .ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 17em; }
+    .ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+    .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+    .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
+    .ui-tabs-vertical .ui-tabs-panel { padding: 0em; float: right; width: 53em;}
+
+    .group {zoom: 1}
+    .group1 {zoom: 1}
+  </style>
+      
+    <!--    -->
+ 
+  
+  
+  <style>
+   
+    label, input { display:block; }
+    input.text { margin-bottom:12px; width:95%; padding: .4em; }
+    fieldset { padding:0; border:0; margin-top:25px; }
+    h1 { font-size: 1.2em; margin: .6em 0; }
+    div#users-contain { width: 350px; margin: 20px 0; }
+    div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+    div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+    .ui-dialog .ui-state-error { padding: .3em; }
+    .validateTips { border: 1px solid transparent; padding: 0.3em; }
+  </style>
+  <script>
+  $(function() {
+    var name = $( "#name" ),
+      email = $( "#email" ),
+      password = $( "#password" ),
+      allFields = $( [] ).add( name ).add( email ).add( password ),
+      tips = $( ".validateTips" );
+ 
+    function updateTips( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+    function checkLength( o, n, min, max ) {
+      if ( o.val().length > max || o.val().length < min ) {
+        o.addClass( "ui-state-error" );
+        updateTips( "Length of " + n + " must be between " +
+          min + " and " + max + "." );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function checkRegexp( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips( n );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 300,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Create an operation": function() {
+          var bValid = true;
+          allFields.removeClass( "ui-state-error" );
+ 
+          bValid = bValid && checkLength( name, "username", 3, 16 );
+          bValid = bValid && checkLength( email, "email", 6, 80 );
+          bValid = bValid && checkLength( password, "password", 5, 16 );
+ 
+          bValid = bValid && checkRegexp( name, /^[a-z]([0-9a-z_])+$/i, "Username may consist of a-z, 0-9, underscores, begin with a letter." );
+          // From jquery.validate.js (by joern), contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/
+          bValid = bValid && checkRegexp( email, /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i, "eg. ui@jquery.com" );
+          bValid = bValid && checkRegexp( password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9" );
+ 
+          if ( bValid ) {
+            $( "#users tbody" ).append( "<tr>" +
+              "<td>" + name.val() + "</td>" +
+              "<td>" + email.val() + "</td>" +
+              "<td>" + password.val() + "</td>" +
+            "</tr>" );
+            $( this ).dialog( "close" );
+          }
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      },
+      close: function() {
+        allFields.val( "" ).removeClass( "ui-state-error" );
+      }
+    });
+ 
+    $( "#create-user" )
+      .button()
+      .click(function() {
+        $( "#dialog-form" ).dialog( "open" );
+      });
+  });
+  </script>
+
+ 
+<div id="dialog-form" title="Create new operation">
+  
+  <form>
+  <fieldset>
+    
+    <p>
+      <label for="currency">Choose Operation Type</label>
+        <select id="currency" name="currency">
+          <option value="en-US">create-case-name</option>
+          <option value="de-DE">create-activity</option>
+          <option value="ja-JP">create-decision</option>
+          <option value="ja-JP">create-condition</option>
+          <option value="ja-JP">insert-sequence</option>
+          <option value="ja-JP">insert-decision</option>
+          <option value="ja-JP">fill</option>
+        </select>
+    </p>
+    <label for="name">Case Name</label>
+    <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+    <label for="name">Description</label>
+    <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+  </fieldset>
+  </form>
+</div>
+ 
+
+
+<!-- -->
+
+    <div class="container-fluid" style="padding-top:0px">
+        <div class="container-fluid">
+          <table>
+            <tr>
+              <td style="width:16em"><h4><center>Guard List</center></h4></td>
+              <td style="width:70em"><h4><center>Operation Sequence</center></h4></td>
+            </tr>
+          </table>
+    
+        <div class="row">
+          <div class="span2">
+            <ul class="nav nav-list bs-docs-sidenav affix-top" style="margin-top:10px;margin-left: -1.5em;width:18em">
+               <li class="active"><a href="#global"><i class="icon-chevron-right"></i>Login</a></li>
+               <li class=""><a href="#gridSystem"><i class="icon-chevron-right"></i> Message</a></li>
+               <li class=""><a href="#fluidGridSystem"><i class="icon-chevron-right"></i>Information Submittion</a></li>
+            </ul>
+          </div>
+          <div class="span6">
+
+            <!-- Global Bootstrap settings
+            ================================================== -->
+            <section id="global" style="margin-top:-1.5em;margin-left: 5em;width:60em;">
+                <div id="accordion">
+                  <h3 onmouseover="showAP('g1m','g1p')" onmouseout="hiddenAP('g1m','g1p')">Case Name  
+                     <i id="g1m" class="icon-minus" style="float:right;margin-right:6px;visibility:hidden"></i>
+                     <i id="g1p" class="icon-plus" style="float:right;margin-right:6px;visibility:hidden"></i>
+                  </h3>
+
+                  <div>
+                    <form class="form-inline">
+                      <fieldset>
+
+                        <div class="row">
+                            <div class="span2">
+                              <label contenteditable="true">
+                                <h4>Case ID:</h4>
+                              </label>
+                            </div>
+                            
+                            <div class="span4">
+                              <input placeholder="121332" type="text" readonly="true" id="text3-g1"/>
+                            </div>
+                        </div>
+
+                        <div class="row" onmouseover="showEdit('use-case-name-edit')" onmouseout="hiddenEdit('use-case-name-edit')">
+                          <div class="span2">
+                            <label contenteditable="true">
+                              <h4>Case Name:</h4>
+                            </label>
+                          </div>
+                          <div class="span4">
+                            <input placeholder="Login" type="text" readonly="true" id="use-case-ID-g1"/>
+                            <a id="use-case-name-edit" style="visibility:hidden;cursor:pointer;text-decoration:none" onclick="OS_edit('use-case-ID-g1','use-case-ID-save','use-case-ID-cancel')">
+                              <font size="3px" color="#08c">edit</font>
+                            </a>
+                          </div>
+                          <div class="span2">
+                                <button id="use-case-ID-save" type="submit" class="btn btn-primary" style="visibility:hidden;" onclick="OS_save('use-case-ID-g1','use-case-ID-save','use-case-ID-cancel')">Save</button>
+                                <button id="use-case-ID-cancel" type="button" class="btn" style="visibility:hidden;" onclick="OS_cancel('use-case-ID-g1','use-case-ID-save','use-case-ID-cancel')">Cancel</button>
+                          </div>
+                        </div>
+                        <div class="row" onmouseover="showEdit('text2-g1-edit')" onmouseout="hiddenEdit('text2-g1-edit')">
+                          <div class="span2">
+                            <label contenteditable="true">
+                              <h4>Description:</h4>
+                            </label>
+                          </div>
+                          <div class="span4">
+                            <input placeholder="the description of use case" type="text" readonly="true" id="text2-g1"/>
+                            <a id="text2-g1-edit" style="visibility:hidden;cursor:pointer;text-decoration:none" onclick="OS_edit('text2-g1','text2-g1-save','text2-g1-cancel')">
+                              <font size="3px" color="#08c">edit</font>
+                            </a>
+                          </div>
+                          <div class="span2">
+                                <button id="text2-g1-save" type="submit" class="btn btn-primary" style="visibility:hidden;" onclick="OS_save('text2-g1','text2-g1-save','text2-g1-cancel')">Save</button>
+                                <button id="text2-g1-cancel" type="button" class="btn" style="visibility:hidden;" onclick="OS_cancel('text2-g1','text2-g1-save','text2-g1-cancel')">Cancel</button>
+                          </div>
+                        </div>
+                        
+                        
+                    
+                      </fieldset>
+                    </form>
+                  </div>
+
+                </div>
+
+                <div id="accordion1">
+                  <h3 onmouseover="showAP('g2m','g2p')" onmouseout="hiddenAP('g2m','g2p')" >Activity A5 
+                    <i id="g2m" class="icon-minus" style="float:right;margin-right:6px;visibility:hidden"></i>
+                    <i id="g2p" class="icon-plus" style="float:right;margin-right:6px;visibility:hidden"></i>
+                  </h3>
+                  <div>
+                  <form class="form-inline">
+                    <fieldset>
+                      <div class="row">
+                        <div class="span2">
+                          <label contenteditable="true">
+                            <h4>Name:</h4>
+                          </label>
+                        </div>
+                        <div class="span4">
+                          <input placeholder="Acitivity Name" type="text" />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="span2">
+                          <label contenteditable="true">
+                            <h4>Description:</h4>
+                          </label>
+                        </div>
+                        <div class="span4">
+                          <input placeholder="Activity Description" type="text" />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="span2">
+                          <label contenteditable="true">
+                            <h4>Executor:</h4>
+                          </label>
+                        </div>
+                        <div class="span4">
+                          <input placeholder="Actor" type="text" />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                      <div class="span2">
+                        <label contenteditable="false">
+                          <h4>Virtual:</h4>
+                        </label>
+                      </div>
+                      <div class="span4">
+                        <div id="radio">
+                          <input type="radio" id="radio1" name="radio" />
+                            <label for="radio1">True</label>
+                          <input type="radio" id="radio2" name="radio" checked="checked" />
+                            <label for="radio2">False</label>
+                        </div>
+                       </div>
+                      </div>
+                      <p></p>
+                      <button class="btn" contenteditable="true" type="submit">保存</button>
+                      <button class="btn" contenteditable="true" type="reset">重置</button> 
+                    </fieldset>
+                  </form>
+                  </div>
+                </div>
+
+                <div id="accordion2">
+                  <h3 onmouseover="showAP('g3m','g3p')" onmouseout="hiddenAP('g3m','g3p')">Condition C9 
+                    <i id="g3m" class="icon-minus" style="float:right;margin-right:6px;visibility:hidden" onclick="removeAccord('accordion2')">
+                    </i>
+                    <i id="g3p" class="icon-plus" style="float:right;margin-right:6px;visibility:hidden">
+                    </i>
+                  </h3>
+
+                  <div>
+                  <form class="form-inline">
+                    <fieldset>
+                      <div class="row">
+                        <div class="span2">
+                          <label contenteditable="true">
+                            <h4>Condition:</h4>
+                          </label>
+                        </div>
+                        <div class="span4">
+                          <input placeholder="condition-ID" type="text" />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="span2">
+                          <label contenteditable="true">
+                            <h4>name:</h4>
+                          </label>
+                        </div>
+                        <div class="span4">
+                          <input placeholder="condition name" type="text" />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="span2">
+                          <label contenteditable="true">
+                            <h4>description:</h4>
+                          </label>
+                        </div>
+                        <div class="span4">
+                          <input placeholder="the description of condition" type="text" />
+                        </div>
+                      </div>
+                      <button class="btn" contenteditable="true" type="submit">保存</button>
+                      <button class="btn" contenteditable="true" type="reset">重置</button> 
+                     </fieldset>
+                  </form>
+                  </div>
+                </div>
+            </section>
+
+
+            <!-- Grid system
+            ==================================================  
+            <section id="gridSystem">
+          <div class="page-header">
+            <h3>activity5</h3>
+          </div>
+          <form class="form-inline">
+            <fieldset>
+              <label contenteditable="true">use case:</label> 
+              <input placeholder="Type something…" type="text" />
+              <label contenteditable="true">name:</label> <input placeholder="Type something…" type="text" />
+              <label contenteditable="true">description:</label> <input placeholder="Type something…" type="text" />
+              <button class="btn" contenteditable="true" type="submit">提交</button></fieldset>
+              <button class="btn" contenteditable="true" type="reset">重置</button></fieldset>
+          </form>
+            </section>-->
+           
+
+
+            <!-- Fluid grid system
+            ================================================== 
+            <section id="fluidGridSystem">
+          <div class="page-header">
+            <h3>Condition C9</h3>
+          </div>
+          <form class="form-inline">
+          <fieldset><label contenteditable="true">use case:</label> <input placeholder="Type something…" type="text" />
+          <fieldset><label contenteditable="true">name:</label> <input placeholder="Type something…" type="text" />
+          <fieldset><label contenteditable="true">description:</label> <input placeholder="Type something…" type="text" />
+          <button class="btn" contenteditable="true" type="submit">提交</button></fieldset>
+          <button class="btn" contenteditable="true" type="reset">重置</button></fieldset>
+          </form>
+            </section>-->
+          
+          </div>
+
+        </div> 
+    </div>
+   
+   <button id="create-user" >Create new user</button>
+
+<script type="text/javascript">
+    // active initial
+
+    $(function(){
+       
+        $(".icon-plus").bind("click",function(){
+            $('#myModal').modal(options);
+            alert("world");
+        });
+    });
+</script>
+       

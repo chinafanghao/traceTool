@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<script src="/javascripts/fmtreeC.js"></script>
+<link type="text/css" rel="stylesheet" href="/stylesheets/xtree.css">
+<link rel='stylesheet' href='/stylesheets/david-bootstrap.css' />
+<style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+
+    div.c{padding-left:1%}
+    div.left{float:left;width:18%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.center{float:left;width:15%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.right{float:left;width:62%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.titles{
+      text-align: center;
+      font-size: 125%;
+      font-weight: bold;
+      margin-top: 12px;
+      font-family: "David";
+    }
+    .myh4 {
+      font-family:"Calibri";
+      font-size:125%;
+    }
+    .myInsides {
+      border-top:1px solid #c3c3c3;
+      overflow:auto;
+      color: #000000;
+      height: 32px; 
+    }
+    .focusBgColor{
+      background-color: #c3c3c3;
+    }
+
+    .group { zoom: 1 }
+
+    .depnInside{
+      border-top:1px solid #c3c3c3;
+    }
+
+    .getFocus{
+      border:1px solid #c3c3c3;
+    }
+
+    tr td{width: 16%;text-align: center;}
+    .td1{width: 26%}
+    .td2{width: 14%}
+    .td3{width: 14%}
+    .td4{width: 6%}
+    .td5{width: 26%}
+    .td6{width: 14%}
+
+    table{border: 1px solid #c3c3c3;}
+
+    .FontColor{
+      color: blue;
+    }
+</style>
+
+<script type="text/javascript">
+  var $seq_no=0;
+
+  $(function(){
+      $(".myInsides").mouseover(function(){
+          $(this).children().show();
+      })
+      $(".myInsides").mouseout(function(){
+          $(this).children().hide();
+      })
+    
+      $(".myInsides").each(function(index){
+          $(this).click(function(){
+            $(".myInsides.focusBgColor").removeClass("focusBgColor");
+            $(this).addClass("focusBgColor");
+          })
+        })
+
+      $(".icon-ok").mouseover(function(){
+        $(this).addClass("getFocus");
+      })
+
+      $(".icon-ok").mouseout(function(){
+        $(this).removeClass("getFocus");
+      })
+
+      $(".icon-minus").mouseover(function(){
+        $(this).addClass("getFocus");
+      })
+
+      $(".icon-minus").mouseout(function(){
+        $(this).removeClass("getFocus");
+      })
+
+      $(".icon-minus").click(function(){
+        $(this).parent().remove();
+      })
+
+      $( "#radio" ).buttonset();
+
+      $("p.click").hover(function(){
+          $(this).css("cursor","pointer");
+      })
+
+      $("p.click").each(function(index){
+          $(this).click(function(){
+            $("p.FontColor").removeClass("FontColor");
+            $("p[value="+$(this).html()+"]").addClass("FontColor");
+            $(this).removeClass("FontColor");
+          })
+        })
+  })
+
+</script>
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div  class="span12">
+      <div class="tabbable">
+        <ul class="nav nav-tabs" id="tabs">
+          <li>
+            <a data-toggle="tab" style="cursor:pointer">Feature Model</a>
+          </li>
+          <li>
+            <a data-toggle="tab" style="cursor:pointer">Traceability</a>
+          </li>
+          <li class="active">
+            <a data-toggle="tab"  style="cursor:pointer">Configuration</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="c">
+    <div class="left">
+      <div class="myBorderRadius">
+        <h4 align="center" class="myFont"> Feature Tree 
+        </h4>
+        <div class="myInside" style="border-top:1px solid #c3c3c3;overflow:auto;">
+          <select class="selector0">
+            <option>Login</option>
+            <option>Message</option>
+            <option>Information Submition</option>
+            <option>--------------------</option>
+            <option>Add New Configuration</option>
+          </select>
+          <button class="btn btn-small" type="button" style="margin-top:-10px">Generate</button>
+          <script src="/javascripts/treeC.js"></script>
+        </div>
+      </div>
+    </div>
+
+    <div class="center">
+      <div class="myBorderRadiusPlus">
+    <h4 align="center" class="myFont"> 
+      Use Case Name
+    </h4>
+    <div class="myh4" style="margin-top:8px">
+      
+      <ul class="nav nav-list" id="guardlist">
+    
+        <li class="nav-list-1"><a href="javascript:;" class="myInsides focusBgColor">Login</a></li>
+        <li class="nav-list-1"><a href="javascript:;" class="myInsides">Message</a></li>
+        <li class="nav-list-1"><a href="javascript:;" class="myInsides">Information Submition</a></li>
+      </ul>
+
+
+    </div>
+   </div>
+    </div>
+
+    <div class="right">
+      <div class="myBorderRadius">
+        <h4 align="center" class="myFont"> Use Case </h4>
+        <div style="overflow:auto;text-align:center">
+          <table border="1" cellpadding="0" cellspacing="0" width="100%">
+              <tr style="border-left:0">
+                <td colspan="4">
+                  <p style="text-align:center">USER</p>
+                </td>
+                <td colspan="4">
+                  <p style="text-align:center">SYSTEM</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:6%;">
+                  <p align="center">ID</p>
+                </td>
+                <td style="width:33%;">
+                  <p align="center">Description</p>
+                </td>
+                <td style="width:5%;">
+                  <p align="center">Val</p>
+                </td>
+                <td style="width:6%;">
+                  <p align="center">Tgt.</p>
+                </td>
+                <td style="width:6%;">
+                  <p align="center">ID</p>
+                </td>
+                <td style="width:33%;">
+                  <p align="center">Description</p>
+                </td>
+                <td style="width:5%;">
+                  <p align="center">Val</p>
+                </td>
+                <td style="width:6%;">
+                  <p align="center">Tgt.</p>
+                </td>
+              </tr>
+              <tr>
+                <td rowspan="2" style="width:6%;">
+                  <p class="FontColor" value="A1">A1</p>
+                </td>
+                <td rowspan="2" style="width:33%;">
+                  <p>Press the 'sign in' button</p>
+                </td>
+                <td rowspan="2" style="width:5%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td rowspan="2" style="width:6%;">
+                  <p class="click" value="D2">D2</p>
+                </td>
+                <td rowspan="2" style="width:6%;">
+                  <p value="D2">D2</p>
+                </td>
+                <td rowspan="2" style="width:33%;">
+                  <p style="text-align:left">Has the user set on automatic login?</p>
+                </td>
+                <td style="width:5%;">
+                  <p>No</p>
+                </td>
+                <td style="width:6%;">
+                  <p class="click" value="A4">A4</p>
+                  </td>
+              </tr>
+              <tr>
+                <td style="width:5%;">
+                  <p>Yes</p>
+                </td>
+                <td style="width:6%;">
+                  <p class="click" value="A23">A23</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:6%;">
+                  <p value="A4">A4</p>
+                </td>
+                <td style="width:33%;">
+                  <p>Input username.</p>
+                </td>
+                <td style="width:5%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:6%">
+                  <p class="click" value="A5">A5</p>
+                </td>
+                <td style="width:6%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:33%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:5%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:33%;">
+                  <p>&nbsp;</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:6%;">
+                  <p value="A5">A5</p>
+                </td>
+                <td style="width:33%;">
+                  <p>Input password with keyborad.</p>
+                </td>
+                <td style="width:5%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:6%">
+                  <p class="click" value="A6">A6</p>
+                </td>
+                <td style="width:6%;">
+                  <p Value="A6">A6</p>
+                </td>
+                <td style="width:33%;">
+                  <p>Display the input username, display the input password with asterisks.</p>
+                </td>
+                <td style="width:5%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:6%;">
+                  <p class="click" value="D9">D9</p>
+                </td>
+              </tr>
+              <tr>
+                <td rowspan="2" style="width:6%;">
+                  <p value="D9">D9</p>
+                </td>
+                <td  rowspan="2" style="width:33%;">
+                  <p>Is the image clear?</p>
+                </td>
+                <td style="width:5%;">
+                  <p>Yes</p>
+                </td>
+                <td style="width:6%;">
+                  <p class="click" value="A7">A7</p>
+                </td>
+                <td style="width:6%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:33%;">
+                  <p style="text-align:left">&nbsp;</p>
+                </td>
+                <td style="width:5%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:6%;">
+                  <p class="click">&nbsp</p>
+                  </td>
+              </tr>
+              <tr>
+                <td style="width:5%;">
+                  <p>No</p>
+                </td>
+                <td style="width:6%;">
+                  <p class="click" value="A24">A24</p>
+                </td>
+                <td style="width:6%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:33%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:5%;">
+                  <p>&nbsp;</p>
+                </td>
+                <td style="width:6%;">
+                  <p class="click">&nbsp;</p>
+                </td>
+              </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+</div>

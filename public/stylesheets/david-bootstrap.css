@@ -1,0 +1,175 @@
+.row {
+  margin-left: -10px;
+}
+
+.span11-5 {
+	width:1025px;
+}
+.span11 {
+  width: 980px;
+}
+
+.span10-5 {
+	width:935px;
+}
+.span10 {
+  width: 890px;
+}
+
+.span9-5 {
+	width:845px;
+}
+.span9 {
+  width: 800px;
+}
+
+.span8-5 {
+	width:755px;
+}
+.span8 {
+  width: 710px;
+}
+
+.span7-5 {
+	width:665px;
+}
+.span7 {
+  width: 620px;
+}
+
+.span6-5 {
+	width:575px;
+}
+.span6 {
+  width: 530px;
+}
+
+.span5-5 {
+	width:485px;
+}
+.span5 {
+  width: 440px;
+}
+
+.span4-5 {
+	width:395px;
+}
+.span4 {
+  width: 350px;
+}
+
+.span3-5 {
+	width:305px;
+}
+.span3 {
+  width: 260px;
+}
+
+.span2-5 {
+	width:215px;
+}
+.span2 {
+  width: 170px;
+}
+
+.span1-5 {
+	width:125px;
+}
+.span1 {
+  width: 80px;
+}
+
+.navbar .brand { 
+  font-size: 30px;
+  font-family: "Champagne & Limousines thick";
+ }
+.navbar-inverse .nav > li > a { 
+  color: #eeeeee;
+}
+.navbar-inverse .brand {
+  color: #eeeeee;
+}
+
+.navbar-inner {
+  min-height: 45px;  
+}
+
+.myFont {
+   font-family: "Champagne & Limousines";
+   font-size: 125%;
+}
+
+.nav-tabs {
+  border-bottom: 1px solid #c3c3c3;
+}
+
+
+
+
+.table th,
+.table td {
+  border-top:0;
+}
+
+.table th {
+  font-weight: lighter;
+}
+
+.myTableLeft th,
+.myTableLeft td {
+  padding: 0 8px 0 8px;
+  line-height: 40px;
+  vertical-align: center;
+  border-top: 0;
+}
+
+.myTableLeft th {
+  width: 80px;
+}
+
+.myMiddleMiddle {
+  width: 100%;
+}
+
+.myTableMiddle td {
+  padding:8px 4px;
+}
+
+.myBorderRadius {
+    border:1px solid #c3c3c3;
+    -webkit-border-radius: 10px;
+     -moz-border-radius: 10px;
+          border-radius: 10px;
+    min-height: 500px;
+}
+
+.myBorderRadiusPlus {
+    border:1px solid #c3c3c3;
+    -webkit-border-radius: 10px;
+     -moz-border-radius: 10px;
+          border-radius: 10px;
+}
+
+.nowrap {
+  white-space:nowrap;
+}
+
+.myh4 {
+  font-family:"Calibri";
+  font-size:135%;
+}
+
+.myInside {
+  border-top:1px solid #c3c3c3;
+  overflow:auto;
+}
+
+.myButton {
+  width:65px;
+  height:26px;
+}
+
+.myOptVP {
+  width:15px;
+  height:15px;
+}
