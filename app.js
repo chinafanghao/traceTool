@@ -76,7 +76,10 @@ app.get('/configuratemodeltree',routes.configuratemodeltree);
 app.get('/editfeaturetree',routes.editfeaturetree);
 app.get('/F',routes.F);
 app.get('/T',routes.T);
+<<<<<<< HEAD
 app.get('/T/:current_guard',routes.T);
+=======
+>>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
 app.get('/C',routes.C);
 
 
