@@ -51,7 +51,7 @@
       height: 32px; 
     }
 
-<<<<<<< HEAD
+
     .myInsideA {
       border-top:1px solid #c3c3c3;
       overflow:auto;
@@ -59,17 +59,13 @@
       height: 32px; 
     }
 
-=======
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
+
     .myInsidePlus {
       border-top:1px solid #c3c3c3;
       overflow:auto;
       color: #000000;
-<<<<<<< HEAD
       height: 32px; 
-=======
-      height: 28px; 
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
+
     }
 
     .focusBgColor{
@@ -92,7 +88,7 @@
 <script type="text/javascript">
   var $seq_no=0;
 
-<<<<<<< HEAD
+
 
   $(function(){
       $("#guardNameShow").mouseover(function(){
@@ -107,13 +103,6 @@
           $(this).children().show();
       })
       $(".myInsideA").mouseout(function(){
-=======
-  $(function(){
-      $(".myInside").mouseover(function(){
-          $(this).children().show();
-      })
-      $(".myInside").mouseout(function(){
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
           $(this).children().hide();
       })
 
@@ -124,7 +113,7 @@
           $(this).children().hide();
       })
 
-<<<<<<< HEAD
+
       $(".myInsideA").click(function(){
         window.location.href="/T/"+$(this).attr('name');
       })
@@ -132,20 +121,14 @@
       $(".icon-remove").click(function(){
         //alert($(this).parent().get(0).text);
         alert($(this).parent().attr('name'));
-=======
-      $(".icon-remove").click(function(){
-        alert($(this).parent().get(0).text);
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
+
         $.ajax({
             type: "POST",
             url: "/del",
             data: {
               
-<<<<<<< HEAD
               featurename:$(this).parent().attr('name'), 
-=======
-              featurename:$(this).parent().get(0).text, 
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
+
               types:1
            },
             dataType:'json',
@@ -153,15 +136,10 @@
         $(this).parent().remove();
       })
     
-<<<<<<< HEAD
+
       $(".myInsideA").each(function(index){
           $(this).click(function(){
             $(".myInsideA.focusBgColor").removeClass("focusBgColor");
-=======
-      $(".myInside").each(function(index){
-          $(this).click(function(){
-            $(".myInside.focusBgColor").removeClass("focusBgColor");
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
             $(this).addClass("focusBgColor");
           })
         })
@@ -276,10 +254,9 @@
     }); // end $('.sortable').sortable
 
         var guardname=$("#guardname");
-<<<<<<< HEAD
+
         var $selfName;
-=======
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
+
         var $str;
         $( "#dialog-form" ).dialog({
           autoOpen: false,
@@ -289,10 +266,9 @@
 
             "Confirm": function() {
             $(".nav-list-1:last").remove();
-<<<<<<< HEAD
+
               $selfName=$("#selfDescription").val();
-=======
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
+
               $str="";
               $('input[name="featurename"]:checked').each(function(){
                 
@@ -307,11 +283,8 @@
               $str=$str+$(this).val();
             })
             
-<<<<<<< HEAD
             $("#guardlist").append("<li class=\"nav-list-1\"><a href=\"javascript:;\" class=\"myInside\">"+$selfName+"<i class=\"icon-remove GuardListStyle\" ></i></a></li>").find('.myInside').mouseover(function(){$(this).children().show();}).mouseout(function(){$(this).children().hide();}).each(function(index){$(this).click(function(){$(".myInside.focusBgColor").removeClass("focusBgColor");$(this).addClass("focusBgColor");})}).find('.icon-remove').mouseover(function(){$(this).addClass("getFocus");}).mouseout(function(){$(this).removeClass("getFocus");}).click(function(){$(this).parent().remove();});
-=======
-            $("#guardlist").append("<li class=\"nav-list-1\"><a href=\"javascript:;\" class=\"myInside\">"+$str+"<i class=\"icon-remove GuardListStyle\" ></i></a></li>").find('.myInside').mouseover(function(){$(this).children().show();}).mouseout(function(){$(this).children().hide();}).each(function(index){$(this).click(function(){$(".myInside.focusBgColor").removeClass("focusBgColor");$(this).addClass("focusBgColor");})}).find('.icon-remove').mouseover(function(){$(this).addClass("getFocus");}).mouseout(function(){$(this).removeClass("getFocus");}).click(function(){$(this).parent().remove();});
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
+
             
             $("#guardlist").append("<li class=\"nav-list-1\"><a href=\"javascript:;\" class=\"myInsidePlus\" style=\"text-align:center;margin-bottom:0px;vertical-align:middle;\"><i class=\"icon-plus-sign\"></i></a></li>").find('.icon-plus-sign').click(function(){$( "#dialog-form" ).dialog( "open" );});
 
@@ -325,10 +298,7 @@
             type: "POST",
             url: "/post",
             data: {
-<<<<<<< HEAD
               selfName:$selfName,
-=======
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
               featurename:$str, 
               types:1
            },
@@ -381,139 +351,8 @@
   </div>
   
   <div class="center">
-<<<<<<< HEAD
+
    <%- partial('operationSequence', {posts:posts,current_guard:current_guard}) %>
-=======
-   <div class="myBorderRadius">
-    <div class="titles">
-      Operation Sequence
-    </div>
-    <div style="margin-top:8px">
-<!--
-      <div id="accordion">
-        <div class="group">
-          <h4>UC1<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i></h4>
-          <div>
-            <form class="form-horizontal">
-              <div class="control-group">
-                <label class="control-label" for="inputEmail">Case ID:</label>
-                <div class="controls">
-                  <input type="text" id="input" readonly="true" placeholder="12132" >
-                  <i class="icon-pencil" style="float:right;margin-right:0px;cursor:pointer"></i>
-                   <i class="icon-ok" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="control-label" for="inputEmail">Case Name:</label>
-                <div class="controls">
-                  <input type="text" id="input" readonly="true" placeholder="Login">
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="control-label" for="inputEmail">Description:</label>
-                <div class="controls">
-                  <input type="text" id="input" readonly="true" placeholder="The description of use case" style="width:300px;">
-                </div>
-              </div>
-            </form>
-              
-          </div>
-        </div>
-        <div class="group">
-          <h4>Activity A5<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i></h4>
-          <div>
-            <p>Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In suscipit faucibus urna. </p>
-          </div>
-        </div>
-        <div class="group">
-          <h4>Condition C9<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i></h4>
-          <div>
-          <p>Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis. Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui. </p>
-            <ul>
-              <li>List item one</li>
-              <li>List item two</li>
-              <li>List item three</li>
-            </ul>
-          </div>
-        </div>
-        <div class="group">
-          <h4>Insert A5 between A4 , A6 in UC1<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i></h4>
-          <div>
-            <p>Cras dictum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia mauris vel est. </p><p>Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>
-          </div>
-        </div>
-      </div>
--->
-      <div id="outer">
-        <div class="box">
-          <div class="accordion_wrapper sortable" rel="sections">
-            <div id="accordion_a" class="section_accordion">
-              <div class="accordion">
-                <h4>UC1<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
-                </h4>
-                <div id="accordion_a_content">
-                  <form class="form-horizontal">
-                    <div class="control-group">
-                      <label class="control-label" for="inputEmail">Case ID:</label>
-                      <div class="controls">
-                        <input type="text" id="input" readonly="true" placeholder="12132" >
-                        <i class="icon-pencil" style="float:right;margin-right:0px;cursor:pointer"></i>
-                        <i class="icon-ok" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
-                      </div>
-                    </div>
-                    <div class="control-group">
-                      <label class="control-label" for="inputEmail">Case Name:</label>
-                      <div class="controls">
-                        <input type="text" id="input" readonly="true" placeholder="Login">
-                      </div>
-                    </div>
-                    <div class="control-group">
-                      <label class="control-label" for="inputEmail">Description:</label>
-                      <div class="controls">
-                        <input type="text" id="input" readonly="true" placeholder="The description of use case" style="width:300px;">
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-
-            <div id="accordion_b" class="section_accordion">
-              <div class="accordion">
-                <h4>Activity A5<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
-                </h4>
-                <div id="accordion_b_content">
-                  Content
-                </div>
-              </div>
-            </div>
-
-            <div id="accordion_c" class="section_accordion">
-              <div class="accordion">
-                <h4>Condition C9<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
-                </h4>
-                <div id="accordion_c_content">
-                  Content
-                </div>
-              </div>
-            </div>
-
-            <div id="accordion_d" class="section_accordion">
-              <div class="accordion">
-                <h4>Insert A5 between A4 , A6 in UC1<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
-                </h4>
-                <div id="accordion_d_content">
-                  Content
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-   </div>
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
   </div>
   
   <div class="right">
@@ -531,11 +370,8 @@
            <td>A5</td>
            <td><i class="icon-arrow-right"></i></td>
            <td>A4</td>
-<<<<<<< HEAD
            <td style="margin-top:10px"><b>∈</b></td>
-=======
-           <td><i class=" icon-share-alt"></i></td>
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
+
            <td>Message</td>
           </tr>
           
@@ -544,11 +380,7 @@
            <td>A7</td>
            <td><i class="icon-arrow-right"></i></td>
            <td>A8</td>
-<<<<<<< HEAD
            <td><b>∈</b></td>
-=======
-           <td><i class="icon-share-alt"></i></td>
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
            <td>Message</td>
           </tr>
         </table>

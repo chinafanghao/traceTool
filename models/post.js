@@ -267,11 +267,9 @@ Post.del = function del(username, featurename,types,callback) {
 			}
 			
 			//查找user属性为username的文档，如果username为null则匹配全部
-<<<<<<< HEAD
 			
 			//console.log(ids);
-=======
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
+
 			var query_del = {"user":username,"featurename":featurename,"types":types};
 			console.log(query_del);
 			collection.remove(query_del);

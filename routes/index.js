@@ -46,11 +46,7 @@ exports.user = function(req, res) {
 
 exports.post = function(req, res) {
 	var currentUser = req.session.user;console.log(req.body.featurename+"$");
-<<<<<<< HEAD
 	var post = new Post(currentUser.name,req.body.featurename,req.body.selfName,req.body.optionality,req.body.post,req.body.level,req.body.parents,req.body.time,req.body.types,req.body.contents);
-=======
-	var post = new Post(currentUser.name,req.body.featurename,req.body.descriptions,req.body.optionality,req.body.post,req.body.level,req.body.parents,req.body.time,req.body.types,req.body.contents);
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
 	post.save(function(err) {
 		if (err) {
 			req.flash('error', err);
@@ -143,11 +139,8 @@ exports.F = function(req, res) {
     });
 };
 
-<<<<<<< HEAD
+
 exports.T = function(req, res) {console.log(req.params.current_guard);
-=======
-exports.T = function(req, res) {
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
 	Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
@@ -156,20 +149,14 @@ exports.T = function(req, res) {
 			title: 'Traceability',
 			posts : posts,
 			user : req.session.user,
-<<<<<<< HEAD
 			current_guard : req.params.current_guard,
-=======
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
 			success : req.flash('success').toString(),
 			error : req.flash('error').toString()
 		});
 	});
 };
 
-<<<<<<< HEAD
 
-=======
->>>>>>> dbde71a3e51a6d0513cc4de765a1ddf85cd3216f
 exports.C = function(req, res) {
 	res.render('C', {
 		title: '用户登录',
