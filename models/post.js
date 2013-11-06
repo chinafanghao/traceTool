@@ -298,3 +298,29 @@ Post.del = function del(username, featurename,types,callback) {
 		});
 	});
 };
+
+Post.prototype.update = function update() {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('posts', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			collection.update({_id:this._id},{$set:{username:this.username}});
+			collection.update({_id:this._id},{$set:{featurename:this.featurename}});
+			collection.update({_id:this._id},{$set:{descriptions:this.descriptions}});
+			collection.update({_id:this._id},{$set:{optionality:this.optionality}});
+			collection.update({_id:this._id},{$set:{post:this.post}});
+			collection.update({_id:this._id},{$set:{level:this.level}});
+			collection.update({_id:this._id},{$set:{parents:this.parents}});
+			collection.update({_id:this._id},{$set:{time:this.time}});
+			collection.update({_id:this._id},{$set:{types:this.types}});
+			collection.update({_id:this._id},{$set:{contents:this.contents}});
+			collection.update({_id:this._id},{$set:{_id:this._id}});
+		});
+	});
+};
