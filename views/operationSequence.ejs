@@ -1,33 +1,52 @@
 <!DOCTYPE html>
 <div class="myBorderRadius">
     <div class="titles">
+      Trace Rule
+    </div>
+    
+    <div style="margin-top:8px">
+      <ul class="nav nav-list" id="guardlist">
+        <li class="nav-list-11"><a href="javascript:;" class="myInsidePlus" style="text-align:left;margin-bottom:0px;vertical-align:middle;font-size:120%" id="guardNameShow">Guard: <% guardlists.forEach(function(guard,index){if(guard._id==current_guard){%> <%=guard.guard%><%}})%><i class="icon-plus" style="float:right;margin-right:6px;display:none;margin-top:8px"></i><i class="icon-pencil guardList" style="float:right;margin-right:6px;display:none;margin-top:8px"></i></a></li>
+      </ul>
+
+    </div>
+</div>
+
+
+<div class="myBorderRadius" style="margin-top:15px">
+    <div class="ostitles" style="line-height:18px">
       Operation Sequence
     </div>
     
     <div style="margin-top:8px">
- <ul class="nav nav-list" id="guardlist">
-        
-        <li class="nav-list-11"><a href="javascript:;" class="myInsidePlus" style="text-align:left;margin-bottom:0px;vertical-align:middle;border-bottom:1px solid #c3c3c3;font-size:120%" id="guardNameShow"><%= current_guard%><i class="icon-plus" style="float:right;margin-right:6px;display:none;margin-top:8px"></i></a></li>
-      </ul>
+
       <div id="outer">
         <div class="box">
           
 
           <div class="accordion_wrapper sortable" rel="sections">
 
-            <% posts.forEach(function(post, index) {
-                if(post.parents==current_guard){
+            <% tracelists.forEach(function(trace, index) {
+                if(trace.theparent==current_guard){
                 %>
-                        <div id="<%= post._id%>" class="section_accordion">
+                        <div id="<%= trace._id%>" class="section_accordion">
                           <div class="accordion">
-                            <h4>UC1<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            <h4>
+                              <%=trace.operation_name%>
+                              <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
                             </h4>
-                            <div id="accordion_<%= post.id%>_content">
+                          <%
+                              elementlists.forEach(function(element,index){ %>
+                                 
+                                <%
+                                  if(element._id==trace.element){
+                              %>
+                            <div id="accordion_<%= element._id%>_content">
                               <form class="form-horizontal">
                                 <div class="control-group">
                                   <label class="control-label" for="inputEmail">Case ID:</label>
                                   <div class="controls">
-                                    <input type="text" id="input" readonly="true" placeholder="12132" >
+                                    <input type="text" id="input" readonly="true" placeholder="<%=element._id%>" >
                                     <i class="icon-pencil" style="float:right;margin-right:0px;cursor:pointer"></i>
                                     <i class="icon-ok" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
                                   </div>
@@ -35,20 +54,23 @@
                                 <div class="control-group">
                                   <label class="control-label" for="inputEmail">Case Name:</label>
                                   <div class="controls">
-                                    <input type="text" id="input" readonly="true" placeholder="Login">
+                                    <input type="text" id="input" readonly="true" placeholder="<%= element.name%>">
                                   </div>
                                 </div>
                                 <div class="control-group">
                                     <label class="control-label" for="inputEmail">Description:</label>
                                     <div class="controls">
-                                      <input type="text" id="input" readonly="true" placeholder="The description of use case" style="width:300px;">
+                                      <input type="text" id="input" readonly="true" placeholder="<%=element.description%>" style="width:300px;">
                                     </div>
                                 </div>
                               </form>
                             </div>
+                          <%}})%>
                           </div>
                         </div>
-              <%}}) %>
+              <%
+              }}) 
+            %>
 
             <div id="accordion_a" class="section_accordion">
               <div class="accordion">
@@ -117,3 +139,4 @@
 
     </div>
    </div>
+   

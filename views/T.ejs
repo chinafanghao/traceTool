@@ -21,9 +21,9 @@
 </div>
 <style>
     div.c{padding-left:1%}
-    div.left{float:left;width:25%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
-    div.center{float:left;width:40%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
-    div.right{float:left;width:30%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.left{float:left;width:20%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.center{float:left;width:53%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.right{float:left;width:22%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
     /*min-height: 500px;*/
     div.titles{
       text-align: center;
@@ -32,6 +32,15 @@
       margin-top: 12px;
       font-family: "David";
     }
+
+    div.ostitles{
+      text-align: center;
+      font-size: 115%;
+      font-weight: bold;
+      margin-top: 8px;
+      font-family: "David";
+    }
+
     .myh4 {
       font-family:"Calibri";
       font-size:125%;
@@ -113,6 +122,9 @@
           $(this).children().hide();
       })
 
+      $(".icon-pencil").click(function(){
+        alert("hello");
+      })
 
       $(".myInsideA").click(function(){
         window.location.href="/T/"+$(this).attr('name');
@@ -336,12 +348,12 @@
   <div class="left">
    <div class="myBorderRadius">
     <div class="titles">
-      Guard List
+      Trace Rule List
     </div>
     <div class="myh4" style="margin-top:8px">
       
       <ul class="nav nav-list" id="guardlist">
-        <%- partial('guardList', {posts:posts}) %>
+        <%- partial('guardList', {guardlists:guardlists}) %>
         <li class="nav-list-1"><a href="javascript:;" class="myInsidePlus" style="text-align:center;margin-bottom:0px;vertical-align:middle;"><i class="icon-plus-sign"></i></a></li>
       </ul>
 
@@ -352,7 +364,7 @@
   
   <div class="center">
 
-   <%- partial('operationSequence', {posts:posts,current_guard:current_guard}) %>
+   <%- partial('operationSequence', {posts:posts,current_guard:current_guard,tracelists:tracelists,guardlists:guardlists,elementlists:elementlists}) %>
   </div>
   
   <div class="right">
@@ -368,20 +380,15 @@
           <tr>
            <td></td>
            <td>A5</td>
-           <td><i class="icon-arrow-right"></i></td>
-           <td>A4</td>
-           <td style="margin-top:10px"><b>∈</b></td>
-
-           <td>Message</td>
+           <td><b>---></b></td>
+           <td>A4&nbsp;<b>∈</b>&nbsp;Message</td>
           </tr>
           
           <tr>
            <td></td>
            <td>A7</td>
-           <td><i class="icon-arrow-right"></i></td>
-           <td>A8</td>
-           <td><b>∈</b></td>
-           <td>Message</td>
+           <td><b>---></b></td>
+           <td>A8&nbsp;<b>∈</b>&nbsp;Message Edit&Login</td>
           </tr>
         </table>
     
