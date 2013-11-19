@@ -6,9 +6,9 @@
 var crypto = require('crypto');
 var User = require('../models/user.js');
 var Post = require('../models/post.js');
-var Tracelist = require('../models/tracelist.js');
+var Tracerule = require('../models/tracerule.js');
 var Guardlist = require('../models/guardlist.js')
-var Elementlist = require('../models/elementlist.js')
+
 
 exports.index = function(req, res){
 	Post.get(null, function(err, posts) {
@@ -169,31 +169,32 @@ exports.T = function(req, res) {console.log(req.params.current_guard);
 				guradlists = [];
 			}
 
-			Tracelist.get(req.session.user.name,req.params.current_guard, function(err, tracelists) {
+			Tracerule.get(req.session.user.name,req.params.current_guard, function(err, tracerules) {
 			if (err) {
-				tracelists = [];
+				tracerules = [];
 			}
-				console.log(req.session.user.name+"+"+req.params.current_guard+"+"+tracelists);
-				Elementlist.get(req.session.user.name, function(err, elementlists) {
-					if (err) {
-						elementlists = [];
-					}
+				var aaa=JSON.stringify(tracerules[0].operations);
+				console.log(req.session.user.name+"+"+req.params.current_guard+"+"+aaa);
 				
 					res.render('T', {
 						title : 'Traceability',
 						posts : posts,
 						guardlists : guardlists,
-						elementlists : elementlists,
-						tracelists : tracelists,
+						tracerules : tracerules,
 						user : req.session.user,
 						current_guard : req.params.current_guard,
 						success : req.flash('success').toString(),
 						error : req.flash('error').toString()
-					});
-				});
+				});	
 			});
 		});
 	})
+};
+
+exports.doT = function(req, res) {
+	console.log(req.body.guardname);
+	console.log(req.body.tracerules);
+	res.redirect('/T');
 };
 
 exports.C = function(req, res) {

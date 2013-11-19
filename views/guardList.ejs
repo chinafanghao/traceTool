@@ -1,11 +1,15 @@
 <!DOCTYPE html>
           
               <% guardlists.forEach(function(guardlist, index) {
-              	
+              		if(guardlist.trace_rule_id!=current_guard){
               	%>
-                  <li class="nav-list-1"><a href="javascript:;" class="myInsideA" name="<%= guardlist._id%>">
-                    <%= guardlist.guard_selfname%><i class="icon-remove GuardListStyle"></i><i class="icon-pencil GuardListStyle"></i></a></li>
-              <%}) %>
+                  <li class="nav-list-1"><a href="javascript:;" class="myInsideA" name="<%= guardlist.trace_rule_id%>">
+                    <%= guardlist.selfname%><i class="icon-remove GuardListStyle"></i><i class="icon-pencil GuardListStyle"></i></a></li>
+              <%}else{%>
+              	 <li class="nav-list-1"><a href="javascript:;" class="myInsideA focusBgColor" name="<%= guardlist.trace_rule_id%>">
+                    <%= guardlist.selfname%><i class="icon-remove GuardListStyle"></i><i class="icon-pencil GuardListStyle"></i></a></li>
+             <% }
+          }) %>
    
  
 

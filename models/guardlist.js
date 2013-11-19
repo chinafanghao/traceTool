@@ -1,10 +1,9 @@
 var mongodb = require('./db');
 
-function Guardlist(username, guard,guard_selfname,child,time,_id) { //post means refinements list
+function Guardlist(username, selfname,trace_rule_id,time,_id) { //post means refinements list
 	this.user = username;
-	this.guard = guard;
-	this.guard_selfname=guard_selfname;
-	this.child=child;
+	this.selfname = selfname;
+	this.trace_rule_id=trace_rule_id;
 	if (time) {
 		this.time = time;
 	} else {
@@ -18,9 +17,8 @@ Guardlist.prototype.save = function save(callback) {
 	// 存入 Mongodb 的文檔
 	var guardlist = {
 		user: this.user,
-		guard:this.guard,
-		guard_selfname:this.guard_selfname,
-		child:this.child,
+		selfname:this.selfname,
+		trace_rule_id:this.trace_rule_id,
 		time: this.time,
 	};
 
@@ -76,7 +74,7 @@ Guardlist.get = function get(user, callback) {
 				var guardlists = [];
 				
 				docs.forEach(function(doc, index) {
-					var guardlist = new Guardlist(doc.user, doc.guard,doc.guard_selfname,doc.child,doc.time,doc._id);
+					var guardlist = new Guardlist(doc.user, doc.selfname,doc.trace_rule_id,doc.time,doc._id);
 					guardlists.push(guardlist);
 				});
 
@@ -122,7 +120,7 @@ Guardlist.del = function del(username, guard,callback) {
 				var guardlists = [];
 				
 				docs.forEach(function(doc, index) {
-					var guardlist = new Tracelist(doc.user, doc.guard,doc.guard_selfname,doc.child,doc.time);
+					var guardlist = new Tracelist(doc.user, doc.user,doc.selfname,doc.trace_rule_id,doc.time,doc._id);
 					guardlists.push(guardlist);
 				});
 

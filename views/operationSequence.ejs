@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<% tracerules.forEach(function(trace,index){%>
 <div class="myBorderRadius">
     <div class="titles">
       Trace Rule
@@ -6,7 +7,7 @@
     
     <div style="margin-top:8px">
       <ul class="nav nav-list" id="guardlist">
-        <li class="nav-list-11"><a href="javascript:;" class="myInsidePlus" style="text-align:left;margin-bottom:0px;vertical-align:middle;font-size:120%" id="guardNameShow">Guard: <% guardlists.forEach(function(guard,index){if(guard._id==current_guard){%> <%=guard.guard%><%}})%><i class="icon-plus" style="float:right;margin-right:6px;display:none;margin-top:8px"></i><i class="icon-pencil guardList" style="float:right;margin-right:6px;display:none;margin-top:8px"></i></a></li>
+        <li class="nav-list-11"><a href="javascript:;" class="myInsidePlus" style="text-align:left;margin-bottom:0px;vertical-align:middle;font-size:120%" id="guardNameShow">Guard:  <%=trace.name%><i class="icon-plus" style="float:right;margin-right:6px;display:none;margin-top:8px"></i><i class="icon-pencil editGuard" style="float:right;margin-right:6px;display:none;margin-top:8px"></i></a></li>
       </ul>
 
     </div>
@@ -26,52 +27,48 @@
 
           <div class="accordion_wrapper sortable" rel="sections">
 
-            <% tracelists.forEach(function(trace, index) {
-                if(trace.theparent==current_guard){
+                <% for(key in trace.operations){
+                      var element_path=new Array();
+                      element_path=trace.operations[key].element.split('.');
+                      if(trace._id==element_path[0]){
+                        var element_name=trace.elements[element_path[2]].name;
+                        var element_description=trace.elements[element_path[2]].description;
+                        var element_type=trace.elements[element_path[2]].type;
+                        var element_executor=trace.elements[element_path[2]].executor;
+                        var element_is_virtual=trace.elements[element_path[2]].is_virtual;
+                        }
                 %>
-                        <div id="<%= trace._id%>" class="section_accordion">
+
+                        <div id="<%= key%>" class="section_accordion">
                           <div class="accordion">
                             <h4>
-                              <%=trace.operation_name%>
+                              <%=key%>
                               <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
                             </h4>
-                          <%
-                              elementlists.forEach(function(element,index){ %>
-                                 
-                                <%
-                                  if(element._id==trace.element){
-                              %>
-                            <div id="accordion_<%= element._id%>_content">
+                            <div id="accordion_<%= trace.operations[key].name%>_content">
                               <form class="form-horizontal">
-                                <div class="control-group">
-                                  <label class="control-label" for="inputEmail">Case ID:</label>
-                                  <div class="controls">
-                                    <input type="text" id="input" readonly="true" placeholder="<%=element._id%>" >
-                                    <i class="icon-pencil" style="float:right;margin-right:0px;cursor:pointer"></i>
-                                    <i class="icon-ok" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
-                                  </div>
-                                </div>
                                 <div class="control-group">
                                   <label class="control-label" for="inputEmail">Case Name:</label>
                                   <div class="controls">
-                                    <input type="text" id="input" readonly="true" placeholder="<%= element.name%>">
+                                    <input type="text" id="input" readonly="true" placeholder="<%= element_name%>">
+                                    <i class="icon-pencil editOperation" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
                                   </div>
                                 </div>
                                 <div class="control-group">
                                     <label class="control-label" for="inputEmail">Description:</label>
                                     <div class="controls">
-                                      <input type="text" id="input" readonly="true" placeholder="<%=element.description%>" style="width:300px;">
+                                      <textarea rows="3" cols="10" readonly="true"><%=element_description%> </textarea>
                                     </div>
                                 </div>
                               </form>
                             </div>
-                          <%}})%>
                           </div>
                         </div>
               <%
-              }}) 
+              }
             %>
-
+            <!--
             <div id="accordion_a" class="section_accordion">
               <div class="accordion">
                 <h4>UC1<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
@@ -132,11 +129,11 @@
                 </div>
               </div>
             </div>
-
+            -->
           </div>
         </div>
       </div>
 
     </div>
    </div>
-   
+  <%})%>
