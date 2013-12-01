@@ -76,10 +76,10 @@ app.get('/configuratemodeltree',routes.configuratemodeltree);
 app.get('/editfeaturetree',routes.editfeaturetree);
 app.get('/F',routes.F);
 app.get('/T',routes.T);
-app.post('/doT',routes.doT);
+//app.post('/doT',routes.doT);
 
 app.get('/T/:current_guard',routes.T);
-
+app.get('/doT/:content',routes.doT);
 app.get('/C',routes.C);
 
 

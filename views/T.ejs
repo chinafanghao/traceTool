@@ -22,8 +22,8 @@
 <style>
     div.c{padding-left:1%}
     div.left{float:left;width:20%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
-    div.center{float:left;width:53%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
-    div.right{float:left;width:22%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.center{float:left;width:50%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.right{float:left;width:25%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
     /*min-height: 500px;*/
     div.titles{
       text-align: center;
@@ -96,8 +96,12 @@
 
 <script type="text/javascript">
   var $seq_no=0;
-
-
+  var $current_guard_id;
+  var $current_accordion;
+  function update_pageT()
+  {
+    window.location.href("/T");
+  }
 
   $(function(){
       $("#guardNameShow").mouseover(function(){
@@ -141,8 +145,10 @@
          $(this).siblings().show();
       })
 
-      $(".icon-pencil.GuardListStyle").click(function(){
+      $(".icon-pencil.GuardListStyle").click(function(event){
+        $current_guard_id=$(this).parent().attr('name');
         $( "#editSelfName" ).dialog( "open" );
+        event.stopPropagation(); 
       })
 
       $(".myInsideA").click(function(){
@@ -199,6 +205,12 @@
 
       $(".icon-plus").mouseout(function(){
         $(this).removeClass("getFocus");
+      })
+
+      $(".icon-plus").click(function(){
+        $current_accordion=$(this).parent().parent().parent().attr("id");
+        $( "#addOperation" ).dialog( "open" );
+        event.stopPropagation();
       })
 
       $(".icon-ok").mouseover(function(){
@@ -274,10 +286,17 @@
     }); // end $('.sortable').sortable
 
         var guardname=$("#guardname");
-
+        var $tracerules;
         var $selfName;
-
+        
         var $str;
+
+        var $TDLType;
+
+        var $activityname;
+        var $activitydescription;
+        var $activityexecutor;
+        var $activityvirtual;
 
         $( "#dialog-form" ).dialog({
           autoOpen: false,
@@ -339,31 +358,102 @@
           buttons: {
 
             "Confirm": function() {
-              
-              $guardname=$("#guardname").val();
-
+              $selfname=$("#selfname").val();
               $( this ).dialog( "close" );
           
         },
       },
       close: function() {
-        if($guardname!=null){
-          $.ajax({
-            type: "POST",
-            url: "/doT",
-            data: {
-              guardname:$guardname,
-              
-           },
-            dataType:'json',
-           success: function(msg){
-              alert( "Data Saved: " + msg );
-            }
-          });
-        }
+        window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
       }
     });
  
+      $( "#addOperation" ).dialog({
+          autoOpen: false,
+          width: 700,
+          modal: true,
+          buttons: {
+
+            "Confirm": function() {
+              $TDLType=$('input:radio[name=TDLType]:checked').val();
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+        //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
+        switch($TDLType){
+          case "C1":
+            alert($TDLType);
+            break;
+          case "C2":
+            $( "#CreateActivity" ).dialog( "open" );
+            break;
+          case "C3":
+            alert($TDLType);
+            break;
+          case "C4":
+            alert($TDLType);
+            break;
+          case "I1":
+            alert($TDLType);
+            break;
+          case "I1":
+            alert($TDLType);
+            break;
+          case "I2":
+            alert($TDLType);
+            break;
+          case "I3":
+            alert($TDLType);
+            break;
+          case "I4":
+            alert($TDLType);
+            break;
+          case "I5":
+            alert($TDLType);
+            break;
+          case "I6":
+            alert($TDLType);
+            break;
+          case "I7":
+            alert($TDLType);
+            break;
+          case "I8":
+            alert($TDLType);
+            break;
+          case "I9":
+            alert($TDLType);
+            break;
+          case "F":
+            alert($TDLType);
+            break;
+          default:
+            break;
+        }
+      }
+    });
+
+     $( "#CreateActivity" ).dialog({
+          autoOpen: false,
+          width: 450,
+          modal: true,
+          buttons: {
+
+            "Confirm": function() {
+              
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+        //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
+        $activityname=$("#activityname").val();
+        $activitydescription=$("#activitydescription").val();
+        $activityexecutor=$('input:radio[name=ExecutorType]:checked').val();
+      }
+    });
+
     $( ".icon-plus-sign" )
       .click(function() {
         $( "#dialog-form" ).dialog( "open" );
@@ -372,7 +462,7 @@
   })
 
 </script>
-
+ <!-- add guard --> 
 <div id="dialog-form" title="Create new guard">
   
   <form>
@@ -385,6 +475,7 @@
 
 </div>
 
+ <!-- 编辑guard自定义名字 --> 
 <div id="editSelfName" title="Edit Name">
   
   <form>
@@ -393,6 +484,133 @@
         <input type="text" class="input-xlarge" id="selfname" name="selfname">
     </fieldset>
   </form>
+
+</div>
+
+ <!-- 增加操作 --> 
+<div id="addOperation" title="Create Operation">
+  
+  <form>
+    <fieldset id="dialog-exchange">
+       <label class="control-label" for="selfname"><h4>Chose the TDL type：</h4></label>
+       <div style="margin-left:5%">
+
+        <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
+
+          <label class="radio">
+            <input type="radio" name="TDLType" id="TDLType1" value="C1" checked>
+            Create use case
+          </label>
+          <label class="radio">
+            <input type="radio" name="TDLType" id="TDLType2" value="C2">
+            Create Activity
+          </label>
+          <label class="radio">
+            <input type="radio" name="TDLType" id="TDLType3" value="C3">
+            Create Decision
+          </label>
+          <label class="radio">
+            <input type="radio" name="TDLType" id="TDLType4" value="C4">
+            Create Condition
+          </label>
+        
+        <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
+
+          <label class="radio">
+            <input type="radio" name="TDLType" id="TDLType5" value="I1">
+            Insert <b>sequence</b> between <b>pre-activity</b>, <b>post-activity</b> in <b>use case</b>
+          </label>
+
+        <label class="radio">
+          <input type="radio" name="TDLType" id="TDLType6" value="I2">
+           Insert <b>sequence</b> after <b>pre-activity</b> in <b>use case</b>
+        </label>
+
+        <label class="radio">
+          <input type="radio" name="TDLType" id="TDLType7" value="I3">
+           Insert <b>sequence</b> before <b>post-activity</b> in <b>use case</b>
+        </label>
+
+        <label class="radio">
+          <input type="radio" name="TDLType" id="TDLType8" value="I4">
+           Insert <b>sequence</b> after <decision, condition> in <b>use case</b>
+        </label>
+
+        <label class="radio">
+          <input type="radio" name="TDLType" id="TDLType9" value="I5">
+           Insert <b>sequence</b> before <decision, condition> in <b>use case</b>
+        </label>
+
+        <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
+
+        <label class="radio">
+          <input type="radio" name="TDLType" id="TDLType10" value="I6">
+            Insert <decision> after <b>pre-activity</b> with (c1,s1), (c2,s2,pa2) ,…, (cn,sn,pan) in <b>use case</b>
+        </label>
+
+        <label class="radio">
+          <input type="radio" name="TDLType" id="TDLType11" value="I7">
+           Insert <decision> before <b>post-activity</b> with (c1,s1), (c2,s2,pa2) ,…, (cn,sn,pan) in <b>use case</b>
+        </label>
+
+        <label class="radio">
+          <input type="radio" name="TDLType" id="TDLType12" value="I8">
+           Insert <decision> after <b>post-activity</b> with (c1,s1), (c2,s2,pa2) ,…, (cn,sn,pan) in <b>use case</b>
+        </label>
+
+        <label class="radio">
+          <input type="radio" name="TDLType" id="TDLType13" value="I9">
+           Insert <decision> before <b>post-activity</b>, <condition> with (c1,s1), (c2,s2,pa2) ,…, (cn,sn,pan) in <b>use case</b>
+        </label>
+
+        <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 size=0.5>
+
+        <label class="radio">
+          <input type="radio" name="TDLType" id="TDLType14" value="F">
+          Fill <b>virtual activity sequence</b> with <b>activity sequence</b> in <b>use case</b>
+        </label>
+      </div>
+    </fieldset>
+  </form>
+
+</div>
+
+ <!-- Create Activity --> 
+<div id="CreateActivity" title="Create Activity">
+  
+   <form class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label" for="activityname">Name:</label>
+        <div class="controls">
+          <input type="text" id="activityname" style="width:100" placeholder="">
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="activitydescription">Description:</label>
+        <div class="controls">
+          <textarea name="activitydescription" rows="3" cols="10" style="resize:none"></textarea>
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="activityexecutor">Executor:</label>
+        <div class="controls">        
+            <input type="radio" name="ExecutorType" id="Executor1" value="System" checked>
+            System
+            &nbsp;&nbsp;
+            <input type="radio" name="ExecutorType" id="Executor2" value="User">
+            User          
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="activityvirtual">Virtual:</label>
+        <div class="controls">
+          <label class="checkbox">
+            <input type="checkbox" value="">
+              true
+          </label>
+        </div>
+    </div>
+   </form>
 
 </div>
 

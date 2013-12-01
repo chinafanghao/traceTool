@@ -192,9 +192,53 @@ exports.T = function(req, res) {console.log(req.params.current_guard);
 };
 
 exports.doT = function(req, res) {
-	console.log(req.body.guardname);
-	console.log(req.body.tracerules);
-	res.redirect('/T');
+ /*	console.log("selfname:"+req.body.selfname);
+	
+	console.log("user:"+req.body.user);
+	console.log("name:"+req.body.name);
+	console.log("selfname:"+req.body.id);
+ */
+
+ console.log(req.params.content);
+ var param=req.params.content.split("分");
+ var selfname=param[0];
+ var user=param[1];
+ var name=param[2];
+ var id=param[3];
+ var current_guard_id=param[4];
+ console.log("doT: selfname:"+selfname+" user:"+user+" name:"+name+" id:"+id+" guard:"+current_guard_id);
+ 
+	Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		Guardlist.updateSelfname(req.session.user.name, id,selfname,function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.updateSelfname(selfname,req.session.user.name,name,id, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						user : req.session.user,
+						current_guard : req.params.current_guard,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	})
+
+	
+	//res.redirect('/T');
 };
 
 exports.C = function(req, res) {

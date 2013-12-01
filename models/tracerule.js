@@ -255,3 +255,55 @@ Tracerule.del = function del(username, operation_name,callback) {
 		});
 	});
 };
+
+
+Tracerule.updateSelfname = function updateSelfname(selfname, user,name,id,callback) {
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+				
+			query1={"user":user,"_id":ObjectID(id),"name":name};
+			query2={$set:{"selfname":selfname}};
+			
+			collection.update(query1,query2);
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+};
