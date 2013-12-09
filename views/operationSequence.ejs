@@ -29,7 +29,10 @@
 
                 <% for(key in trace.operations){
                       var element_path=new Array();
+                      if(trace.operations[key].element!="")
+                        
                       element_path=trace.operations[key].element.split('.');
+                      var operation_position=trace.operations[key].position;
                       if(trace._id==element_path[0]){
                         var element_name=trace.elements[element_path[2]].name;
                         var element_description=trace.elements[element_path[2]].description;
@@ -39,13 +42,13 @@
                         }
                 %>
 
-                        <div id="<%= key%>" class="section_accordion">
+                        <div id="<%=operation_position%>" class="section_accordion">
                           <div class="accordion">
                             <h4>
                               <%=key%>
                               <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
                             </h4>
-                            <div id="accordion_<%= trace.operations[key].name%>_content">
+                            <div id="accordion_<%= trace.operations[key].name%>_content" >
                               <form class="form-horizontal">
                                 <div class="control-group">
                                   <label class="control-label" for="inputEmail">Case Name:</label>

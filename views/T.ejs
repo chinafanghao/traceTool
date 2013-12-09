@@ -92,18 +92,47 @@
     }
 
     .GuardListStyle{float:right;margin-right:6px;margin-top:10px;display:none;}
+    .GuardListStyleShow{float:right;margin-right:6px;margin-top:10px;display:block;}
 </style>
 
 <script type="text/javascript">
   var $seq_no=0;
   var $current_guard_id;
   var $current_accordion;
+  var $index;
+  var $current_operation;
   function update_pageT()
   {
     window.location.href("/T");
   }
 
   $(function(){
+     var rad_elm = $('input[name^="TDLType"]'),rad_last;
+     var sel_elm = $('select[class^="TDLType"]'),sel_last;
+    /* sel_elm.change(function() {
+            if (sel_last != this) {
+                sel_last = this;
+                sel_elm.each(function() {
+                    (sel_last != this) && (this.selectedIndex = -1);
+                });
+            }
+            rad_elm.get(0).checked=false;
+        });*/
+      rad_elm.change(function(){
+        if(rad_last != this)
+        {
+          rad_last=this;
+          
+          //alert($(this).next()[0].tagName);
+          rad_elm.each(function(){
+
+            if(rad_last!=this){
+             $(this).parent().find("select").attr('disabled',true);
+            }
+          })
+          $(this).parent().find("select").attr('disabled',false);
+        }
+     })
       $("#guardNameShow").mouseover(function(){
         $(this).find("i").show();
       })
@@ -114,9 +143,12 @@
 
       $(".myInsideA").mouseover(function(){
           $(this).children().show();
+          $(this).find(".icon-chevron-right").hide();
       })
       $(".myInsideA").mouseout(function(){
           $(this).children().hide();
+          $(this).find(".icon-chevron-right").show();
+        
       })
 
       $("h4").mouseover(function(){
@@ -209,8 +241,15 @@
 
       $(".icon-plus").click(function(){
         $current_accordion=$(this).parent().parent().parent().attr("id");
+
+        sel_elm.each(function(){
+          this.selectedIndex=-1;
+        })
+        rad_elm.get(0).checked=false;
+
         $( "#addOperation" ).dialog( "open" );
         event.stopPropagation();
+
       })
 
       $(".icon-ok").mouseover(function(){
@@ -288,7 +327,7 @@
         var guardname=$("#guardname");
         var $tracerules;
         var $selfName;
-        
+        var $operation_position;
         var $str;
 
         var $TDLType;
@@ -370,12 +409,20 @@
  
       $( "#addOperation" ).dialog({
           autoOpen: false,
-          width: 700,
+          width: 600,
           modal: true,
           buttons: {
 
             "Confirm": function() {
-              $TDLType=$('input:radio[name=TDLType]:checked').val();
+              
+                var $Type=$('input:radio[name=TDLType]:checked').val();
+                if($Type!="F")
+                  $TDLType=$('input:radio[name=TDLType]:checked').parent().find("option:selected").val();
+                else
+                  $TDLType="F";
+                
+              //  $TDLType=$(".TDLType").find("option:selected").val();
+              
               $( this ).dialog( "close" );
           
         },
@@ -431,6 +478,7 @@
           default:
             break;
         }
+       $TDLType=" ";
       }
     });
 
@@ -451,6 +499,21 @@
         $activityname=$("#activityname").val();
         $activitydescription=$("#activitydescription").val();
         $activityexecutor=$('input:radio[name=ExecutorType]:checked').val();
+        
+        if($("#activityvirtual").is(":checked")==true){
+          $activityvirtual="true";
+        }else{
+          $activityvirtual="false";
+        }
+        //alert($activityname+" "+$activitydescription+" "+$activityexecutor+" "+$activityvirtual+" <%=tracerules[0]._id%>"+" "+$current_accordion);
+        $operation_position="";
+       $(".section_accordion").each(function(){
+          if($operation_position!="")
+            $operation_position=$operation_position+"位置";
+          $operation_position=$operation_position+$(this).attr("id");
+       })
+       //alert($operation_position);
+        window.location.href="/createActivity/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$activityname+"分"+$activitydescription+"分"+$activityexecutor+"分"+$activityvirtual+"分"+$current_accordion+"分"+$operation_position+"分"+$current_guard_id;
       }
     });
 
@@ -498,77 +561,54 @@
         <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
 
           <label class="radio">
-            <input type="radio" name="TDLType" id="TDLType1" value="C1" checked>
-            Create use case
-          </label>
-          <label class="radio">
-            <input type="radio" name="TDLType" id="TDLType2" value="C2">
-            Create Activity
-          </label>
-          <label class="radio">
-            <input type="radio" name="TDLType" id="TDLType3" value="C3">
-            Create Decision
-          </label>
-          <label class="radio">
-            <input type="radio" name="TDLType" id="TDLType4" value="C4">
-            Create Condition
-          </label>
-        
+            <input type="radio" name="TDLType" id="Create" value="Create" style="margin-top:11px">
+              Create &nbsp;
+            <select style="width:20%" class="SubTDLType" disabled=true>
+              <option value="C1">Use case</option>
+              <option value="C2">Activity</option>
+              <option value="C3">Decision</option>
+              <option value="C4">Condition</option>
+            </select>
+        </label>
         <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
-
-          <label class="radio">
-            <input type="radio" name="TDLType" id="TDLType5" value="I1">
-            Insert <b>sequence</b> between <b>pre-activity</b>, <b>post-activity</b> in <b>use case</b>
-          </label>
-
         <label class="radio">
-          <input type="radio" name="TDLType" id="TDLType6" value="I2">
-           Insert <b>sequence</b> after <b>pre-activity</b> in <b>use case</b>
+          <input type="radio" name="TDLType" id="InserSeq" value="InserSeq" style="margin-top:12px">
+            Insert <b>sequence</b> &nbsp;
+            <select style="width:42%" class="SubTDLType" disabled=true>
+              <option value="I1">between pre-activity, post-activity</option>
+              <option value="I2">after pre-activity</option>
+              <option value="I3">before post-activity</option>
+              <option value="I4">after decision, condition</option>
+              <option value="I5">before decision, condition</option>
+            </select>
+            &nbsp;in <b>use case</b>
         </label>
-
-        <label class="radio">
-          <input type="radio" name="TDLType" id="TDLType7" value="I3">
-           Insert <b>sequence</b> before <b>post-activity</b> in <b>use case</b>
-        </label>
-
-        <label class="radio">
-          <input type="radio" name="TDLType" id="TDLType8" value="I4">
-           Insert <b>sequence</b> after <decision, condition> in <b>use case</b>
-        </label>
-
-        <label class="radio">
-          <input type="radio" name="TDLType" id="TDLType9" value="I5">
-           Insert <b>sequence</b> before <decision, condition> in <b>use case</b>
-        </label>
-
         <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
-
-        <label class="radio">
-          <input type="radio" name="TDLType" id="TDLType10" value="I6">
-            Insert <decision> after <b>pre-activity</b> with (c1,s1), (c2,s2,pa2) ,…, (cn,sn,pan) in <b>use case</b>
+           <label class="radio">
+          <input type="radio" name="TDLType" id="InserDec" value="InserDec" style="margin-top:11px">
+          Insert <b>decision</b> &nbsp;
+          <select style="width:28%" class="SubTDLType" disabled=true>
+            <option value="I6">after pre-activity</option>
+            <option value="I7">after post-activity</option>
+            <option value="I8">before pre-activity</option>
+            <option value="I9">before post-activity</option>
+          </select>
+          &nbsp;in <b>use case</b>
         </label>
-
-        <label class="radio">
-          <input type="radio" name="TDLType" id="TDLType11" value="I7">
-           Insert <decision> before <b>post-activity</b> with (c1,s1), (c2,s2,pa2) ,…, (cn,sn,pan) in <b>use case</b>
-        </label>
-
-        <label class="radio">
-          <input type="radio" name="TDLType" id="TDLType12" value="I8">
-           Insert <decision> after <b>post-activity</b> with (c1,s1), (c2,s2,pa2) ,…, (cn,sn,pan) in <b>use case</b>
-        </label>
-
-        <label class="radio">
-          <input type="radio" name="TDLType" id="TDLType13" value="I9">
-           Insert <decision> before <b>post-activity</b>, <condition> with (c1,s1), (c2,s2,pa2) ,…, (cn,sn,pan) in <b>use case</b>
-        </label>
-
         <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 size=0.5>
-
+    
         <label class="radio">
-          <input type="radio" name="TDLType" id="TDLType14" value="F">
+          <input type="radio" name="TDLType" id="TDLType4" value="F">
           Fill <b>virtual activity sequence</b> with <b>activity sequence</b> in <b>use case</b>
         </label>
+        <!--
+          Fill 
+          <select style="width:30%" name="TDLType" size="2">
+            <option>virtual activity sequence</option>
+            <option>virtual activity sequence</option>
+          </select>
+          with <b>activity sequence</b> in <b>use case</b>
+        -->
       </div>
     </fieldset>
   </form>
@@ -588,7 +628,7 @@
     <div class="control-group">
       <label class="control-label" for="activitydescription">Description:</label>
         <div class="controls">
-          <textarea name="activitydescription" rows="3" cols="10" style="resize:none"></textarea>
+          <textarea id="activitydescription" rows="3" cols="10" style="resize:none"></textarea>
         </div>
     </div>
     <div class="control-group">
@@ -605,7 +645,7 @@
       <label class="control-label" for="activityvirtual">Virtual:</label>
         <div class="controls">
           <label class="checkbox">
-            <input type="checkbox" value="">
+            <input type="checkbox" id="activityvirtual">
               true
           </label>
         </div>

@@ -81,6 +81,7 @@ app.get('/T',routes.T);
 app.get('/T/:current_guard',routes.T);
 app.get('/doT/:content',routes.doT);
 app.get('/C',routes.C);
+app.get('/createActivity/:content',routes.createActivity);
 
 
 http.createServer(app).listen(app.get('port'), function(){

@@ -241,6 +241,50 @@ exports.doT = function(req, res) {
 	//res.redirect('/T');
 };
 
+exports.createActivity = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var activityname=param[2];
+ 	 var activitydescription=param[3];
+ 	 var activityexecutor=param[4];
+ 	 var activityvirtual=param[5];
+ 	 var current_accordion=param[6];
+ 	 var positions=param[7].split("位置");
+	 var current_guard_id=param[8];
+
+ 	 console.log(user+" "+id+" "+activityname+" "+activitydescription+" "+activityexecutor+" "+activityvirtual+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.createActivity(req.session.user.name,id,activityname,activitydescription,activityexecutor,activityvirtual,current_accordion,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+}
+
 exports.C = function(req, res) {
 	res.render('C', {
 		title: '用户登录',

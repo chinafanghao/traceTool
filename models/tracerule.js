@@ -307,3 +307,124 @@ Tracerule.updateSelfname = function updateSelfname(selfname, user,name,id,callba
 		});
 	});
 };
+
+Tracerule.createActivity = function createActivity(user,id,activityname,activitydescription,activityexecutor,activityvirtual,current_accordion,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			var flag=true;
+			var num;
+			var insert_position;
+			/*
+			for(keys in positions){
+				num=keys;
+				if(flag){
+					if(positions[keys]==current_accordion){
+						flag=false;
+						insert_position=keys+1;
+					}
+					num=num-1;
+				}
+				num=num+1;
+
+			} 
+			*/
+				query1={"user":user,"_id":ObjectID(id)};
+				//query1={"$where":"function(){for(key in this.operations){if(this.operations[key].position=="+positions[keys]+"){return true};}}"};
+				console.log(query1);
+				var keyValue="Create Activity "+activityname;
+				console.log(keyValue);
+				var operationName="operations."+keyValue+".name";
+				var operationType="operations."+keyValue+".type";
+				var operationPosition="operations."+keyValue+".position";
+				var operationElement="operations."+keyValue+".element";
+				var operationTime="operations."+keyValue+".time";
+				var operations={};
+					operations[operationName] = keyValue;
+					operations[operationType] = "C2";
+					operations[operationPosition]=current_accordion;
+					operations[operationElement]=id+".element."+activityname;
+					operations[operationTime]=new Date();
+					
+				var elementName="elements."+activityname+".name";
+				var elementDescription="elements."+activityname+".description";
+				var elementType="elements."+activityname+".type";
+				var elementExecutor="elements."+activityname+".executor";
+				var elementTime="elements."+activityname+".time";
+				var elementIsVirtual="elements."+activityname+".is_virtual";
+				var elements={};
+					
+					elements[elementName]=activityname;
+					elements[elementDescription]=activitydescription;
+					elements[elementType]="activity";
+					elements[elementExecutor]=activityexecutor;
+					elements[elementTime]=new Date();
+					elements[elementIsVirtual]=activityvirtual;
+			
+				query2={
+					"$set":
+							operations
+							//infor.dir:activityname,
+							//elements:elements[activityname]
+						
+					};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("createActivity success");
+				});
+				query2={"$set":elements}
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("createActivity success");
+				});
+			//query1={"user":user,"_id":ObjectID(id)};
+			
+				
+			//query1={"user":user,"_id":ObjectID(id),"name":name};
+			//query2={$set:{"selfname":selfname}};
+			
+			//collection.update(query1,query2);
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+
+
