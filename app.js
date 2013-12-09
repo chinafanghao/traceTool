@@ -82,7 +82,10 @@ app.get('/T/:current_guard',routes.T);
 app.get('/doT/:content',routes.doT);
 app.get('/C',routes.C);
 app.get('/createActivity/:content',routes.createActivity);
-
+app.get('/createUseCase/:content',routes.createUseCase);
+app.get('/createDecision/:content',routes.createDecision);
+app.get('/createCondition/:content',routes.createCondition);
+app.post('/EditActivity',routes.EditActivity);
 
 http.createServer(app).listen(app.get('port'), function(){
 	console.log("Express server listening on port " + app.get('port'));

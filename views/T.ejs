@@ -101,6 +101,20 @@
   var $current_accordion;
   var $index;
   var $current_operation;
+
+  var $activityname;
+  var $activitydescription;
+  var $activityexecutor;
+  var $activityvirtual;
+
+  var guardname=$("#guardname");
+  var $tracerules;
+  var $selfName;
+  var $operation_position;
+  var $str;
+
+  var $TDLType;
+
   function update_pageT()
   {
     window.location.href("/T");
@@ -157,25 +171,151 @@
       $("h4").mouseout(function(){
           $(this).children().hide();
       })
+      var $activityName;
+      var $activityDescription;
+      var $activityExecutor;
+      var $activityVirtual;
 
-      $(".icon-pencil.editOperation").click(function(){
+      $(".icon-pencil.editOperation.Activity").click(function(){
         jQuery.each($(this).parent().parent().parent(),function(){
           $(this).find('input').attr("readonly",false);
           $(this).find('textarea').attr("readonly",false);
+          $(this).find('select').attr("disabled",false);
         })
         //$(this).parent().parent().parent().('input').attr("readonly",false);
          $(this).css("display","none");
          $(this).siblings().show();
       })
 
-      $(".icon-ok.editOperation").click(function(){
+      $(".icon-ok.editOperation.Activity").click(function(){
         jQuery.each($(this).parent().parent().parent(),function(){
           $(this).find('input').attr("readonly",true);
           $(this).find('textarea').attr("readonly",true);
+           $(this).find('select').attr("disabled",true);
         })
          $(this).css("display","none");
          $(this).siblings().show();
+
+         var $operationName=$(this).parent().parent().parent().parent().parent().parent().attr("id");
+
+         $activityName=$(this).parent().parent().parent().find('input').val();
+         $activityDescription=$(this).parent().parent().parent().find('textarea').val();
+         $activityExecutor=$(this).parent().parent().parent().find('.ActivityExecutor').find("option:selected").text();
+         $activityVirtual=$(this).parent().parent().parent().find('.ActivityVirtual').find("option:selected").text();
+         if($activityVirtual=="Yes")
+          $activityVirtual="true";
+        else
+          $activityVirtual="false";
+        $operation_position="";
+        var $mark=false;
+       $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Create Activity "+$activityname;
+          }
+       })
+
+        $operation_position="";
+       $(".section_accordion").each(function(){
+         
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         //var $activityName=
+         /*
+         $.ajax({
+            type: "POST",
+            url: "/EditActivity",
+            data: {
+              operationName:$operationName,
+              activityName:$activityName,
+              activityDescription:$activityDescription,
+              activityExecutor:$activityExecutor,
+              activityVirtual:$activityVirtual,
+              operation_position:$operation_position,
+              current_guard_id:$current_guard_id
+           },
+            dataType:'json',
+          });*/
       })
+      
+      $(".icon-pencil.editOperation.UseCase").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('input').attr("readonly",false);
+          $(this).find('textarea').attr("readonly",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-ok.editOperation.UseCase").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('input').attr("readonly",true);
+          $(this).find('textarea').attr("readonly",true);
+
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-pencil.editOperation.Decision").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('input').attr("readonly",false);
+          $(this).find('textarea').attr("readonly",false);
+          $(this).find('select').attr("disabled",false);
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-ok.editOperation.Decision").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('input').attr("readonly",true);
+          $(this).find('textarea').attr("readonly",true);
+          $(this).find('select').attr("disabled",true);
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-pencil.editOperation.Condition").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('input').attr("readonly",false);
+          $(this).find('textarea').attr("readonly",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-ok.editOperation.Condition").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('input').attr("readonly",true);
+          $(this).find('textarea').attr("readonly",true);
+
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
 
       $(".icon-pencil.GuardListStyle").click(function(event){
         $current_guard_id=$(this).parent().attr('name');
@@ -324,18 +464,8 @@
       } // end stop: function(e, ui)
     }); // end $('.sortable').sortable
 
-        var guardname=$("#guardname");
-        var $tracerules;
-        var $selfName;
-        var $operation_position;
-        var $str;
+      
 
-        var $TDLType;
-
-        var $activityname;
-        var $activitydescription;
-        var $activityexecutor;
-        var $activityvirtual;
 
         $( "#dialog-form" ).dialog({
           autoOpen: false,
@@ -431,16 +561,16 @@
         //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
         switch($TDLType){
           case "C1":
-            alert($TDLType);
+            $( "#CreateUseCase" ).dialog( "open" );
             break;
           case "C2":
             $( "#CreateActivity" ).dialog( "open" );
             break;
           case "C3":
-            alert($TDLType);
+            $("#CreateDecision").dialog("open");
             break;
           case "C4":
-            alert($TDLType);
+            $("#CreateCondition").dialog("open");
             break;
           case "I1":
             alert($TDLType);
@@ -505,15 +635,144 @@
         }else{
           $activityvirtual="false";
         }
-        //alert($activityname+" "+$activitydescription+" "+$activityexecutor+" "+$activityvirtual+" <%=tracerules[0]._id%>"+" "+$current_accordion);
         $operation_position="";
+        var $mark=false;
        $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
           if($operation_position!="")
-            $operation_position=$operation_position+"位置";
+            $operation_position=$operation_position+"$";
           $operation_position=$operation_position+$(this).attr("id");
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Create Activity "+$activityname;
+          }
        })
-       //alert($operation_position);
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
         window.location.href="/createActivity/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$activityname+"分"+$activitydescription+"分"+$activityexecutor+"分"+$activityvirtual+"分"+$current_accordion+"分"+$operation_position+"分"+$current_guard_id;
+      }
+    });
+    
+    $( "#CreateUseCase" ).dialog({
+          autoOpen: false,
+          width: 450,
+          modal: true,
+          buttons: {
+
+            "Confirm": function() {
+              
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+        //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
+        $usecasename=$("#usecasename").val();
+        $usecasedescription=$("#usecasedescription").val();
+        
+        $operation_position="";
+        var $mark=false;
+       $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Create Use Case "+$usecasename;
+          }
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+        window.location.href="/createUseCase/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$usecasename+"分"+$usecasedescription+"分"+$operation_position+"分"+$current_guard_id;
+      }
+    });
+  
+    $( "#CreateDecision" ).dialog({
+          autoOpen: false,
+          width: 450,
+          modal: true,
+          buttons: {
+
+            "Confirm": function() {
+              
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+        //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
+        $decisionname=$("#decisionname").val();
+        $decisiondescription=$("#decisiondescription").val();
+        $decisionexecutor=$('input:radio[name=DecisionExecutorType]:checked').val();
+        
+        
+        $operation_position="";
+        var $mark=false;
+       $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Create Decision "+$decisionname;
+          }
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+        window.location.href="/createDecision/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$decisionname+"分"+$decisiondescription+"分"+$decisionexecutor+"分"+$operation_position+"分"+$current_guard_id;
+      }
+    });
+
+    $( "#CreateCondition" ).dialog({
+          autoOpen: false,
+          width: 450,
+          modal: true,
+          buttons: {
+
+            "Confirm": function() {
+              
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+        //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
+        $conditionname=$("#conditionname").val();
+        $conditiondescription=$("#conditiondescription").val();
+        
+        $operation_position="";
+        var $mark=false;
+       $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Create Condition "+$conditionname;
+          }
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+        window.location.href="/createCondition/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$conditionname+"分"+$conditiondescription+"分"+$operation_position+"分"+$current_guard_id;
       }
     });
 
@@ -573,8 +832,8 @@
         <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
         <label class="radio">
           <input type="radio" name="TDLType" id="InserSeq" value="InserSeq" style="margin-top:12px">
-            Insert <b>sequence</b> &nbsp;
-            <select style="width:42%" class="SubTDLType" disabled=true>
+            Insert <b>activity</b> &nbsp;
+            <select style="width:48%" class="SubTDLType" disabled=true>
               <option value="I1">between pre-activity, post-activity</option>
               <option value="I2">after pre-activity</option>
               <option value="I3">before post-activity</option>
@@ -654,6 +913,76 @@
 
 </div>
 
+ <!-- Create Use Case --> 
+<div id="CreateUseCase" title="Create Use Case">
+  
+   <form class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label" for="usecasename">Name:</label>
+        <div class="controls">
+          <input type="text" id="usecasename" style="width:100" placeholder="">
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="usecasedescription">Description:</label>
+        <div class="controls">
+          <textarea id="usecasedescription" rows="3" cols="10" style="resize:none"></textarea>
+        </div>
+    </div>
+   </form>
+
+</div>
+
+<!-- Create Decision --> 
+<div id="CreateDecision" title="Create Decision">
+  
+   <form class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label" for="decisionname">Name:</label>
+        <div class="controls">
+          <input type="text" id="decisionname" style="width:100" placeholder="">
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="decisiondescription">Description:</label>
+        <div class="controls">
+          <textarea id="decisiondescription" rows="3" cols="10" style="resize:none"></textarea>
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="decisionexecutor">Executor:</label>
+        <div class="controls">        
+            <input type="radio" name="DecisionExecutorType" id="Executor1" value="System" checked>
+            System
+            &nbsp;&nbsp;
+            <input type="radio" name="DecisionExecutorType" id="Executor2" value="User">
+            User          
+        </div>
+    </div>
+   </form>
+
+</div>
+
+
+ <!-- Create Condition --> 
+<div id="CreateCondition" title="Create Condition">
+  
+   <form class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label" for="conditionname">Name:</label>
+        <div class="controls">
+          <input type="text" id="conditionname" style="width:100" placeholder="">
+        </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="conditiondescription">Description:</label>
+        <div class="controls">
+          <textarea id="conditiondescription" rows="3" cols="10" style="resize:none"></textarea>
+        </div>
+    </div>
+   </form>
+
+</div>
 
 <div class="c">
   <div class="left">

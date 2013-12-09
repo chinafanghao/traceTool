@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+
+
 <% tracerules.forEach(function(trace,index){%>
 <div class="myBorderRadius">
     <div class="titles">
@@ -27,12 +29,17 @@
 
           <div class="accordion_wrapper sortable" rel="sections">
 
-                <% for(key in trace.operations){
+                <% 
+                var positions=new Array();
+               
+                positions=trace.positions.split('$');
+
+                for(key in positions){
                       var element_path=new Array();
-                      if(trace.operations[key].element!="")
-                        
-                      element_path=trace.operations[key].element.split('.');
-                      var operation_position=trace.operations[key].position;
+                      if(trace.operations[positions[key]].element!="")
+
+                      element_path=trace.operations[positions[key]].element.split('.');
+                      
                       if(trace._id==element_path[0]){
                         var element_name=trace.elements[element_path[2]].name;
                         var element_description=trace.elements[element_path[2]].description;
@@ -40,22 +47,79 @@
                         var element_executor=trace.elements[element_path[2]].executor;
                         var element_is_virtual=trace.elements[element_path[2]].is_virtual;
                         }
+                        if(trace.operations[positions[key]].type=="C2"){
                 %>
 
-                        <div id="<%=operation_position%>" class="section_accordion">
+                        <div id="<%=positions[key]%>" class="section_accordion">
                           <div class="accordion">
                             <h4>
-                              <%=key%>
+                              <%=positions[key]%>
                               <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
                             </h4>
-                            <div id="accordion_<%= trace.operations[key].name%>_content" >
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
                                 <div class="control-group">
-                                  <label class="control-label" for="inputEmail">Case Name:</label>
+                                  <label class="control-label" for="ActivityName">Name:</label>
                                   <div class="controls">
                                     <input type="text" id="input" readonly="true" style="width:100" placeholder="<%= element_name%>">
-                                    <i class="icon-pencil editOperation" style="float:right;margin-right:0px;cursor:pointer"></i>
-                                    <i class="icon-ok editOperation" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                    <i class="icon-pencil editOperation Activity" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation Activity" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                  </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="inputEmail">Description:</label>
+                                    <div class="controls">
+                                      <textarea rows="3" cols="10" readonly="true" style="resize:none"><%=element_description%> </textarea>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="ActivityExecutor">Executor:</label>
+                                    <select style="width:15%" class="ActivityExecutor" disabled=true>
+                                      <% if(element_executor=="System"){%>
+                                      <option value="System" selected="selected">System</option>
+                                      <option value="User">User</option>
+                                      <%}else{%>
+                                        <option value="System">System</option>
+                                      <option value="User" selected="selected">User</option>
+                                      <%}%>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="ActivityVirtual">Virtual:</label>
+                                    <select style="width:10%" class="ActivityVirtual" disabled=true>
+                                      <% if(element_is_virtual=="true"){%>
+                                      <option value="yes" selected="selected">Yes</option>
+                                      <option value="no">No</option>
+                                       <%}else{%>
+                                        <option value="yes">Yes</option>
+                                        <option value="no" selected="selected">No</option>
+                                      <%}%>
+                                    </select>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+              <%
+              }//activity type
+              else{
+                if(trace.operations[positions[key]].type=="C1"){
+                  %>
+
+                        <div id="<%=positions[key]%>" class="section_accordion">
+                          <div class="accordion">
+                            <h4>
+                              <%=positions[key]%>
+                              <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div class="control-group">
+                                  <label class="control-label" for="ActivityName">Name:</label>
+                                  <div class="controls">
+                                    <input type="text" id="input" readonly="true" style="width:100" placeholder="<%= element_name%>">
+                                    <i class="icon-pencil editOperation UseCase" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation UseCase" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
                                   </div>
                                 </div>
                                 <div class="control-group">
@@ -68,71 +132,88 @@
                             </div>
                           </div>
                         </div>
-              <%
-              }
+                  <%
+                }else{
+                  if(trace.operations[positions[key]].type=="C3"){
+                    %>
+
+                        <div id="<%=positions[key]%>" class="section_accordion">
+                          <div class="accordion">
+                            <h4>
+                              <%=positions[key]%>
+                              <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div class="control-group">
+                                  <label class="control-label" for="DecisionName">Name:</label>
+                                  <div class="controls">
+                                    <input type="text" id="input" readonly="true" style="width:100" placeholder="<%= element_name%>">
+                                    <i class="icon-pencil editOperation Decision" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation Decision" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                  </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="inputEmail">Description:</label>
+                                    <div class="controls">
+                                      <textarea rows="3" cols="10" readonly="true" style="resize:none"><%=element_description%> </textarea>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="DecisionExecutor">Executor:</label>
+                                    <select style="width:15%" class="DecisionExecutor" disabled=true>
+                                      <% if(element_executor=="System"){%>
+                                      <option value="System" selected="selected">System</option>
+                                      <option value="User">User</option>
+                                      <%}else{%>
+                                        <option value="System">System</option>
+                                      <option value="User" selected="selected">User</option>
+                                      <%}%>
+                                    </select>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>    
+                    <%
+                  }else{
+                    if(trace.operations[positions[key]].type=="C4"){
+                      %>
+                       <div id="<%=positions[key]%>" class="section_accordion">
+                          <div class="accordion">
+                            <h4>
+                              <%=positions[key]%>
+                              <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div class="control-group">
+                                  <label class="control-label" for="ConditionName">Name:</label>
+                                  <div class="controls">
+                                    <input type="text" id="input" readonly="true" style="width:100" placeholder="<%= element_name%>">
+                                    <i class="icon-pencil editOperation Condition" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation Condition" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                  </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="ConditionDescription">Description:</label>
+                                    <div class="controls">
+                                      <textarea rows="3" cols="10" readonly="true" style="resize:none"><%=element_description%> </textarea>
+                                    </div>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      <%
+                    }
+                  }
+                }
+              }  
+            }
+            
             %>
-            <!--
-            <div id="accordion_a" class="section_accordion">
-              <div class="accordion">
-                <h4>UC1<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
-                </h4>
-                <div id="accordion_a_content">
-                  <form class="form-horizontal">
-                    <div class="control-group">
-                      <label class="control-label" for="inputEmail">Case ID:</label>
-                      <div class="controls">
-                        <input type="text" id="input" readonly="true" placeholder="12132" >
-                        <i class="icon-pencil" style="float:right;margin-right:0px;cursor:pointer"></i>
-                        <i class="icon-ok" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
-                      </div>
-                    </div>
-                    <div class="control-group">
-                      <label class="control-label" for="inputEmail">Case Name:</label>
-                      <div class="controls">
-                        <input type="text" id="input" readonly="true" placeholder="Login">
-                      </div>
-                    </div>
-                    <div class="control-group">
-                      <label class="control-label" for="inputEmail">Description:</label>
-                      <div class="controls">
-                        <input type="text" id="input" readonly="true" placeholder="The description of use case" style="width:300px;">
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-
-            <div id="accordion_b" class="section_accordion">
-              <div class="accordion">
-                <h4>Activity A5<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
-                </h4>
-                <div id="accordion_b_content">
-                  Content
-                </div>
-              </div>
-            </div>
-
-            <div id="accordion_c" class="section_accordion">
-              <div class="accordion">
-                <h4>Condition C9<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
-                </h4>
-                <div id="accordion_c_content">
-                  Content
-                </div>
-              </div>
-            </div>
-
-            <div id="accordion_d" class="section_accordion">
-              <div class="accordion">
-                <h4>Insert A5 between A4 , A6 in UC1<i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
-                </h4>
-                <div id="accordion_d_content">
-                  Content
-                </div>
-              </div>
-            </div>
-            -->
+            
           </div>
         </div>
       </div>

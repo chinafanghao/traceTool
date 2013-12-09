@@ -174,7 +174,7 @@ exports.T = function(req, res) {console.log(req.params.current_guard);
 				tracerules = [];
 			}
 				var aaa=JSON.stringify(tracerules[0].operations);
-				console.log(req.session.user.name+"+"+req.params.current_guard+"+"+aaa);
+				console.log(req.session.user.name+"+"+req.params.current_guard+"+"+aaa+"+"+tracerules[0].position);
 				
 					res.render('T', {
 						title : 'Traceability',
@@ -251,10 +251,11 @@ exports.createActivity = function(req, res){
  	 var activityexecutor=param[4];
  	 var activityvirtual=param[5];
  	 var current_accordion=param[6];
- 	 var positions=param[7].split("位置");
+ 	 //var positions=param[7].split("位置");
+ 	 var positions=param[7];
 	 var current_guard_id=param[8];
 
- 	 console.log(user+" "+id+" "+activityname+" "+activitydescription+" "+activityexecutor+" "+activityvirtual+" "+positions);
+ 	 console.log(user+" "+id+" "+activityname+" "+activitydescription+" "+activityexecutor+" "+activityvirtual+" position:"+positions);
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
@@ -265,6 +266,135 @@ exports.createActivity = function(req, res){
 			}
 
 			Tracerule.createActivity(req.session.user.name,id,activityname,activitydescription,activityexecutor,activityvirtual,current_accordion,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+}
+
+exports.EditActivity=function(req,res){
+	Tracerule.EditActivity(req.session.user.name, req.body.operationName,req.body.activityName,req.body.activityDescription,req.body.activityExecutor,req.body.activityVirual,req.body.operation_position,req.body.current_guard_id,function(err, trace) {
+		console.log("edit Activity success!");
+		});
+};
+
+exports.createUseCase = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var usecasename=param[2];
+ 	 var usecasedescription=param[3];
+ 	 var positions=param[4];
+	 var current_guard_id=param[5];
+
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.createUseCase(req.session.user.name,id,usecasename,usecasedescription,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+}
+
+exports.createDecision = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var decisionname=param[2];
+ 	 var decisiondescription=param[3];
+ 	 var decisionexecutor=param[4];
+ 	
+ 	 var positions=param[5];
+	 var current_guard_id=param[6];
+
+ 	 console.log(user+" "+id+" "+decisionname+" "+decisiondescription+" "+decisionexecutor+" "+" position:"+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.createDecision(req.session.user.name,id,decisionname,decisiondescription,decisionexecutor,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+}
+
+exports.createCondition = function(req, res){
+	 console.log("Condition:"+req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var conditionname=param[2];
+ 	 var conditiondescription=param[3];
+ 	 var positions=param[4];
+	 var current_guard_id=param[5];
+
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.createCondition(req.session.user.name,id,conditionname,conditiondescription,positions, function(err, tracerules) {
 			if (err) {
 				tracerules = [];
 			}
