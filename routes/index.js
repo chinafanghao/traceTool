@@ -7,8 +7,8 @@ var crypto = require('crypto');
 var User = require('../models/user.js');
 var Post = require('../models/post.js');
 var Tracerule = require('../models/tracerule.js');
-var Guardlist = require('../models/guardlist.js')
-
+var Guardlist = require('../models/guardlist.js');
+var ElementDepency = require('../models/elementdepency.js');
 
 exports.index = function(req, res){
 	Post.get(null, function(err, posts) {
@@ -164,6 +164,10 @@ exports.T = function(req, res) {console.log(req.params.current_guard);
 		if (err) {
 			posts = [];
 		}
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
 		Guardlist.get(req.session.user.name, function(err, guardlists) {
 			if (err) {
 				guradlists = [];
@@ -181,6 +185,7 @@ exports.T = function(req, res) {console.log(req.params.current_guard);
 						posts : posts,
 						guardlists : guardlists,
 						tracerules : tracerules,
+						elementdepencys : elementdepencys,
 						user : req.session.user,
 						current_guard : req.params.current_guard,
 						success : req.flash('success').toString(),
@@ -188,7 +193,8 @@ exports.T = function(req, res) {console.log(req.params.current_guard);
 				});	
 			});
 		});
-	})
+	});
+  });	  
 };
 
 exports.doT = function(req, res) {
@@ -212,6 +218,10 @@ exports.doT = function(req, res) {
 		if (err) {
 			posts = [];
 		}
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
 		Guardlist.updateSelfname(req.session.user.name, id,selfname,function(err, guardlists) {
 			if (err) {
 				guradlists = [];
@@ -228,6 +238,7 @@ exports.doT = function(req, res) {
 						posts : posts,
 						guardlists : guardlists,
 						tracerules : tracerules,
+						elementdepencys : elementdepencys,
 						user : req.session.user,
 						current_guard : req.params.current_guard,
 						success : req.flash('success').toString(),
@@ -235,6 +246,7 @@ exports.doT = function(req, res) {
 				});	
 			});
 		});
+	  });
 	})
 
 	
@@ -260,6 +272,18 @@ exports.createActivity = function(req, res){
 		if (err) {
 			posts = [];
 		}
+		 var newDepency = new ElementDepency({
+					user: req.session.user.name,
+					element:activityname,
+					dependee:current_guard_id
+    		});
+		  ElementDepency.saveDependee(req.session.user.name,activityname,current_guard_id,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
  	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
 			if (err) {
 				guradlists = [];
@@ -276,6 +300,7 @@ exports.createActivity = function(req, res){
 						posts : posts,
 						guardlists : guardlists,
 						tracerules : tracerules,
+						elementdepencys : elementdepencys,
 						user : req.session.user,
 						current_guard : current_guard_id,
 						success : req.flash('success').toString(),
@@ -283,7 +308,9 @@ exports.createActivity = function(req, res){
 				});	
 			});
 		});
-	});
+	
+   });
+  });
 }
 
 exports.EditActivity=function(req,res){
@@ -306,6 +333,10 @@ exports.createUseCase = function(req, res){
 		if (err) {
 			posts = [];
 		}
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
  	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
 			if (err) {
 				guradlists = [];
@@ -322,6 +353,7 @@ exports.createUseCase = function(req, res){
 						posts : posts,
 						guardlists : guardlists,
 						tracerules : tracerules,
+						elementdepencys : elementdepencys,
 						user : req.session.user,
 						current_guard : current_guard_id,
 						success : req.flash('success').toString(),
@@ -330,6 +362,7 @@ exports.createUseCase = function(req, res){
 			});
 		});
 	});
+  });
 }
 
 exports.createDecision = function(req, res){
@@ -349,6 +382,10 @@ exports.createDecision = function(req, res){
 		if (err) {
 			posts = [];
 		}
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
  	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
 			if (err) {
 				guradlists = [];
@@ -365,6 +402,7 @@ exports.createDecision = function(req, res){
 						posts : posts,
 						guardlists : guardlists,
 						tracerules : tracerules,
+						elementdepencys : elementdepencys,
 						user : req.session.user,
 						current_guard : current_guard_id,
 						success : req.flash('success').toString(),
@@ -373,6 +411,7 @@ exports.createDecision = function(req, res){
 			});
 		});
 	});
+  });
 }
 
 exports.createCondition = function(req, res){
@@ -389,6 +428,10 @@ exports.createCondition = function(req, res){
 		if (err) {
 			posts = [];
 		}
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
  	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
 			if (err) {
 				guradlists = [];
@@ -405,6 +448,7 @@ exports.createCondition = function(req, res){
 						posts : posts,
 						guardlists : guardlists,
 						tracerules : tracerules,
+						elementdepencys : elementdepencys,
 						user : req.session.user,
 						current_guard : current_guard_id,
 						success : req.flash('success').toString(),
@@ -413,6 +457,7 @@ exports.createCondition = function(req, res){
 			});
 		});
 	});
+  });
 }
 
 exports.C = function(req, res) {
