@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+  <form>
+    <fieldset id="dialog-exchange">
+       
+       <div style="margin-left:5%;margin-top:10px">
+
+            Decision:
+            <select style="width:50%;margin-left:140px" id="InsertDecBeforeActWithTar">
+               <option value="-1">Chooce the element</option>
+              <% for(key in elementdepencys){
+                if(elementdepencys[key].type=="decision"&&elementdepencys[key].dependee==current_guard){
+                   var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                  %>
+                <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
+              <%}
+              }%>
+              
+            </select>
+        
+        <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
+      
+            Post Activity:
+            <select style="width:50%;margin-left:110px" id="InsertDecBeforeActWithPost">
+                <option value="-1">Chooce the element</option>
+              <% for(key in elementdepencys){
+                    if(elementdepencys[key].type=="activity"){
+                      var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                      %>
+                <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
+              <%}
+              }%>
+
+            </select>
+       
+
+          Main Branch Condition:
+            <select style="width:50%;margin-left:38px" id="InsertDecBeforeActWithMainCon">
+                <option value="-1">Chooce the element</option>
+              <% for(key in elementdepencys){
+                    if(elementdepencys[key].type=="condition"){
+                      var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                      %>
+                <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
+              <%}
+              }%>
+
+            </select>
+
+        <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
+
+          Additional Branch Conditon:
+            <select style="width:50%;margin-left:5px" id="InsertDecBeforeActWithSBCon">
+                <option value="-1">Chooce the element</option>
+              <% for(key in elementdepencys){
+                    if(elementdepencys[key].type=="condition"){
+                      var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                      %>
+                <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
+              <%}
+              }%>
+
+            </select>
+       
+       
+      
+            Inserted Activity:
+            <select style="width:50%;margin-left:80px" id="InsertDecBeforeActWithInserAct">
+                <option value="-1">Chooce the element</option>
+                <option value="none">no inserted activity</option>
+              <% for(key in elementdepencys){
+                    if(elementdepencys[key].type=="activity"){
+                      var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                      %>
+                <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
+              <%}
+              }%>
+            </select>
+      
+            Target Decision:
+            <select style="width:50%;margin-left:88px" id="InsertDecBeforeActWithTarDec">
+                <option value="-1">Chooce the element</option>
+              <% for(key in elementdepencys){
+                    if(elementdepencys[key].type=="decision"){
+                      var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                      %>
+                <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
+              <%}
+              }%>
+            </select>
+        <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>    
+          Use Case:
+          <select style="width:50%;margin-left:135px" id="InsertDecBeforeActWithUseCase">
+                <option value="-1">Chooce the element</option>
+              <% for(key in elementdepencys){
+                  if(elementdepencys[key].type=="UseCase"){
+                     var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;%>
+                <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
+              <%}
+            }%>
+
+          </select>
+       
+      </div>
+    </fieldset>
+  </form>

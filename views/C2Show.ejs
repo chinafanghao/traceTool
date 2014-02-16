@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+      <div id="<%=positions[key]%>" class="section_accordion">
+        <div class="accordion">
+          <h4>
+          <%
+              var guard_name=positions[key].split(" ");
+                for(pos in guard_name){
+                  if(pos==0){
+          %>
+                    <%=guard_name[pos] %>
+          <%
+                  }else{
+                    if(pos==1){        
+          %>
+                     <b><%=element_executor%></b> <%=guard_name[pos]%>          
+          <%      
+                                        }else{
+                              %>
+                                     <b><%=guard_name[pos] %></b>
+                              <%
+                                      }
+                                    }
+                                  }
+                                
+                              %>
+                              <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div class="control-group">
+                                  <label class="control-label" for="ActivityName">Name:</label>
+                                  <div class="controls">
+                                    <input type="text" id="input" readonly="true" style="width:100" placeholder="<%= element_name%>">
+                                    <i class="icon-pencil editOperation Activity" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation Activity" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                  </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="inputEmail">Description:</label>
+                                    <div class="controls">
+                                      <textarea rows="3" cols="10" readonly="true" style="resize:none"><%=element_description%> </textarea>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="ActivityExecutor">Executor:</label>
+                                    <select style="width:15%" class="ActivityExecutor" disabled=true>
+                                      <% if(element_executor=="System"){%>
+                                      <option value="System" selected="selected">System</option>
+                                      <option value="User">User</option>
+                                      <%}else{%>
+                                        <option value="System">System</option>
+                                      <option value="User" selected="selected">User</option>
+                                      <%}%>
+                                    </select>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>

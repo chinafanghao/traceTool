@@ -166,7 +166,12 @@ exports.T = function(req, res) {console.log(req.params.current_guard);
 		}
 	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
 	  		if(err){
+	  			console.log("elementdepencys is null!");
 	  			elementdepencys=[];
+	  		}
+	  		else{
+	  		//	var aaa=JSON.stringify(elementdepencys);
+	  		//	console.log(aaa);
 	  		}
 		Guardlist.get(req.session.user.name, function(err, guardlists) {
 			if (err) {
@@ -177,8 +182,8 @@ exports.T = function(req, res) {console.log(req.params.current_guard);
 			if (err) {
 				tracerules = [];
 			}
-				var aaa=JSON.stringify(tracerules[0].operations);
-				console.log(req.session.user.name+"+"+req.params.current_guard+"+"+aaa+"+"+tracerules[0].position);
+				//var aaa=JSON.stringify(tracerules[0].operations);
+				//console.log(req.session.user.name+"+"+req.params.current_guard+"+"+aaa+"+"+tracerules[0].position);
 				
 					res.render('T', {
 						title : 'Traceability',
@@ -261,13 +266,13 @@ exports.createActivity = function(req, res){
  	 var activityname=param[2];
  	 var activitydescription=param[3];
  	 var activityexecutor=param[4];
- 	 var activityvirtual=param[5];
- 	 var current_accordion=param[6];
+ 	 //var activityvirtual=param[5];
+ 	 var current_accordion=param[5];
  	 //var positions=param[7].split("位置");
- 	 var positions=param[7];
-	 var current_guard_id=param[8];
-
- 	 console.log(user+" "+id+" "+activityname+" "+activitydescription+" "+activityexecutor+" "+activityvirtual+" position:"+positions);
+ 	 var positions=param[6];
+	 var current_guard_id=param[7];
+     var type="activity";
+ 	 console.log(user+" "+id+" "+activityname+" "+activitydescription+" "+activityexecutor+" position:"+positions);
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
@@ -277,7 +282,7 @@ exports.createActivity = function(req, res){
 					element:activityname,
 					dependee:current_guard_id
     		});
-		  ElementDepency.saveDependee(req.session.user.name,activityname,current_guard_id,function(err,elementdepencys){
+		  ElementDepency.saveDependee(req.session.user.name,activityname,current_guard_id,type,function(err,elementdepencys){
 	  		
 	  		if(err){
 	  			elementdepencys=[];
@@ -289,7 +294,7 @@ exports.createActivity = function(req, res){
 				guradlists = [];
 			}
 
-			Tracerule.createActivity(req.session.user.name,id,activityname,activitydescription,activityexecutor,activityvirtual,current_accordion,positions, function(err, tracerules) {
+			Tracerule.createActivity(req.session.user.name,id,activityname,activitydescription,activityexecutor,current_accordion,positions, function(err, tracerules) {
 			if (err) {
 				tracerules = [];
 			}
@@ -328,12 +333,13 @@ exports.createUseCase = function(req, res){
  	 var usecasedescription=param[3];
  	 var positions=param[4];
 	 var current_guard_id=param[5];
+	 var type="UseCase";
 
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
 		}
-	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  ElementDepency.saveDependee(req.session.user.name,usecasename,current_guard_id,type,function(err,elementdepencys){
 	  		if(err){
 	  			elementdepencys=[];
 	  		}
@@ -376,16 +382,18 @@ exports.createDecision = function(req, res){
  	
  	 var positions=param[5];
 	 var current_guard_id=param[6];
+	 var type="decision";
 
  	 console.log(user+" "+id+" "+decisionname+" "+decisiondescription+" "+decisionexecutor+" "+" position:"+positions);
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
 		}
-	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  ElementDepency.saveDependee(req.session.user.name,decisionname,current_guard_id,type,function(err,elementdepencys){
 	  		if(err){
 	  			elementdepencys=[];
 	  		}
+
  	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
 			if (err) {
 				guradlists = [];
@@ -423,12 +431,13 @@ exports.createCondition = function(req, res){
  	 var conditiondescription=param[3];
  	 var positions=param[4];
 	 var current_guard_id=param[5];
+	 var type="condition";
 
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
 		}
-	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  ElementDepency.saveDependee(req.session.user.name,conditionname,current_guard_id,type,function(err,elementdepencys){
 	  		if(err){
 	  			elementdepencys=[];
 	  		}
@@ -459,6 +468,544 @@ exports.createCondition = function(req, res){
 	});
   });
 }
+
+exports.insertBetween = function(req, res){
+	 console.log("insertBetween:"+req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var TarAct=param[2];
+ 	 var PreAct=param[3];
+ 	 var PostAct=param[4];
+	 var UseCase=param[5];
+	 var positions=param[6];
+	 var current_guard_id=param[7];
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+	  ElementDepency.saveInsertBetween(req.session.user.name,TarAct,PreAct,PostAct,UseCase,current_guard_id,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.saveInsertBetween(req.session.user.name,id,TarAct,PreAct,PostAct,UseCase,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+  });
+}
+
+exports.insertActAfterPre = function(req, res){
+	 console.log("insertActAfterPre:"+req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var TarAct=param[2];
+ 	 var PreAct=param[3];
+	 var UseCase=param[4];
+	 var positions=param[5];
+	 var current_guard_id=param[6];
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+	  ElementDepency.saveInsertActAfterPre(req.session.user.name,TarAct,PreAct,UseCase,current_guard_id,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.saveInsertActAfterPre(req.session.user.name,id,TarAct,PreAct,UseCase,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+  });
+}
+
+exports.insertActBeforePost = function(req, res){
+	 
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var TarAct=param[2];
+ 	 var PostAct=param[3];
+	 var UseCase=param[4];
+	 var positions=param[5];
+	 var current_guard_id=param[6];
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+	  ElementDepency.saveInsertActBeforePost(req.session.user.name,TarAct,PostAct,UseCase,current_guard_id,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.saveInsertActBeforePost(req.session.user.name,id,TarAct,PostAct,UseCase,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+  });
+}
+
+exports.insertActAfterDecCon = function(req, res){
+	 console.log("insertActAfterPre");
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var TarAct=param[2];
+ 	 var Decision=param[3];
+ 	 var Condition=param[4];
+	 var UseCase=param[5];
+	 var positions=param[6];
+	 var current_guard_id=param[7];
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+	  ElementDepency.saveInsertActAfterDecCon(req.session.user.name,TarAct,Decision,Condition,UseCase,current_guard_id,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.saveInsertActAfterDecCon(req.session.user.name,id,TarAct,Decision,Condition,UseCase,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+  });
+}
+
+exports.insertActBeforeActCon = function(req, res){
+	 console.log("insertActAfterPre");
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var TarAct=param[2];
+ 	 var PostAct=param[3];
+ 	 var Condition=param[4];
+	 var UseCase=param[5];
+	 var positions=param[6];
+	 var current_guard_id=param[7];
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+	  ElementDepency.saveInsertActBeforeActCon(req.session.user.name,TarAct,PostAct,Condition,UseCase,current_guard_id,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.saveInsertActBeforeActCon(req.session.user.name,id,TarAct,PostAct,Condition,UseCase,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+  });
+}
+
+exports.insertDecAfterAct = function(req, res){
+	 
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var TarDec=param[2];
+ 	 var PreAct=param[3];
+ 	 var MainBranchCon=param[4];
+ 	 var SupBranchCon=param[5];
+ 	 var InserAct=param[6];
+ 	 var TargetAct=param[7];
+	 var UseCase=param[8];
+	 var positions=param[9];
+	 var current_guard_id=param[10];
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+	  ElementDepency.saveInsertDecAfterActCon(req.session.user.name,TarDec,PreAct,MainBranchCon,SupBranchCon,InserAct,TargetAct,UseCase,current_guard_id,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.saveInsertDecAfterActCon(req.session.user.name,id,TarDec,PreAct,MainBranchCon,SupBranchCon,InserAct,TargetAct,UseCase,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+  });
+}
+
+exports.insertDecAfterDecCon = function(req, res){
+	 console.log("InsertDecAfterDecCon"+req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var TarDec=param[2];
+ 	 var InserDec=param[3];
+ 	 var InserCon=param[4];
+ 	 var MainBranchCon=param[5];
+ 	 var SupBranchCon=param[6];
+ 	 var InserAct=param[7];
+ 	 var TargetDec=param[8];
+	 var UseCase=param[9];
+	 var positions=param[10];
+	 var current_guard_id=param[11];
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+	  ElementDepency.saveInsertDecAfterDecCon(req.session.user.name,TarDec,InserDec,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,current_guard_id,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.saveInsertDecAfterDecCon(req.session.user.name,id,TarDec,InserDec,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+  });
+}
+
+exports.insertDecBeforeAct = function(req, res){
+	 
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var TarDec=param[2];
+ 	 var PostAct=param[3];
+ 	 var Con1=param[4];
+ 	 var Tar1=param[5];
+ 	 var Con2=param[6];
+ 	 var Tar2=param[7];
+	 var UseCase=param[8];
+	 var positions=param[9];
+	 var current_guard_id=param[10];
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+	  ElementDepency.saveInsertDecBeforeAct(req.session.user.name,TarDec,PostAct,Con1,Tar1,Con2,Tar2,UseCase,current_guard_id,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.saveInsertDecBeforeAct(req.session.user.name,id,TarDec,PostAct,Con1,Tar1,Con2,Tar2,UseCase,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+  });
+}
+
+
+exports.insertDecBeforeActWith = function(req, res){
+	 
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var TarDec=param[2];
+ 	 var PostAct=param[3];
+ 	 var MainBranchCon=param[4];
+ 	 var SupBranchCon=param[5];
+ 	 var InserAct=param[6];
+ 	 var TargetDec=param[7];
+	 var UseCase=param[8];
+	 var positions=param[9];
+	 var current_guard_id=param[10];
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+	  ElementDepency.saveInsertDecBeforeActWith(req.session.user.name,TarDec,PostAct,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,current_guard_id,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.saveInsertDecBeforeActWith(req.session.user.name,id,TarDec,PostAct,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+  });
+}
+
+exports.insertDecBeforeDecCon = function(req, res){
+	 
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var TarDec=param[2];
+ 	 var InserDec=param[3];
+ 	 var InserCon=param[4];
+ 	 var MainBranchCon=param[5];
+ 	 var SupBranchCon=param[6];
+ 	 var InserAct=param[7];
+ 	 var TargetDec=param[8];
+	 var UseCase=param[9];
+	 var positions=param[10];
+	 var current_guard_id=param[11];
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+	  ElementDepency.saveInsertDecBeforeDecCon(req.session.user.name,TarDec,InserDec,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,current_guard_id,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.saveInsertDecBeforeDecCon(req.session.user.name,id,TarDec,InserDec,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+  });
+}
+
+exports.insertDecBeforeActCon = function(req, res){
+	 
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var TarDec=param[2];
+ 	 var PostAct=param[3];
+ 	 var InserCon=param[4];
+ 	 var MainBranchCon=param[5];
+ 	 var SupBranchCon=param[6];
+ 	 var InserAct=param[7];
+ 	 var TargetDec=param[8];
+	 var UseCase=param[9];
+	 var positions=param[10];
+	 var current_guard_id=param[11];
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+	  ElementDepency.saveInsertDecBeforeActCon(req.session.user.name,TarDec,PostAct,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,current_guard_id,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.saveInsertDecBeforeActCon(req.session.user.name,id,TarDec,PostAct,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	});
+  });
+}
+
 
 exports.C = function(req, res) {
 	res.render('C', {
@@ -610,3 +1157,647 @@ Post.getChild(req.body.ind, function(err, posts) {
 		});
 	});
 };
+
+exports.deleteActivity = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var operation_name=param[2];
+ 	 var positions=param[3];
+ 	 var current_guard_id=id;
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		  ElementDepency.deleteActivityDependee(req.session.user.name,id,operation_name,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.deleteActivity(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	
+   });
+  });
+}
+
+exports.deleteDecision = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var operation_name=param[2];
+ 	 var positions=param[3];
+ 	 var current_guard_id=id;
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		  ElementDepency.deleteDecisionDependee(req.session.user.name,id,operation_name,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.deleteDecision(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	
+   });
+  });
+}
+
+exports.deleteCondition = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var operation_name=param[2];
+ 	 var positions=param[3];
+ 	 var current_guard_id=id;
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		  ElementDepency.deleteConditionDependee(req.session.user.name,id,operation_name,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.deleteCondition(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	
+   });
+  });
+}
+
+exports.deleteUseCase = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var operation_name=param[2];
+ 	 var positions=param[3];
+ 	 var current_guard_id=id;
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		  ElementDepency.deleteUseCaseDependee(req.session.user.name,id,operation_name,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.deleteUseCase(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	
+   });
+  });
+}
+
+exports.deleteInsertActAfterPre = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var operation_name=param[2];
+ 	 var positions=param[3];
+ 	 var current_guard_id=id;
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		  ElementDepency.deleteInsertActAfterPre(req.session.user.name,id,operation_name,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.deleteInsertActAfterPre(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	
+   });
+  });
+}
+
+exports.deleteInsertActBeforePost = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var operation_name=param[2];
+ 	 var positions=param[3];
+ 	 var current_guard_id=id;
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		  ElementDepency.deleteInsertActBeforePost(req.session.user.name,id,operation_name,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.deleteInsertActBeforePost(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	
+   });
+  });
+}
+
+exports.deleteInsertActAfterDecCon = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var operation_name=param[2];
+ 	 var positions=param[3];
+ 	 var current_guard_id=id;
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		  ElementDepency.deleteInsertActAfterDecCon(req.session.user.name,id,operation_name,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.deleteInsertActAfterDecCon(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	
+   });
+  });
+}
+
+
+
+exports.deleteInsertActBeforeActCon = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var operation_name=param[2];
+ 	 var positions=param[3];
+ 	 var current_guard_id=id;
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		  ElementDepency.deleteInsertActBeforeActCon(req.session.user.name,id,operation_name,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.deleteInsertActBeforeActCon(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	
+   });
+  });
+}
+
+
+
+exports.deleteInsertDecAfterAct = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var operation_name=param[2];
+ 	 var positions=param[3];
+ 	 var current_guard_id=id;
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		  ElementDepency.deleteInsertDecAfterAct(req.session.user.name,id,operation_name,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
+ 	 	Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.deleteInsertDecAfterAct(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	
+   });
+  });
+}
+
+exports.deleteInsertDecAfterDecCon = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var operation_name=param[2];
+ 	 var positions=param[3];
+ 	 var current_guard_id=id;
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		ElementDepency.deleteInsertDecAfterDecCon(req.session.user.name,id,operation_name,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
+ 	 	  Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.deleteInsertDecAfterDecCon(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	
+   });
+  });
+}
+
+
+exports.deleteInsertDecBeforeAct = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var operation_name=param[2];
+ 	 var positions=param[3];
+ 	 var current_guard_id=id;
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		ElementDepency.deleteInsertDecBeforeAct(req.session.user.name,id,operation_name,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
+ 	 	  Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.deleteInsertDecBeforeAct(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	
+   });
+  });
+}
+
+exports.deleteInsertDecBeforeActWith = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var operation_name=param[2];
+ 	 var positions=param[3];
+ 	 var current_guard_id=id;
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		ElementDepency.deleteInsertDecBeforeActWith(req.session.user.name,id,operation_name,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
+ 	 	  Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.deleteInsertDecBeforeActWith(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	
+   });
+  });
+}
+
+
+
+exports.deleteInsertDecBeforeActCon = function(req, res){
+	 console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var user=param[0];
+ 	 var id=param[1];
+ 	 var operation_name=param[2];
+ 	 var positions=param[3];
+ 	 var current_guard_id=id;
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+		ElementDepency.deleteInsertDecBeforeActCon(req.session.user.name,id,operation_name,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+	  		
+ 	 	  Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.deleteInsertDecBeforeActCon(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	
+   });
+  });
+}

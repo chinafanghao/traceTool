@@ -85,6 +85,31 @@ app.get('/createActivity/:content',routes.createActivity);
 app.get('/createUseCase/:content',routes.createUseCase);
 app.get('/createDecision/:content',routes.createDecision);
 app.get('/createCondition/:content',routes.createCondition);
+app.get('/InsertBetween/:content',routes.insertBetween);
+app.get('/InsertActAfterPre/:content',routes.insertActAfterPre);
+app.get('/InsertActBeforePost/:content',routes.insertActBeforePost);
+app.get('/InsertActAfterDecCon/:content',routes.insertActAfterDecCon);
+app.get('/InsertActBeforeActCon/:content',routes.insertActBeforeActCon);
+app.get('/InsertDecAfterAct/:content',routes.insertDecAfterAct);
+app.get('/InsertDecAfterDecCon/:content',routes.insertDecAfterDecCon);
+app.get('/InsertDecBeforeAct/:content',routes.insertDecBeforeAct);
+app.get('/InsertDecBeforeActWith/:content',routes.insertDecBeforeActWith);
+app.get('/InsertDecBeforeDecCon/:content',routes.insertDecBeforeDecCon);
+app.get('/InsertDecBeforeActCon/:content',routes.insertDecBeforeActCon);
+app.get('/DeleteActivity/:content',routes.deleteActivity);
+app.get('/DeleteDecision/:content',routes.deleteDecision);
+app.get('/DeleteCondition/:content',routes.deleteCondition);
+app.get('/DeleteUseCase/:content',routes.deleteUseCase);
+app.get('/DeleteInsertActAfterPre/:content',routes.deleteInsertActAfterPre);
+app.get('/DeleteInsertActBeforePost/:content',routes.deleteInsertActBeforePost);
+app.get('/DeleteInsertActAfterDecCon/:content',routes.deleteInsertActAfterDecCon);
+app.get('/DeleteInsertActBeforeActCon/:content',routes.deleteInsertActBeforeActCon);
+app.get('/DeleteInsertDecAfterAct/:content',routes.deleteInsertDecAfterAct);
+app.get('/DeleteInsertDecAfterDecCon/:content',routes.deleteInsertDecAfterDecCon);
+app.get('/DeleteInsertDecBeforeAct/:content',routes.deleteInsertDecBeforeAct);
+app.get('/DeleteInsertDecBeforeActWith/:content',routes.deleteInsertDecBeforeActWith);
+app.get('/DeleteInsertDecBeforeActCon/:content',routes.deleteInsertDecBeforeActCon);
+
 app.post('/EditActivity',routes.EditActivity);
 
 http.createServer(app).listen(app.get('port'), function(){

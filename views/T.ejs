@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <div class="container-fluid">
   <div class="row-fluid">
     <div  class="span12">
@@ -31,6 +30,19 @@
       font-weight: bold;
       margin-top: 12px;
       font-family: "David";
+    }
+
+    b{
+      font-weight: bold ! important ;
+      display: inline !important
+    }
+
+    .ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-e{
+      display: inline !important
+    }
+
+    .ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-s{
+      display: inline !important
     }
 
     div.ostitles{
@@ -114,6 +126,8 @@
   var $str;
 
   var $TDLType;
+
+  var $mark;
 
   function update_pageT()
   {
@@ -316,6 +330,140 @@
          $(this).siblings().show();
       })
 
+      $(".icon-pencil.editOperation.InsertBetween").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-ok.editOperation.InsertBetween").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+       $(".icon-pencil.editOperation.InsertAfterDecCon").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-ok.editOperation.InsertAfterDecCon").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+      
+        $(".icon-pencil.editOperation.InsertDecBeforeActWith").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-ok.editOperation.InsertDecBeforeActWith").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+       $(".icon-pencil.editOperation.InsertBeforeActCon").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-ok.editOperation.InsertBeforeActCon").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+        $(".icon-pencil.editOperation.InsertDecBeforeActCon").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-ok.editOperation.InsertDecBeforeActCon").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+      $(".icon-pencil.editOperation.InsertDecBeforeAct").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-ok.editOperation.InsertDecBeforeAct").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      
+
+      $(".icon-pencil.editOperation.InsertDecAfterAct").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-ok.editOperation.InsertDecAfterAct").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
 
       $(".icon-pencil.GuardListStyle").click(function(event){
         $current_guard_id=$(this).parent().attr('name');
@@ -408,8 +556,241 @@
         $(this).removeClass("getFocus");
       })
 
-      $(".icon-minus").click(function(){
-        $(this).parent().remove();
+      $(".icon-minus.deleteActivity").click(function(){
+         $current_accordion=$(this).parent().parent().parent().attr("id");
+         $(this).parent().remove();
+         $operation_position="";
+        
+         $(".section_accordion").each(function(){
+
+         if($operation_position!="" && $(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+"$";
+          if($(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+$(this).attr("id");
+
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         window.location.href="/DeleteActivity/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
+      })
+
+      $(".icon-minus.deleteDecision").click(function(){
+         $current_accordion=$(this).parent().parent().parent().attr("id");
+         $(this).parent().remove();
+         $operation_position="";
+        
+         $(".section_accordion").each(function(){
+
+         if($operation_position!="" && $(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+"$";
+          if($(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+$(this).attr("id");
+
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         window.location.href="/DeleteDecision/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
+      })
+
+     $(".icon-minus.deleteCondition").click(function(){
+         $current_accordion=$(this).parent().parent().parent().attr("id");
+         $(this).parent().remove();
+         $operation_position="";
+        
+         $(".section_accordion").each(function(){
+
+         if($operation_position!="" && $(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+"$";
+          if($(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+$(this).attr("id");
+
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         window.location.href="/DeleteCondition/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
+      })
+
+      $(".icon-minus.deleteUseCase").click(function(){
+         $current_accordion=$(this).parent().parent().parent().attr("id");
+         $(this).parent().remove();
+         $operation_position="";
+        
+         $(".section_accordion").each(function(){
+
+         if($operation_position!="" && $(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+"$";
+          if($(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+$(this).attr("id");
+
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         window.location.href="/DeleteUseCase/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
+      })
+
+      $(".icon-minus.insertactafterpre").click(function(){
+         $current_accordion=$(this).parent().parent().parent().attr("id");
+         $(this).parent().remove();
+         $operation_position="";
+        
+         $(".section_accordion").each(function(){
+
+         if($operation_position!="" && $(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+"$";
+          if($(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+$(this).attr("id");
+
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         window.location.href="/DeleteInsertActAfterPre/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
+      })
+
+      $(".icon-minus.insertActBeforePost").click(function(){
+         $current_accordion=$(this).parent().parent().parent().attr("id");
+         $(this).parent().remove();
+         $operation_position="";
+        
+         $(".section_accordion").each(function(){
+
+         if($operation_position!="" && $(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+"$";
+          if($(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+$(this).attr("id");
+
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         window.location.href="/DeleteInsertActBeforePost/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
+      })
+
+      
+
+      $(".icon-minus.deleteInsertActAfterDecCon").click(function(){
+         $current_accordion=$(this).parent().parent().parent().attr("id");
+         $(this).parent().remove();
+         $operation_position="";
+        
+         $(".section_accordion").each(function(){
+
+         if($operation_position!="" && $(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+"$";
+          if($(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+$(this).attr("id");
+
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         window.location.href="/DeleteInsertActAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
+      })
+      
+      $(".icon-minus.deleteInsertActBeforeActCon").click(function(){
+         $current_accordion=$(this).parent().parent().parent().attr("id");
+         $(this).parent().remove();
+         $operation_position="";
+        
+         $(".section_accordion").each(function(){
+
+         if($operation_position!="" && $(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+"$";
+          if($(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+$(this).attr("id");
+
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         window.location.href="/DeleteInsertActBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
+      })
+
+      $(".icon-minus.deleteInsertDecAfterAct").click(function(){
+         $current_accordion=$(this).parent().parent().parent().attr("id");
+         $(this).parent().remove();
+         $operation_position="";
+        
+         $(".section_accordion").each(function(){
+
+         if($operation_position!="" && $(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+"$";
+          if($(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+$(this).attr("id");
+
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         window.location.href="/DeleteInsertDecAfterAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
+      })
+
+
+      $(".icon-minus.deleteInsertDecAfterDecCon").click(function(){
+         $current_accordion=$(this).parent().parent().parent().attr("id");
+         $(this).parent().remove();
+         $operation_position="";
+        
+         $(".section_accordion").each(function(){
+
+         if($operation_position!="" && $(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+"$";
+          if($(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+$(this).attr("id");
+
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         window.location.href="/DeleteInsertDecAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
+      })
+
+    $(".icon-minus.deleteInsertDecBeforeAct").click(function(){
+         $current_accordion=$(this).parent().parent().parent().attr("id");
+         $(this).parent().remove();
+         $operation_position="";
+        
+         $(".section_accordion").each(function(){
+
+         if($operation_position!="" && $(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+"$";
+          if($(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+$(this).attr("id");
+
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         window.location.href="/DeleteInsertDecBeforeAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
+      })
+
+      $(".icon-minus.deleteInsertDecBeforeActWith").click(function(){
+         $current_accordion=$(this).parent().parent().parent().attr("id");
+         $(this).parent().remove();
+         $operation_position="";
+        
+         $(".section_accordion").each(function(){
+
+         if($operation_position!="" && $(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+"$";
+          if($(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+$(this).attr("id");
+
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         window.location.href="/DeleteInsertDecBeforeActWith/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
+      })
+
+    $(".icon-minus.deleteInsertDecBeforeActCon").click(function(){
+         $current_accordion=$(this).parent().parent().parent().attr("id");
+         $(this).parent().remove();
+         $operation_position="";
+        
+         $(".section_accordion").each(function(){
+
+         if($operation_position!="" && $(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+"$";
+          if($(this).attr("id")!=$current_accordion)
+            $operation_position=$operation_position+$(this).attr("id");
+
+       })
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         window.location.href="/DeleteInsertDecBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
       })
 
       $( "#radio" ).buttonset();
@@ -572,38 +953,36 @@
           case "C4":
             $("#CreateCondition").dialog("open");
             break;
-          case "I1":
-            alert($TDLType);
+       /*   case "I1":
+            $("#InsertBetween").dialog("open");
             break;
-          case "I1":
-            alert($TDLType);
-            break;
+        */
           case "I2":
-            alert($TDLType);
+            $("#InsertActAfterPre").dialog("open");
             break;
           case "I3":
-            alert($TDLType);
+             $("#InsertActBeforePost").dialog("open");
             break;
           case "I4":
-            alert($TDLType);
+            $("#InsertActAfterDecCon").dialog("open");
             break;
           case "I5":
-            alert($TDLType);
+            $("#InsertActBeforeActCon").dialog("open");
             break;
           case "I6":
-            alert($TDLType);
+            $("#InsertDecAfterAct").dialog("open");
             break;
           case "I7":
-            alert($TDLType);
+            $("#InsertDecAfterDecCon").dialog("open");
             break;
           case "I8":
-            alert($TDLType);
+            $("#InsertDecBeforeAct").dialog("open");
             break;
           case "I9":
-            alert($TDLType);
+            $("#InsertDecBeforeActWith").dialog("open");
             break;
-          case "F":
-            alert($TDLType);
+          case "I10":
+            $("#InsertDecBeforeActCon").dialog("open");
             break;
           default:
             break;
@@ -616,25 +995,20 @@
           autoOpen: false,
           width: 450,
           modal: true,
+          resizable: false,
           buttons: {
 
             "Confirm": function() {
-              
-              $( this ).dialog( "close" );
-          
-        },
-      },
-      close: function() {
-        //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
-        $activityname=$("#activityname").val();
+              $activityname=$("#activityname").val();
         $activitydescription=$("#activitydescription").val();
         $activityexecutor=$('input:radio[name=ExecutorType]:checked').val();
-        
+       /*  
         if($("#activityvirtual").is(":checked")==true){
           $activityvirtual="true";
         }else{
           $activityvirtual="false";
         }
+       */
         $operation_position="";
         var $mark=false;
        $(".section_accordion").each(function(){
@@ -653,7 +1027,15 @@
           }
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-        window.location.href="/createActivity/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$activityname+"分"+$activitydescription+"分"+$activityexecutor+"分"+$activityvirtual+"分"+$current_accordion+"分"+$operation_position+"分"+$current_guard_id;
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+       if($("#activityname").val()!=""&&$("#activitydescription").val()!=""){
+        
+        window.location.href="/createActivity/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$activityname+"分"+$activitydescription+"分"+$activityexecutor+"分"+$current_accordion+"分"+$operation_position+"分"+$current_guard_id;
+       }
       }
     });
     
@@ -661,16 +1043,11 @@
           autoOpen: false,
           width: 450,
           modal: true,
+          resizable: false,
           buttons: {
 
             "Confirm": function() {
-              
-              $( this ).dialog( "close" );
-          
-        },
-      },
-      close: function() {
-        //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
+        
         $usecasename=$("#usecasename").val();
         $usecasedescription=$("#usecasedescription").val();
         
@@ -692,7 +1069,15 @@
           }
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+        //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
+        if($("#usecasename").val()!=""&&$("#usecasedescription").val()!=""){
         window.location.href="/createUseCase/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$usecasename+"分"+$usecasedescription+"分"+$operation_position+"分"+$current_guard_id;
+        }
       }
     });
   
@@ -700,19 +1085,13 @@
           autoOpen: false,
           width: 450,
           modal: true,
+          resizable: false,
           buttons: {
 
             "Confirm": function() {
-              
-              $( this ).dialog( "close" );
-          
-        },
-      },
-      close: function() {
-        //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
-        $decisionname=$("#decisionname").val();
-        $decisiondescription=$("#decisiondescription").val();
-        $decisionexecutor=$('input:radio[name=DecisionExecutorType]:checked').val();
+               $decisionname=$("#decisionname").val();
+               $decisiondescription=$("#decisiondescription").val();
+               $decisionexecutor=$('input:radio[name=DecisionExecutorType]:checked').val();
         
         
         $operation_position="";
@@ -733,7 +1112,15 @@
           }
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+        //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
+        if($("#decisionname").val()!=""&&$("#decisiondescription").val()!=""){
         window.location.href="/createDecision/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$decisionname+"分"+$decisiondescription+"分"+$decisionexecutor+"分"+$operation_position+"分"+$current_guard_id;
+        }
       }
     });
 
@@ -744,16 +1131,9 @@
           buttons: {
 
             "Confirm": function() {
-              
-              $( this ).dialog( "close" );
-          
-        },
-      },
-      close: function() {
-        //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
         $conditionname=$("#conditionname").val();
         $conditiondescription=$("#conditiondescription").val();
-        
+      
         $operation_position="";
         var $mark=false;
        $(".section_accordion").each(function(){
@@ -772,9 +1152,615 @@
           }
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-        window.location.href="/createCondition/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$conditionname+"分"+$conditiondescription+"分"+$operation_position+"分"+$current_guard_id;
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+        //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
+         if($("#conditionname").val()!=""&&$("#conditiondescription").val()!=""){
+         window.location.href="/createCondition/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$conditionname+"分"+$conditiondescription+"分"+$operation_position+"分"+$current_guard_id;
+       }
       }
     });
+    
+     $( "#InsertBetween" ).dialog({
+          autoOpen: false,
+          width: 500,
+          modal: true,
+          resizable: false,
+          buttons: {
+
+            "Confirm": function() {
+        
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+          //var $TartAct=$('select[class^="InterBetTar"]').val();
+           var $marks=true;
+
+          var $TartAct=$("#InterBetTar").find("option:selected").val();
+          var $PreAct=$("#InterBetPre").find("option:selected").val();
+          var $PostAct=$("#InterBetPost").find("option:selected").val();
+          var $UseCase=$("#InterBetUseCase").find("option:selected").val();
+          if($TartAct=="-1"||$PreAct=="-1"||$PostAct=="-1"||$UseCase=="-1")
+            $marks=false;
+
+          var TargetActivity=$("#InterBetTar").find("option:selected").val().split('_');
+          var PreActivity=$("#InterBetPre").find("option:selected").val().split('_');
+          var PostActivity=$("#InterBetPost").find("option:selected").val().split('_');
+          var Usecase=$("#InterBetUseCase").find("option:selected").val().split('_');
+        
+            $operation_position="";
+          var $mark=false;
+          $(".section_accordion").each(function(){
+            if($(this).attr("id")==$current_accordion)
+              $mark=true;
+
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+              $operation_position=$operation_position+$(this).attr("id");
+
+            if($mark){
+              $mark=false;
+              if($operation_position!="")
+                $operation_position=$operation_position+"$";
+
+              $operation_position=$operation_position+"Insert "+TargetActivity[1]+" between "+PreActivity[1]+" and "+PostActivity[1]+" in "+Usecase[1];
+            }
+        })
+          $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+          if($marks==true){
+           window.location.href="/InsertBetween/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartAct+"分"+$PreAct+"分"+$PostAct+"分"+$UseCase+"分"+$operation_position+"分"+$current_guard_id;
+         }
+         
+      
+        }
+      });
+
+      $( "#InsertActAfterPre" ).dialog({
+          autoOpen: false,
+          width: 500,
+          modal: true,
+          resizable: false,
+          buttons: {
+
+            "Confirm": function() {
+              
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+          //var $TartAct=$('select[class^="InterBetTar"]').val();
+          var $marks=true;
+          var $TartAct=$("#InterPreTar").find("option:selected").val();
+          var $PreAct=$("#InterPrePre").find("option:selected").val();
+          var $UseCase=$("#InterPreUseCase").find("option:selected").val();
+          
+          if($TartAct=="-1"||$PreAct=="-1"||$UseCase=="-1")
+            $marks=false;
+
+        var TargetActivity=$("#InterPreTar").find("option:selected").val().split('_');
+        var PreActivity=$("#InterPrePre").find("option:selected").val().split('_');
+        var Usecase=$("#InterPreUseCase").find("option:selected").val().split('_');
+        
+            $operation_position="";
+        var $mark=false;
+       $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Insert "+TargetActivity[1]+" after "+PreActivity[1]+" in "+Usecase[1];
+          }
+       })
+          $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+          if($marks){
+           window.location.href="/InsertActAfterPre/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartAct+"分"+$PreAct+"分"+$UseCase+"分"+$operation_position+"分"+$current_guard_id;
+         }
+      
+      }
+    });
+
+    $( "#InsertActBeforePost" ).dialog({
+          autoOpen: false,
+          width: 500,
+          modal: true,
+          resizable: false,
+          buttons: {
+
+            "Confirm": function() {
+              
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+          //var $TartAct=$('select[class^="InterBetTar"]').val();
+          var $marks=true;
+          var $TartAct=$("#InterPostTar").find("option:selected").val();
+          var $PostAct=$("#InterPostPost").find("option:selected").val();
+          var $UseCase=$("#InterPostUseCase").find("option:selected").val();
+          
+          if($TartAct=="-1"||$PostAct=="-1"||$UseCase=="-1")
+            $marks=false;
+
+        var TargetActivity=$("#InterPostTar").find("option:selected").val().split('_');
+        var PostActivity=$("#InterPostPost").find("option:selected").val().split('_');
+        var Usecase=$("#InterPostUseCase").find("option:selected").val().split('_');
+        
+            $operation_position="";
+        var $mark=false;
+       $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Insert "+TargetActivity[1]+" before "+PostActivity[1]+" in "+Usecase[1];
+          }
+       })
+          $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+          if($marks)
+           window.location.href="/InsertActBeforePost/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartAct+"分"+$PostAct+"分"+$UseCase+"分"+$operation_position+"分"+$current_guard_id;
+      
+      }
+    });
+
+  $( "#InsertActAfterDecCon" ).dialog({
+          autoOpen: false,
+          width: 500,
+          modal: true,
+          resizable: false,
+          buttons: {
+
+            "Confirm": function() {
+              
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+          //var $TartAct=$('select[class^="InterBetTar"]').val();
+          var $marks=true;
+          var $TartAct=$("#InterAfterDecConTar").find("option:selected").val();
+          var $Dec=$("#InterAfterDecConDec").find("option:selected").val();
+          var $Con=$("#InterAfterDecConCon").find("option:selected").val();
+          var $UC=$("#InterAfterDecConUseCase").find("option:selected").val();
+          
+          if($TartAct=="-1"||$Dec=="-1"||$Con=="-1"||$UC=="-1")
+            $marks=false;
+
+        var TargetActivity=$("#InterAfterDecConTar").find("option:selected").val().split('_');
+        var Decision=$("#InterAfterDecConDec").find("option:selected").val().split('_');
+        var Conditon=$("#InterAfterDecConCon").find("option:selected").val().split('_');
+        var UseCase=$("#InterAfterDecConUseCase").find("option:selected").val().split('_');
+        
+            $operation_position="";
+        var $mark=false;
+       $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Insert "+TargetActivity[1]+" after "+Decision[1]+" , "+Conditon[1]+" in "+UseCase[1];
+          }
+       })
+
+          $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         if($marks){
+           window.location.href="/InsertActAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartAct+"分"+$Dec+"分"+$Con+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+         }
+      
+      }
+    });
+
+    $( "#InsertActBeforeActCon" ).dialog({
+          autoOpen: false,
+          width: 500,
+          modal: true,
+          buttons: {
+
+            "Confirm": function() {
+              
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+          //var $TartAct=$('select[class^="InterBetTar"]').val();
+          var $marks=true;
+          var $TartAct=$("#InterBeforeActConTar").find("option:selected").val();
+          var $PostAct=$("#InterBeforeActConAct").find("option:selected").val();
+          var $Con=$("#InterBeforeActConCon").find("option:selected").val();
+          var $UC=$("#InterBeforeActConUseCase").find("option:selected").val();
+          
+          if($TartAct=="-1"||$PostAct=="-1"||$Con=="-1"||$UC=="-1")
+            $marks=false;
+
+        var TargetActivity=$("#InterBeforeActConTar").find("option:selected").val().split('_');
+        var PostActivity=$("#InterBeforeActConAct").find("option:selected").val().split('_');
+        var Conditon=$("#InterBeforeActConCon").find("option:selected").val().split('_');
+        var UseCase=$("#InterBeforeActConUseCase").find("option:selected").val().split('_');
+        
+            $operation_position="";
+        var $mark=false;
+       $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Insert "+TargetActivity[1]+" before "+PostActivity[1]+" , "+Conditon[1]+" in "+UseCase[1];
+          }
+       })
+
+          $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         if($marks){
+           window.location.href="/InsertActBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartAct+"分"+$PostAct+"分"+$Con+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+         }
+      
+      }
+    });
+
+    $( "#InsertDecAfterAct" ).dialog({
+          autoOpen: false,
+          width: 500,
+          modal: true,
+          resizable: false,
+          buttons: {
+
+            "Confirm": function() {
+              
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+          var $marks=true;
+          var $TartDec=$("#InsertDecAfterActTar").find("option:selected").val();
+          var $PreAct=$("#InsertDecAfterActPre").find("option:selected").val();
+          var $MainBranchCon=$("#InsertDecAfterActMainCon").find("option:selected").val();
+          var $SupBranchCon=$("#InsertDecAfterActSBCon").find("option:selected").val();
+          var $InserAct=$("#InsertDecAfterActInserAct").find("option:selected").val();
+          if($InserAct=="none")
+            $InserAct="none_none";
+          var $TargetAct=$("#InsertDecAfterActTarAct").find("option:selected").val();
+          var $UC=$("#InsertDecAfterActUseCase").find("option:selected").val();
+          
+          if($TartDec=="-1"||$PreAct=="-1"||$MainBranchCon=="-1"||$SupBranchCon=="-1"||$InserAct=="-1"||$TargetAct=="-1"||$UC=="-1")
+            $marks=false;
+
+          var $TargetDecision=$("#InsertDecAfterActTar").find("option:selected").val().split('_');
+          var $PreActivity=$("#InsertDecAfterActPre").find("option:selected").val().split('_');
+          var $MainBranchConditon=$("#InsertDecAfterActMainCon").find("option:selected").val().split('_');
+          var $SupBranchCondition=$("#InsertDecAfterActSBCon").find("option:selected").val().split('_');
+          var $markInserAct=false;
+          if($InserAct!="none"){
+            $markInserAct=true;
+            var $InserActivity=$("#InsertDecAfterActInserAct").find("option:selected").val().split('_');
+          }
+          else
+          {
+            var $InserActivity=[];
+          }
+          var $TargetActivity=$("#InsertDecAfterActTarAct").find("option:selected").val().split('_');
+          var $UseCase=$("#InsertDecAfterActUseCase").find("option:selected").val().split('_');
+        
+            $operation_position="";
+        var $mark=false;
+       $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Insert "+$TargetDecision[1]+" after "          +$PreActivity[1]+" with ( "+$MainBranchConditon[1]+" ),( "+$SupBranchCondition[1]+" , ";
+            if($markInserAct)
+                $operation_position=$operation_position+$InserActivity[1]+" , ";
+            $operation_position=$operation_position+$TargetActivity[1]+" ) in "+$UseCase[1];
+          }
+       })
+
+          $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         if($marks){
+           window.location.href="/InsertDecAfterAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$PreAct+"分"+$MainBranchCon+"分"+$SupBranchCon+"分"+$InserAct+"分"+$TargetAct+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+         }
+      
+      }
+    });
+
+    $( "#InsertDecAfterDecCon" ).dialog({
+          autoOpen: false,
+          width: 500,
+          modal: true,
+          resizable: false,
+          buttons: {
+
+            "Confirm": function() {
+              
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+          var $marks=true;
+          var $TartDec=$("#InsertDecAfterDecConTar").find("option:selected").val();
+          var $InsertDec=$("#InsertDecAfterDecConInserDec").find("option:selected").val();
+          var $InsertCon=$("#InsertDecAfterDecConInserCon").find("option:selected").val();
+          var $MainBranchCon=$("#InsertDecAfterDecConMainCon").find("option:selected").val();
+          var $SupBranchCon=$("#InsertDecAfterDecConSBCon").find("option:selected").val();
+          var $InserAct=$("#InsertDecAfterDecConInserAct").find("option:selected").val();
+          var $TargetDec=$("#InsertDecAfterDecConTarDec").find("option:selected").val();
+          var $UC=$("#InsertDecAfterDecConUseCase").find("option:selected").val();
+          
+          if($TartDec=="-1"||$InsertDec=="-1"||$InsertCon=="-1"||$MainBranchCon=="-1"||$SupBranchCon=="-1"||$InserAct=="-1"||$TargetDec=="-1"||$UC=="-1")
+            $marks=false;
+
+          var $TargetDecision=$("#InsertDecAfterDecConTar").find("option:selected").val().split('_');
+          var $InsertDecision=$("#InsertDecAfterDecConInserDec").find("option:selected").val().split('_');
+          var $InsertCondition=$("#InsertDecAfterDecConInserCon").find("option:selected").val().split('_');
+          var $MainBranchConditon=$("#InsertDecAfterDecConMainCon").find("option:selected").val().split('_');
+          var $SupBranchCondition=$("#InsertDecAfterDecConSBCon").find("option:selected").val().split('_');
+          var $InserActivity=$("#InsertDecAfterDecConInserAct").find("option:selected").val().split('_');
+          var $TargetDecisions=$("#InsertDecAfterDecConTarDec").find("option:selected").val().split('_');
+          var $UseCase=$("#InsertDecAfterDecConUseCase").find("option:selected").val().split('_');
+        
+            $operation_position="";
+        var $mark=false;
+       $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Insert "+$TargetDecision[1]+" after ( "          +$InsertDecision[1]+" , "+$InsertCondition[1]+" )"+" with ( "+$MainBranchConditon[1]+" ),( "+$SupBranchCondition[1]+" , "+$InserActivity[1]+" , "+$TargetDecisions[1]+" ) in "+$UseCase[1];
+          }
+       })
+
+          $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         
+
+          if($marks){ 
+           window.location.href="/InsertDecAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$InsertDec+"分"+$InsertCon+"分"+$MainBranchCon+"分"+$SupBranchCon+"分"+$InserAct+"分"+$TargetDec+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+           }
+      
+      }
+    });
+
+    $( "#InsertDecBeforeAct" ).dialog({
+          autoOpen: false,
+          width: 500,
+          modal: true,
+          resizable: false,
+          buttons: {
+
+            "Confirm": function() {
+              
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+          var $marks=true;
+          var $TartDec=$("#InsertDecBeforeActTar").find("option:selected").val();
+          var $PostAct=$("#InsertDecBeforePostAct").find("option:selected").val();
+          var $Con1=$("#InsertDecBeforeActCon1").find("option:selected").val();
+          var $Tar1=$("#InsertDecBeforeActTar1").find("option:selected").val();
+          var $Con2=$("#InsertDecBeforeActCon2").find("option:selected").val();
+          var $Tar2=$("#InsertDecBeforeActTar2").find("option:selected").val();
+          var $UC=$("#InsertDecBeforeActUseCase").find("option:selected").val();
+
+          if($TartDec=="-1"||$PostAct=="-1"||$Con1=="-1"||$Tar1=="-1"||$Con2=="-1"||$Tar2=="-1"||$UC=="-1")
+            $marks=false;
+
+          var $TargetDecision=$("#InsertDecBeforeActTar").find("option:selected").val().split('_');
+          var $PostActivity=$("#InsertDecBeforePostAct").find("option:selected").val().split('_');
+          var $Condition1=$("#InsertDecBeforeActCon1").find("option:selected").val().split('_');
+          var $Target1=$("#InsertDecBeforeActTar1").find("option:selected").val().split('_');
+          var $Condition2=$("#InsertDecBeforeActCon2").find("option:selected").val().split('_');
+          var $Target2=$("#InsertDecBeforeActTar2").find("option:selected").val().split('_');
+          var $UseCase=$("#InsertDecBeforeActUseCase").find("option:selected").val().split('_');
+        
+        $operation_position="";
+        var $mark=false;
+       $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Insert "+$TargetDecision[1]+" before "          +$PostActivity[1]+" with ( "+$Condition1[1]+" , "+$Target1[1]+" ),( "+
+            $Condition2[1]+" , "+$Target2[1]+" ) in "+$UseCase[1];
+          }
+       })
+
+          $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         if($marks){
+           window.location.href="/InsertDecBeforeAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$PostAct+"分"+$Con1+"分"+$Tar1+"分"+$Con2+"分"+$Tar2+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+         }
+      
+      }
+    });
+
+    $( "#InsertDecBeforeActWith" ).dialog({
+          autoOpen: false,
+          width: 500,
+          modal: true,
+          resizable: false,
+          buttons: {
+
+            "Confirm": function() {
+              
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+          var $marks=true;
+          var $TartDec=$("#InsertDecBeforeActWithTar").find("option:selected").val();
+          var $PostAct=$("#InsertDecBeforeActWithPost").find("option:selected").val();
+          var $MainBranchCon=$("#InsertDecBeforeActWithMainCon").find("option:selected").val();
+          var $SupBranchCon=$("#InsertDecBeforeActWithSBCon").find("option:selected").val();
+          var $InserAct=$("#InsertDecBeforeActWithInserAct").find("option:selected").val();
+          var $TargetDec=$("#InsertDecBeforeActWithTarDec").find("option:selected").val();
+          var $UC=$("#InsertDecBeforeActWithUseCase").find("option:selected").val();
+          if($TartDec=="-1"||$PostAct=="-1"||$MainBranchCon=="-1"||$SupBranchCon=="-1"||$InserAct=="-1"||$TartDec=="-1"||$UC=="-1")
+            $marks=false;
+
+          var $TargetDecision=$("#InsertDecBeforeActWithTar").find("option:selected").val().split('_');
+          var $PostActivity=$("#InsertDecBeforeActWithPost").find("option:selected").val().split('_');
+          var $MainBranchConditon=$("#InsertDecBeforeActWithMainCon").find("option:selected").val().split('_');
+          var $SupBranchCondition=$("#InsertDecBeforeActWithSBCon").find("option:selected").val().split('_');
+          var $InserActivity=$("#InsertDecBeforeActWithInserAct").find("option:selected").val().split('_');
+          var $TargetDecisions=$("#InsertDecBeforeActWithTarDec").find("option:selected").val().split('_');
+          var $UseCase=$("#InsertDecBeforeActWithUseCase").find("option:selected").val().split('_');
+        
+            $operation_position="";
+        var $mark=false;
+       $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Insert "+$TargetDecision[1]+" before "          +$PostActivity[1]+" with ( "+$MainBranchConditon[1]+" ),( "+$SupBranchCondition[1]+" , "+$InserActivity[1]+" , "+$TargetDecisions[1]+" ) in "+$UseCase[1];
+          }
+       })
+
+          $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         
+         if($marks){ 
+           window.location.href="/InsertDecBeforeActWith/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$PostAct+"分"+$MainBranchCon+"分"+$SupBranchCon+"分"+$InserAct+"分"+$TargetDec+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+           }
+      
+      }
+    });
+
+
+
+     $( "#InsertDecBeforeActCon" ).dialog({
+          autoOpen: false,
+          width: 500,
+          modal: true,
+          resizable: false,
+          buttons: {
+
+            "Confirm": function() {
+              
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+          var $marks=true;
+          var $TartDec=$("#InsertDecBeforeActConTar").find("option:selected").val();
+          var $PostAct=$("#InsertDecBeforeActConPostAct").find("option:selected").val();
+          var $InsertCon=$("#InsertDecBeforeActConInserCon").find("option:selected").val();
+          var $MainBranchCon=$("#InsertDecBeforeActConMainCon").find("option:selected").val();
+          var $SupBranchCon=$("#InsertDecBeforeActConSBCon").find("option:selected").val();
+          var $InserAct=$("#InsertDecBeforeActConInserAct").find("option:selected").val();
+          var $TargetDec=$("#InsertDecBeforeActConTarDec").find("option:selected").val();
+          var $UC=$("#InsertDecBeforeActConUseCase").find("option:selected").val();
+          if($TartDec=="-1"||$PostAct=="-1"||$InsertCon=="-1"||$MainBranchCon=="-1"||$SupBranchCon=="-1"||$InserAct=="-1"||$TartDec=="-1"||$UC=="-1")
+            $marks=false;
+
+          var $TargetDecision=$("#InsertDecBeforeActConTar").find("option:selected").val().split('_');
+          var $PostActivity=$("#InsertDecBeforeActConPostAct").find("option:selected").val().split('_');
+          var $InsertCondition=$("#InsertDecBeforeActConInserCon").find("option:selected").val().split('_');
+          var $MainBranchConditon=$("#InsertDecBeforeActConMainCon").find("option:selected").val().split('_');
+          var $SupBranchCondition=$("#InsertDecBeforeActConSBCon").find("option:selected").val().split('_');
+          var $InserActivity=$("#InsertDecBeforeActConInserAct").find("option:selected").val().split('_');
+          var $TargetDecisions=$("#InsertDecBeforeActConTarDec").find("option:selected").val().split('_');
+          var $UseCase=$("#InsertDecBeforeActConUseCase").find("option:selected").val().split('_');
+        
+            $operation_position="";
+        var $mark=false;
+       $(".section_accordion").each(function(){
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Insert "+$TargetDecision[1]+" before ( "          +$PostActivity[1]+" , "+$InsertCondition[1]+" )"+" with ( "+$MainBranchConditon[1]+" ),( "+$SupBranchCondition[1]+" , "+$InserActivity[1]+" , "+$TargetDecisions[1]+" ) in "+$UseCase[1];
+          }
+       })
+
+          $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+         if($marks){
+           window.location.href="/InsertDecBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$PostAct+"分"+$InsertCon+"分"+$MainBranchCon+"分"+$SupBranchCon+"分"+$InserAct+"分"+$TargetDec+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+         }
+      
+      }
+    });    
 
     $( ".icon-plus-sign" )
       .click(function() {
@@ -789,9 +1775,9 @@
   
   <form>
     <fieldset id="dialog-exchange">
-      
+      <!--
         <%- partial('guardChoice', {posts:posts}) %>
-       
+      -->
     </fieldset>
   </form>
 
@@ -834,11 +1820,11 @@
           <input type="radio" name="TDLType" id="InserSeq" value="InserSeq" style="margin-top:12px">
             &nbsp;&nbsp; Insert <b>activity</b> &nbsp;
             <select style="width:48%" class="SubTDLType" disabled=true>
-              <option value="I1">between pre-activity, post-activity</option>
+            <!--  <option value="I1">between pre-activity, post-activity</option>  -->
               <option value="I2">after pre-activity</option>
               <option value="I3">before post-activity</option>
               <option value="I4">after decision, condition</option>
-              <option value="I5">before decision, condition</option>
+              <option value="I5">before activity, condition</option>
             </select>
             &nbsp;&nbsp;&nbsp;in <b>use case</b>
         </label>
@@ -848,26 +1834,13 @@
           &nbsp; Insert <b>decision</b> &nbsp;
           <select style="width:48%;margin-left:-3px" class="SubTDLType" disabled=true>
             <option value="I6">after pre-activity</option>
-            <option value="I7">after post-activity</option>
-            <option value="I8">before pre-activity</option>
-            <option value="I9">before post-activity</option>
+            <option value="I7">after decision,condition</option>
+            <option value="I8">before post-activity</option>
+            <option value="I9">before post-activity with condition</option>
+            <option value="I10">before post-activity,condition</option>
           </select>
           &nbsp;&nbsp;&nbsp;in <b>use case</b>
         </label>
-        <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 size=0.5>
-    
-        <label class="radio">
-          <input type="radio" name="TDLType" id="TDLType4" value="F">
-          &nbsp; Fill <b>virtual activity sequence</b> with <b>activity sequence</b> in <b>use case</b>
-        </label>
-        <!--
-          Fill 
-          <select style="width:30%" name="TDLType" size="2">
-            <option>virtual activity sequence</option>
-            <option>virtual activity sequence</option>
-          </select>
-          with <b>activity sequence</b> in <b>use case</b>
-        -->
       </div>
     </fieldset>
   </form>
@@ -898,15 +1871,6 @@
             &nbsp;&nbsp;
             <input type="radio" name="ExecutorType" id="Executor2" value="User">
             User          
-        </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="activityvirtual">Virtual:</label>
-        <div class="controls">
-          <label class="checkbox">
-            <input type="checkbox" id="activityvirtual">
-              true
-          </label>
         </div>
     </div>
    </form>
@@ -984,6 +1948,87 @@
 
 </div>
 
+<!-- Insert activity between pre-activity, post-activity-->
+ 
+<div id="InsertBetween" title="Insert Activity Between Pre And Post Activity">
+  
+  <%- partial('insertBetween', { elementdepencys:elementdepencys,current_guard:current_guard}) %>
+
+</div>
+
+<!-- Insert activity after pre-activity in use case-->
+ 
+<div id="InsertActAfterPre" title="Insert Activity After Pre Activity">
+  
+  <%- partial('InsertActAfterPre', { elementdepencys:elementdepencys,current_guard:current_guard}) %>
+
+</div>
+
+<!-- Insert activity before post-activity in use case-->
+ 
+<div id="InsertActBeforePost" title="Insert Activity Before Post Activity">
+  
+  <%- partial('InsertActBeforePost', { elementdepencys:elementdepencys,current_guard:current_guard}) %>
+
+</div>
+
+<!-- Insert activity after decision condition in use case-->
+ 
+<div id="InsertActAfterDecCon" title="Insert Activity After Decision Condition">
+  
+  <%- partial('InsertActAfterDecCon', { elementdepencys:elementdepencys,current_guard:current_guard}) %>
+
+</div>
+
+<!-- Insert activity after activity condition in use case-->
+ 
+<div id="InsertActBeforeActCon" title="Insert Activity After Activty Condition">
+  
+  <%- partial('InsertActBeforeActCon', { elementdepencys:elementdepencys,current_guard:current_guard}) %>
+
+</div>
+
+<!-- Insert decision after activity with condition in use case-->
+ 
+<div id="InsertDecAfterAct" title="Insert Decision After Activty with Condition">
+  
+  <%- partial('InsertDecAfterAct', { elementdepencys:elementdepencys,current_guard:current_guard}) %>
+
+</div>
+
+<!-- Insert decision after decision,conditon with condition in use case-->
+ 
+<div id="InsertDecAfterDecCon" title="Insert Decision After Decision,Condition with Condition">
+  
+  <%- partial('InsertDecAfterDecCon', { elementdepencys:elementdepencys,current_guard:current_guard}) %>
+
+</div>
+
+<!-- Insert decision before activity with condition acitivty, condition in use case-->
+ 
+<div id="InsertDecBeforeAct" title="Insert Decision Before Activity with Condition Activity">
+  
+  <%- partial('InsertDecBeforeAct', { elementdepencys:elementdepencys,current_guard:current_guard}) %>
+
+</div>
+
+<!-- Insert decision before activity with condition in use case-->
+ 
+<div id="InsertDecBeforeActWith" title="Insert Decision Before Activty with Condition">
+  
+  <%- partial('InsertDecBeforeActWith', { elementdepencys:elementdepencys,current_guard:current_guard}) %>
+
+</div>
+
+
+<!-- Insert decision before activity condition with condition in use case-->
+ 
+<div id="InsertDecBeforeActCon" title="Insert Decision Before Activty Condition">
+  
+  <%- partial('InsertDecBeforeActCon', { elementdepencys:elementdepencys,current_guard:current_guard}) %>
+
+</div>
+
 <div class="c">
   <div class="left">
    <div class="myBorderRadius">
@@ -1004,7 +2049,7 @@
   
   <div class="center">
 
-   <%- partial('operationSequence', {current_guard:current_guard,tracerules:tracerules}) %>
+   <%- partial('operationSequence', {current_guard:current_guard,tracerules:tracerules,elementdepencys:elementdepencys}) %>
   </div>
   
   <div class="right">
@@ -1014,24 +2059,8 @@
     </div>
 
       <div class="myh4" style="margin-top:8px">
-
-        <table class="table" contenteditable="true">
-  
-          <tr>
-           <td></td>
-           <td>A5</td>
-           <td><b>---></b></td>
-           <td>A4&nbsp;<b>∈</b>&nbsp;Message</td>
-          </tr>
-          
-          <tr>
-           <td></td>
-           <td>A7</td>
-           <td><b>---></b></td>
-           <td>A8&nbsp;<b>∈</b>&nbsp;Message Edit&Login</td>
-          </tr>
-        </table>
-    
+        <%- partial('dependencyShow',{elementdepencys:elementdepencys,current_guard:current_guard,guardLists:guardlists})%>
+        
       </div>
     </div>
   </div>

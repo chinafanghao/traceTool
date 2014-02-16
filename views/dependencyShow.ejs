@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<table class="table" contenteditable="true">
+  <% elementdepencys.forEach(function(elementdepency,index){
+      if(elementdepency.dependee==current_guard){
+        for(key in elementdepency.depender){
+          var path=elementdepency.depender[key].split("_");
+    %>
+      <tr>
+           <td></td>
+           <td><%=elementdepency.element%></td>
+           <td><b>---></b></td>
+           <td><%=path[1]%></td>
+           <td><b>∈</b>&nbsp;</td>
+           <td>
+            <%
+              guardLists.forEach(function(guard,index){
+                if(guard.trace_rule_id==path[0]){
+            %>
+                <%=guard.selfname%>
+            <%
+                }
+                })
+            %>
+           </td>
+      </tr>
+
+    <%}
+    }
+  })%>
+
+  
+</table>
+    

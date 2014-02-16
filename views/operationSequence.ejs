@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
-
 <% tracerules.forEach(function(trace,index){%>
+
 <div class="myBorderRadius">
     <div class="titles">
       Trace Rule
@@ -22,39 +22,56 @@
     </div>
     
     <div style="margin-top:8px">
-
       <div id="outer">
         <div class="box">
-          
-
           <div class="accordion_wrapper sortable" rel="sections">
-
-                <% 
+              <% 
                 var positions=new Array();
                
                 positions=trace.positions.split('$');
 
                 for(key in positions){
                       var element_path=new Array();
-                      if(trace.operations[positions[key]].element!="")
-
-                      element_path=trace.operations[positions[key]].element.split('.');
-                      
+                      if(trace.operations[positions[key]].element!=""){
+                         element_path=trace.operations[positions[key]].element.split('.');
+                      }
                       if(trace._id==element_path[0]){
                         var element_name=trace.elements[element_path[2]].name;
                         var element_description=trace.elements[element_path[2]].description;
                         var element_type=trace.elements[element_path[2]].type;
                         var element_executor=trace.elements[element_path[2]].executor;
-                        var element_is_virtual=trace.elements[element_path[2]].is_virtual;
+                        //var element_is_virtual=trace.elements[element_path[2]].is_virtual;
                         }
                         if(trace.operations[positions[key]].type=="C2"){
                 %>
-
                         <div id="<%=positions[key]%>" class="section_accordion">
                           <div class="accordion">
                             <h4>
-                              <%=positions[key]%>
-                              <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                              
+                              <%
+                                var guard_name=positions[key].split(" ");
+                               
+                                  for(pos in guard_name){
+                                    if(pos==0){
+                                    %>
+                                    <%=guard_name[pos] %>
+                              <%
+                                    }else{
+                                      if(pos==1){        
+                              %>
+                                     <b><%=element_executor%></b> <%=guard_name[pos]%>
+                              
+                              <%      
+                                        }else{
+                              %>
+                                     <b><%=guard_name[pos] %></b>
+                              <%
+                                      }
+                                    }
+                                  }
+                                
+                              %>
+                              <i class="icon-minus deleteActivity"style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
@@ -84,24 +101,12 @@
                                       <%}%>
                                     </select>
                                 </div>
-                                <div class="control-group">
-                                    <label class="control-label" for="ActivityVirtual">Virtual:</label>
-                                    <select style="width:10%" class="ActivityVirtual" disabled=true>
-                                      <% if(element_is_virtual=="true"){%>
-                                      <option value="yes" selected="selected">Yes</option>
-                                      <option value="no">No</option>
-                                       <%}else{%>
-                                        <option value="yes">Yes</option>
-                                        <option value="no" selected="selected">No</option>
-                                      <%}%>
-                                    </select>
-                                </div>
                               </form>
                             </div>
                           </div>
                         </div>
               <%
-              }//activity type
+              }
               else{
                 if(trace.operations[positions[key]].type=="C1"){
                   %>
@@ -109,8 +114,8 @@
                         <div id="<%=positions[key]%>" class="section_accordion">
                           <div class="accordion">
                             <h4>
-                              <%=positions[key]%>
-                              <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                              Create Use Case <b><%= element_name%></b>
+                              <i class="icon-minus deleteUseCase" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
@@ -140,8 +145,8 @@
                         <div id="<%=positions[key]%>" class="section_accordion">
                           <div class="accordion">
                             <h4>
-                              <%=positions[key]%>
-                              <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                              Create <b><%=element_executor%></b> Decision <b><%= element_name%></b>
+                              <i class="icon-minus deleteDecision" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
@@ -182,8 +187,8 @@
                        <div id="<%=positions[key]%>" class="section_accordion">
                           <div class="accordion">
                             <h4>
-                              <%=positions[key]%>
-                              <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                              Create Condition <b><%= element_name%></b>
+                              <i class="icon-minus deleteCondition" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
@@ -206,6 +211,1436 @@
                           </div>
                         </div>
                       <%
+                    }else{
+                      if(trace.operations[positions[key]].type=="I1"){
+                         var target1=trace.operations[positions[key]].element.split('.');
+                         var target2=trace.operations[positions[key]].preElement.split('.');
+                         var target3=trace.operations[positions[key]].postElement.split('.');
+                         var target4=trace.operations[positions[key]].usecaseElement.split('.');
+                        %>
+                          <div id="<%=positions[key]%>" class="section_accordion">
+                          <div class="accordion">
+                            <h4>
+                              Insert <b><%=target1[2]%></b> between <b><%= target2[2]%></b> and <b><%=target3[2]%></b> in <b><%=target4[2]%></b>
+                              <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div style="margin-top:10px">
+                                  <div>
+                                  Target Activity:
+                                  <select style="width:72%;margin-left:20px" class="InterBetTar" disabled=true>
+                                     
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
+                                       
+                                        if(elementdepencys[keyss].element!=target1[2]){
+
+                                        %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%
+                                      }else{
+                                    %>
+                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                    <%
+                                    }
+                                   }
+                                  }
+                                  %>
+              
+                                  </select>
+                                    <i class="icon-pencil editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Pre Activity:
+                                    <select style="width:72%;margin-left:43px" class="InterBetPre" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target2[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }
+                                      %>
+
+                                    </select>
+   
+                                  </div>
+                                <div style="margin-top:20px">
+                                  Post Activity:
+                                  <select style="width:72%;margin-left:36px" class="InterBetPost" disabled=true>
+                
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="activity"){
+                                        
+                                      if(elementdepencys[keyss].element!=target3[2]){
+                                    %>
+                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{%>
+                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                    <%
+                                        }
+                                      }
+                                    }%>
+
+                                  </select>
+       
+                                </div>
+                                <div style="margin-top:20px">
+                                  Use Case:
+                                  <select style="width:72%;margin-left:60px" class="InterBetUseCase" disabled=true>
+                
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="UseCase"){
+                                         
+                                          if(elementdepencys[keyss].element!=target4[2]){
+                                    %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{%>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                    <%
+                                          }
+                                        }
+                                      }%>
+
+                                  </select>
+                                </div>
+                               </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                        <%
+                      }else{ 
+                        if(trace.operations[positions[key]].type=="I2"){
+                          var target1=trace.operations[positions[key]].element.split('.');
+                          var target2=trace.operations[positions[key]].preElement.split('.');
+                          var target3=trace.operations[positions[key]].usecaseElement.split('.');
+                        %>
+                        <div id="<%=positions[key]%>" class="section_accordion">
+                          <div class="accordion">
+                            <h4>
+                              Insert <b><%=target1[2]%></b> after <b><%=target2[2]%></b> in <b><%= target3[2]%></b>
+                              <i class="icon-minus insertactafterpre" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div style="margin-top:10px">
+                                  <div>
+                                  Target Activity:
+                                  <select style="width:72%;margin-left:20px" class="InterBetTar" disabled=true>
+                                     
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
+                                        
+                                        if(elementdepencys[keyss].element!=target1[2]){
+
+                                        %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{
+                                      %>
+                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                    }
+                                   }
+                                  }%>
+              
+                                  </select>
+                                  <i class="icon-pencil editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                  <i class="icon-ok editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+        
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Pre Activity:
+                                    <select style="width:72%;margin-left:43px" class="InterBetPre" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target2[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+                                <div style="margin-top:20px">
+                                  Use Case:
+                                  <select style="width:72%;margin-left:60px" class="InterBetUseCase" disabled=true>
+                
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="UseCase"){
+                                        
+                                          if(elementdepencys[keyss].element!=target3[2]){
+                                    %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{%>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                    <%
+                                          }
+                                        }
+                                      }%>
+
+                                  </select>
+                                </div>
+       
+                               </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                    <%
+                        }else{
+                          if(trace.operations[positions[key]].type=="I3"){
+                            var target1=trace.operations[positions[key]].element.split('.');
+                            var target2=trace.operations[positions[key]].postElement.split('.');
+                            var target3=trace.operations[positions[key]].usecaseElement.split('.');
+                    %>
+                        <div id="<%=positions[key]%>" class="section_accordion">
+                          <div class="accordion">
+                            <h4>
+                              Insert <b><%=target1[2]%></b> before <b><%=target2[2]%></b> in <b><%= target3[2]%></b>
+                              <i class="icon-minus insertActBeforePost" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div style="margin-top:10px">
+                                  <div>
+                                  Target Activity:
+                                  <select style="width:72%;margin-left:20px" class="InterBetTar" disabled=true>
+                                     
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
+                                        
+                                        if(elementdepencys[keyss].element!=target1[2]){
+
+                                        %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{
+                                      %>
+                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                    }
+                                   }
+                                  }%>
+              
+                                  </select>
+                                  <i class="icon-pencil editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                  <i class="icon-ok editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+        
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Pre Activity:
+                                    <select style="width:72%;margin-left:43px" class="InterBetPre" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target2[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+                                <div style="margin-top:20px">
+                                  Use Case:
+                                  <select style="width:72%;margin-left:60px" class="InterBetUseCase" disabled=true>
+                
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="UseCase"){
+                                        
+                                          if(elementdepencys[keyss].element!=target3[2]){
+                                    %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{%>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                    <%
+                                          }
+                                        }
+                                      }%>
+
+                                  </select>
+                                </div>
+       
+                               </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                    <%
+                          } //end I3
+                        else{
+                          if(trace.operations[positions[key]].type=="I4"){
+                            var target1=trace.operations[positions[key]].element.split('.');
+                            var target2=trace.operations[positions[key]].decision.split('.');
+                            var target3=trace.operations[positions[key]].condition.split('.');
+                            var target4=trace.operations[positions[key]].usecaseElement.split('.');
+                    %>
+                           <div id="<%=positions[key]%>" class="section_accordion">
+                          <div class="accordion">
+                            <h4>
+                              Insert <b><%=target1[2]%></b> after <b><%=target2[2]%></b> , <b><%=target3[2]%></b> in <b><%= target4[2]%></b>
+                              <i class="icon-minus deleteInsertActAfterDecCon" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div style="margin-top:10px">
+                                  <div>
+                                  Target Activity:
+                                  <select style="width:72%;margin-left:20px" class="InterAfterDecConAct" disabled=true>
+                                     
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
+                                        
+                                        if(elementdepencys[keyss].element!=target1[2]){
+
+                                        %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{
+                                      %>
+                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                    }
+                                   }
+                                  }%>
+              
+                                  </select>
+                                  <i class="icon-pencil editOperation InsertAfterDecCon" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                  <i class="icon-ok editOperation InsertAfterDecCon" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+        
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Decision:
+                                    <select style="width:72%;margin-left:66px" class="InterAfterDecConDec" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="decision"){
+                                            
+                                        if(elementdepencys[keyss].element!=target2[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Condition:
+                                    <select style="width:72%;margin-left:60px" class="InterAfterDecConCon" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target3[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+                                <div style="margin-top:20px">
+                                  Use Case:
+                                  <select style="width:72%;margin-left:60px" class="InterAfterDecConUseCase" disabled=true>
+                
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="UseCase"){
+                                        
+                                          if(elementdepencys[keyss].element!=target4[2]){
+                                    %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{%>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                    <%
+                                          }
+                                        }
+                                      }%>
+
+                                  </select>
+                                </div>
+       
+                               </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                    <%
+                          } //end I4
+                        else{
+                          if(trace.operations[positions[key]].type=="I5"){
+                            var target1=trace.operations[positions[key]].element.split('.');
+                            var target2=trace.operations[positions[key]].postactivity.split('.');
+                            var target3=trace.operations[positions[key]].condition.split('.');
+                            var target4=trace.operations[positions[key]].usecaseElement.split('.');
+                    %>
+                          <div id="<%=positions[key]%>" class="section_accordion">
+                          <div class="accordion">
+                            <h4>
+                              Insert <b><%=target1[2]%></b> before <b><%=target2[2]%></b> , <b><%=target3[2]%></b> in <b><%= target4[2]%></b>
+                              <i class="icon-minus deleteInsertActBeforeActCon" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div style="margin-top:10px">
+                                  <div>
+                                  Target Activity:
+                                  <select style="width:72%;margin-left:20px" class="InterBeforeActConTar" disabled=true>
+                                     
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
+                                        
+                                        if(elementdepencys[keyss].element!=target1[2]){
+
+                                        %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{
+                                      %>
+                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                    }
+                                   }
+                                  }%>
+              
+                                  </select>
+                                  <i class="icon-pencil editOperation InsertBeforeActCon" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                  <i class="icon-ok editOperation InsertBeforeActCon" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+        
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Decision:
+                                    <select style="width:72%;margin-left:66px" class="InterBeforeActConAct" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target2[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Condition:
+                                    <select style="width:72%;margin-left:60px" class="InterBeforeActConCon" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target3[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+                                <div style="margin-top:20px">
+                                  Use Case:
+                                  <select style="width:72%;margin-left:60px" class="InterBeforeActConUseCase" disabled=true>
+                
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="UseCase"){
+                                        
+                                          if(elementdepencys[keyss].element!=target4[2]){
+                                    %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{%>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                    <%
+                                          }
+                                        }
+                                      }%>
+
+                                  </select>
+                                </div>
+       
+                               </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                    <%
+                            }//end I5
+                          else{
+                            if(trace.operations[positions[key]].type=="I6"){
+                              var target1=trace.operations[positions[key]].element.split('.');
+                              var target2=trace.operations[positions[key]].preactivity.split('.');
+                              var target3=trace.operations[positions[key]].maincondition.split('.');
+                              var target4=trace.operations[positions[key]].supcondition.split('.');
+                              var target5;
+                              if(trace.operations[positions[key]].insertactivity!="")
+                                target5=trace.operations[positions[key]].insertactivity.split('.');
+                              else
+                                target5="";
+                              var target6=trace.operations[positions[key]].targetactivity.split('.');
+                              var target7=trace.operations[positions[key]].usecaseElement.split('.');
+                    %>
+                         <div id="<%=positions[key]%>" class="section_accordion">
+                          <div class="accordion">
+                            <h4>
+                              Insert <b><%=target1[2]%></b> after <b><%=target2[2]%></b> with ( <b><%=target3[2]%></b> ),( <b><%=target4[2]%></b> ,  
+                          <%
+                              if(target5!=""){
+                          %>
+                              <b><%=target5[2]%></b> ,
+                          <%
+                            }
+                          %>
+                              <b><%=target6[2]%></b> )
+
+                              in <b><%= target7[2]%></b>
+                              <i class="icon-minus deleteInsertDecAfterAct" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div style="margin-top:10px">
+                                  <div>
+                                  Target Decision:
+                                  <select style="width:60%;margin-left:88px" class="InsertDecAfterActDec" disabled=true>
+                                     
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
+                                        
+                                        if(elementdepencys[keyss].element!=target1[2]){
+
+                                        %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{
+                                      %>
+                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                    }
+                                   }
+                                  }%>
+              
+                                  </select>
+                                  <i class="icon-pencil editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                  <i class="icon-ok editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+        
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Pre-Activity:
+                                    <select style="width:60%;margin-left:116px" class="InsertDecAfterActPreAct" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target2[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Main Branch Condition:
+                                    <select style="width:60%;margin-left:40px" class="InsertDecAfterActMainCon" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target3[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+
+                                <div style="margin-top:20px">
+                                    Additonal Branch Condition:
+                                    <select style="width:60%;margin-left:5px" class="InsertDecAfterActSupCon" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target4[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+
+                                <div style="margin-top:20px">
+                                    Inserted Activity(optional):
+                                    <select style="width:60%;margin-left:7px" class="InsertDecAfterActInserAct" disabled=true>
+               
+                                      <% 
+                                    if(target5!=""){
+                                      for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target5[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }
+                                          }else{
+                                             for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=""){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="none" selected="selected">
+                                              no inserted activity</option>
+                                      <%
+                                        }
+                                          }
+                                            }
+                                          }%>
+
+                                    </select>
+   
+                                  </div>
+
+                                  <div style="margin-top:20px">
+                                    Target Activity:
+                                    <select style="width:60%;margin-left:94px" class="InsertDecAfterActTarAct" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target6[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+
+                                <div style="margin-top:20px">
+                                  Use Case:
+                                  <select style="width:60%;margin-left:134px" class="InterBeforeActConUseCase" disabled=true>
+                
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="UseCase"){
+                                        
+                                          if(elementdepencys[keyss].element!=target7[2]){
+                                    %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{%>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                    <%
+                                          }
+                                        }
+                                      }%>
+
+                                  </select>
+                                </div>
+       
+                               </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                    <%
+                              }//end I6
+                            else{
+                               if(trace.operations[positions[key]].type=="I7"){
+                              var target1=trace.operations[positions[key]].element.split('.');
+                              var target2=trace.operations[positions[key]].insertdecision.split('.');
+                              var target3=trace.operations[positions[key]].insertcondition.split('.');
+                              var target4=trace.operations[positions[key]].maincondition.split('.');
+                              var target5=trace.operations[positions[key]].supcondition.split('.');
+                              var target6=trace.operations[positions[key]].insertactivity.split('.');
+                              
+                              var target7=trace.operations[positions[key]].targetdecision.split('.');
+                              var target8=trace.operations[positions[key]].usecaseElement.split('.');
+                    %>
+                         <div id="<%=positions[key]%>" class="section_accordion">
+                          <div class="accordion">
+                            <h4>
+                              Insert <b><%=target1[2]%></b> after ( <b><%=target2[2]%></b> , <b><%=target3[2]%></b> ) with ( <b><%=target4[2]%></b> ),( <b><%=target5[2]%></b> , <b><%=target6[2]%></b> , <b><%=target7[2]%></b> ) in <b><%= target8[2]%></b>
+                              <i class="icon-minus deleteInsertDecAfterDecCon" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div style="margin-top:10px">
+                                  <div>
+                                  Target Decision:
+                                  <select style="width:60%;margin-left:88px" class="InsertDecAfterDecConDec" disabled=true>
+                                     
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
+                                        
+                                        if(elementdepencys[keyss].element!=target1[2]){
+
+                                        %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{
+                                      %>
+                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                    }
+                                   }
+                                  }%>
+              
+                                  </select>
+                                  <i class="icon-pencil editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                  <i class="icon-ok editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+        
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Inserted Decision:
+                                    <select style="width:60%;margin-left:73px" class="InsertDecAfterDecConInserDec" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="decision"){
+                                            
+                                        if(elementdepencys[keyss].element!=target2[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+
+                                  <div style="margin-top:20px">
+                                    Inserted Condition:
+                                    <select style="width:60%;margin-left:67px" class="InsertDecAfterDecConInserCon" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target3[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+
+
+                                  <div style="margin-top:20px">
+                                    Main Branch Condition:
+                                    <select style="width:60%;margin-left:40px" class="InsertDecAfterActMainCon" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target4[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+
+                                <div style="margin-top:20px">
+                                    Additonal Branch Condition:
+                                    <select style="width:60%;margin-left:5px" class="InsertDecAfterActSupCon" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target5[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+
+                                <div style="margin-top:20px">
+                                    Inserted Activity:
+                                    <select style="width:60%;margin-left:82px" class="InsertDecAfterActInserAct" disabled=true>
+               
+                                      <% 
+                                  
+                                      for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target6[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }
+                                          
+                                      %>
+                                    </select>
+   
+                                  </div>
+
+                                  <div style="margin-top:20px">
+                                    Target Decision:
+                                    <select style="width:60%;margin-left:88px" class="InsertDecAfterActTarAct" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="decision"){
+                                            
+                                        if(elementdepencys[keyss].element!=target7[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+
+                                <div style="margin-top:20px">
+                                  Use Case:
+                                  <select style="width:60%;margin-left:134px" class="InterBeforeActConUseCase" disabled=true>
+                
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="UseCase"){
+                                        
+                                          if(elementdepencys[keyss].element!=target8[2]){
+                                    %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{%>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                    <%
+                                          }
+                                        }
+                                      }%>
+
+                                  </select>
+                                </div>
+       
+                               </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                  <%
+                                } //end I7
+                              else{
+                                if(trace.operations[positions[key]].type=="I8"){
+                                   var target1=trace.operations[positions[key]].element.split('.');
+                                   var target2=trace.operations[positions[key]].postactivity.split('.');
+                                   var target3=trace.operations[positions[key]].condition1.split('.');
+                                   var target4=trace.operations[positions[key]].target1.split('.');
+                                   var target5=trace.operations[positions[key]].condition2.split('.');;
+                                   var target6=trace.operations[positions[key]].target2.split('.');
+                                   var target7=trace.operations[positions[key]].usecaseElement.split('.');
+                  %>
+                         <div id="<%=positions[key]%>" class="section_accordion">
+                          <div class="accordion">
+                            <h4>
+                              Insert <b><%=target1[2]%></b> before <b><%=target2[2]%></b> with ( <b><%=target3[2]%></b> , <b><%=target4[2]%></b> ),( <b><%=target5[2]%></b> , <b><%=target6[2]%></b> ) in <b><%= target7[2]%></b>
+                              <i class="icon-minus deleteInsertDecBeforeAct" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div style="margin-top:10px">
+                                  <div>
+                                  Target Decision:
+                                  <select style="width:72%;margin-left:15px" class="InsertDecBeforeActDec" disabled=true>
+                                     
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
+                                        
+                                        if(elementdepencys[keyss].element!=target1[2]){
+
+                                        %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{
+                                      %>
+                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                    }
+                                   }
+                                  }%>
+              
+                                  </select>
+                                  <i class="icon-pencil editOperation InsertDecBeforeAct" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                  <i class="icon-ok editOperation InsertDecBeforeAct" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+        
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Post-Activity:
+                                    <select style="width:72%;margin-left:36px" class="InsertDecBeforeActPostAct" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target2[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Condition 1:
+                                    <select style="width:72%;margin-left:46px" class="InsertDecBeforeActCon1" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target3[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+
+                                <div style="margin-top:20px">
+                                    Target Activity 1:
+                                    <select style="width:72%;margin-left:5px" class="InsertDecBeforeActTar1" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target4[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+
+                                <div style="margin-top:20px">
+                                    Condition 2:
+                                    <select style="width:72%;margin-left:46px" class="InsertDecBeforeActCon2" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target5[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+                                    </select>
+   
+                                  </div>
+
+                                  <div style="margin-top:20px">
+                                    Target Activity 2:
+                                    <select style="width:72%;margin-left:5px" class="InsertDecBeforeActTar2" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target6[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+
+                                <div style="margin-top:20px">
+                                  Use Case:
+                                  <select style="width:72%;margin-left:60px" class="InterBeforeActUseCase" disabled=true>
+                
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="UseCase"){
+                                        
+                                          if(elementdepencys[keyss].element!=target7[2]){
+                                    %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{%>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                    <%
+                                          }
+                                        }
+                                      }%>
+
+                                  </select>
+                                </div>
+       
+                               </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                  <%
+                                  } //end I8
+                                else{
+                                  if(trace.operations[positions[key]].type=="I9"){
+                                      var target1=trace.operations[positions[key]].element.split('.');
+                                      var target2=trace.operations[positions[key]].postactivity.split('.');
+                                      var target3=trace.operations[positions[key]].maincondition.split('.');
+                                      var target4=trace.operations[positions[key]].supcondition.split('.');
+                                      var target5;
+                                      if(trace.operations[positions[key]].insertactivity!="")
+                                        target5=trace.operations[positions[key]].insertactivity.split('.');
+                                      else
+                                        target5="";
+                                      var target6=trace.operations[positions[key]].targetdecision.split('.');
+                                      var target7=trace.operations[positions[key]].usecaseElement.split('.');
+                  %>
+                        <div id="<%=positions[key]%>" class="section_accordion">
+                          <div class="accordion">
+                            <h4>
+                              Insert <b><%=target1[2]%></b> before <b><%=target2[2]%></b> with ( <b><%=target3[2]%></b> ),( <b><%=target4[2]%></b> , <b><%=target5[2]%></b> , <b><%=target6[2]%></b> ) in <b><%= target7[2]%></b>
+                              <i class="icon-minus deleteInsertDecBeforeActWith" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div style="margin-top:10px">
+                                  <div>
+                                  Target Decision:
+                                  <select style="width:60%;margin-left:88px" class="InsertDecBeforeActWithTar" disabled=true>
+                                     
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
+                                        
+                                        if(elementdepencys[keyss].element!=target1[2]){
+
+                                        %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{
+                                      %>
+                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                    }
+                                   }
+                                  }%>
+              
+                                  </select>
+                                  <i class="icon-pencil editOperation InsertDecBeforeActWith" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                  <i class="icon-ok editOperation InsertDecBeforeActWith" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+        
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Pre-Activity:
+                                    <select style="width:60%;margin-left:116px" class="InsertDecBeforeActWithPostAct" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target2[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Main Branch Condition:
+                                    <select style="width:60%;margin-left:40px" class="InsertDecBeforeActWithMainCon" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target3[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+
+                                <div style="margin-top:20px">
+                                    Additonal Branch Condition:
+                                    <select style="width:60%;margin-left:5px" class="InsertDecBeforeActWithSupCon" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target4[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+
+                                <div style="margin-top:20px">
+                                    Inserted Activity:
+                                    <select style="width:60%;margin-left:82px" class="InsertDecBeforeActWithInserAct" disabled=true>
+               
+                                      <% 
+                                      for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target5[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }
+                                         %>
+
+                                    </select>
+   
+                                  </div>
+
+                                  <div style="margin-top:20px">
+                                    Target Decision:
+                                    <select style="width:60%;margin-left:88px" class="InsertDecBeforeActWithDec" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="decision"){
+                                            
+                                        if(elementdepencys[keyss].element!=target6[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+
+                                <div style="margin-top:20px">
+                                  Use Case:
+                                  <select style="width:60%;margin-left:134px" class="InsertDecBeforeActWithUseCase" disabled=true>
+                
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="UseCase"){
+                                        
+                                          if(elementdepencys[keyss].element!=target7[2]){
+                                    %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{%>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                    <%
+                                          }
+                                        }
+                                      }%>
+
+                                  </select>
+                                </div>
+       
+                               </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                  <%
+                                    } //end I9
+                                  else{
+                                    if(trace.operations[positions[key]].type=="I10"){
+                              var target1=trace.operations[positions[key]].element.split('.');
+                              var target2=trace.operations[positions[key]].postactivity.split('.');
+                              var target3=trace.operations[positions[key]].insertcondition.split('.');
+                              var target4=trace.operations[positions[key]].maincondition.split('.');
+                              var target5=trace.operations[positions[key]].supcondition.split('.');
+                              var target6=trace.operations[positions[key]].insertactivity.split('.');
+                              
+                              var target7=trace.operations[positions[key]].targetdecision.split('.');
+                              var target8=trace.operations[positions[key]].usecaseElement.split('.');
+                  %>
+                        <div id="<%=positions[key]%>" class="section_accordion">
+                          <div class="accordion">
+                            <h4>
+                              Insert <b><%=target1[2]%></b> before ( <b><%=target2[2]%></b> , <b><%=target3[2]%></b> ) with ( <b><%=target4[2]%></b> ),( <b><%=target5[2]%></b> , <b><%=target6[2]%></b> , <b><%=target7[2]%></b> ) in <b><%= target8[2]%></b>
+                              <i class="icon-minus deleteInsertDecBeforeActCon" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
+                            </h4>
+                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              <form class="form-horizontal">
+                                <div style="margin-top:10px">
+                                  <div>
+                                  Target Decision:
+                                  <select style="width:60%;margin-left:88px" class="InsertDecBeforeActConTar" disabled=true>
+                                     
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
+                                        
+                                        if(elementdepencys[keyss].element!=target1[2]){
+
+                                        %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{
+                                      %>
+                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                    }
+                                   }
+                                  }%>
+              
+                                  </select>
+                                  <i class="icon-pencil editOperation InsertDecBeforeActCon" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                  <i class="icon-ok editOperation InsertDecBeforeActCon" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+        
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Post-Activity:
+                                    <select style="width:60%;margin-left:110px" class="InsertDecBeforeActConPostAct" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target2[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+
+                                  <div style="margin-top:20px">
+                                    Inserted Condition:
+                                    <select style="width:60%;margin-left:67px" class="InsertDecBeforeActConInserCon" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target3[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+
+
+                                  <div style="margin-top:20px">
+                                    Main Branch Condition:
+                                    <select style="width:60%;margin-left:40px" class="InsertDecBeforeActConMainCon" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target4[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+
+                                <div style="margin-top:20px">
+                                    Additonal Branch Condition:
+                                    <select style="width:60%;margin-left:5px" class="InsertDecBeforeActConSupCon" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="condition"){
+                                            
+                                        if(elementdepencys[keyss].element!=target5[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                </div>
+
+                                <div style="margin-top:20px">
+                                    Inserted Activity:
+                                    <select style="width:60%;margin-left:80px" class="InsertDecBeforeActConInserAct" disabled=true>
+               
+                                      <% 
+                                  
+                                      for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="activity"){
+                                            
+                                        if(elementdepencys[keyss].element!=target6[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }
+                                          
+                                      %>
+                                    </select>
+   
+                                  </div>
+
+                                  <div style="margin-top:20px">
+                                    Target Decision:
+                                    <select style="width:60%;margin-left:86px" class="InsertDecBeforeActConTarDec" disabled=true>
+               
+                                      <% for(keyss in elementdepencys){
+                                        if(elementdepencys[keyss].type=="decision"){
+                                            
+                                        if(elementdepencys[keyss].element!=target7[2]){%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <%}else{%>
+                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <%
+                                        }
+                                          }
+                                            }%>
+
+                                    </select>
+   
+                                  </div>
+
+                                <div style="margin-top:20px">
+                                  Use Case:
+                                  <select style="width:60%;margin-left:134px" class="InsertDecBeforeActConUseCase" disabled=true>
+                
+                                    <% for(keyss in elementdepencys){
+                                      if(elementdepencys[keyss].type=="UseCase"){
+                                        
+                                          if(elementdepencys[keyss].element!=target8[2]){
+                                    %>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                    <%}else{%>
+                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                    <%
+                                          }
+                                        }
+                                      }%>
+
+                                  </select>
+                                </div>
+       
+                               </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                  <%
+
+                                      }//end I10
+
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                         }
+                        }
+                      }
                     }
                   }
                 }

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+  <form>
+    <fieldset id="dialog-exchange">
+       
+       <div style="margin-left:5%;margin-top:10px">
+
+            Target Activity:
+            <select style="width:60%;margin-left:20px" id="InterPreTar">
+               <option value="-1">Chooce the element</option>
+              <% for(key in elementdepencys){
+                if(elementdepencys[key].type=="activity"&&elementdepencys[key].dependee==current_guard){
+                   var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                  %>
+                <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
+              <%}
+              }%>
+              
+            </select>
+        
+        <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
+      
+            Pre Activity:
+            <select style="width:60%;margin-left:43px" id="InterPrePre">
+                <option value="-1">Chooce the element</option>
+              <% for(key in elementdepencys){
+                    if(elementdepencys[key].type=="activity"){
+                      var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                      %>
+                <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
+              <%}
+              }%>
+
+            </select>
+       
+           <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
+         
+          Use Case:
+          <select style="width:60%;margin-left:60px" id="InterPreUseCase">
+                <option value="-1">Chooce the element</option>
+              <% for(key in elementdepencys){
+                  if(elementdepencys[key].type=="UseCase"){
+                     var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;%>
+                <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
+              <%}
+            }%>
+
+          </select>
+       
+      </div>
+    </fieldset>
+  </form>

@@ -189,7 +189,7 @@ Tracerule.updateSelfname = function updateSelfname(selfname, user,name,id,callba
 	});
 };
 
-Tracerule.createActivity = function createActivity(user,id,activityname,activitydescription,activityexecutor,activityvirtual,current_accordion,positions,callback){
+Tracerule.createActivity = function createActivity(user,id,activityname,activitydescription,activityexecutor,current_accordion,positions,callback){
 	// 存入 Mongodb 的文檔
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -244,7 +244,7 @@ Tracerule.createActivity = function createActivity(user,id,activityname,activity
 				var elementType="elements."+activityname+".type";
 				var elementExecutor="elements."+activityname+".executor";
 				var elementTime="elements."+activityname+".time";
-				var elementIsVirtual="elements."+activityname+".is_virtual";
+				//var elementIsVirtual="elements."+activityname+".is_virtual";
 				var elements={};
 					
 					elements[elementName]=activityname;
@@ -252,7 +252,7 @@ Tracerule.createActivity = function createActivity(user,id,activityname,activity
 					elements[elementType]="activity";
 					elements[elementExecutor]=activityexecutor;
 					elements[elementTime]=new Date();
-					elements[elementIsVirtual]=activityvirtual;
+				//	elements[elementIsVirtual]=activityvirtual;
 			
 				query2={
 					"$set":
@@ -693,6 +693,1923 @@ Tracerule.createCondition = function createCondition(user,id,conditionname,condi
 					if(err) console.warn(err.message);
 					else console.log("createCondition success");
 				});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.saveInsertBetween = function saveInsertBetween(user,id,TarAct,PreAct,PostAct,UseCase,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+	
+				query1={"user":user,"_id":ObjectID(id)};
+				//query1={"$where":"function(){for(key in this.operations){if(this.operations[key].position=="+positions[keys]+"){return true};}}"};
+				//console.log(query1);
+				var TargetActivity=TarAct.split('_');
+				var PreActivity=PreAct.split('_');
+				var PostActivity=PostAct.split('_');
+				var Usecase=UseCase.split('_');
+				var keyValue="Insert "+TargetActivity[1]+" between "+PreActivity[1]+" and "+PostActivity[1]+" in "+Usecase[1];
+				//console.log(keyValue);
+				var operationName="operations."+keyValue+".name";
+				var operationType="operations."+keyValue+".type";
+				var operationElement="operations."+keyValue+".element";
+				var operationTime="operations."+keyValue+".time";
+				var PreOperationElement="operations."+keyValue+".preElement";
+				var PostOperationElement="operations."+keyValue+".postElement";
+				var UseCaseElement="operations."+keyValue+".usecaseElement";
+				var operations={};
+					operations[operationName] = keyValue;
+					operations[operationType] = "I1";
+					operations[operationElement]=TargetActivity[0]+".element."+TargetActivity[1];
+					operations[PreOperationElement]=PreActivity[0]+".element."+PreActivity[1];
+					operations[PostOperationElement]=PostActivity[0]+".element."+PostActivity[1];
+					operations[UseCaseElement]=Usecase[0]+".element."+Usecase[1];
+					operations[operationTime]=new Date();
+				
+					
+			
+				query2={
+					"$set":
+							operations
+							//infor.dir:activityname,
+							//elements:elements[activityname]
+						
+					};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("createCondition success");
+				});
+
+				query2={$set:{"positions":positions}};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("createCondition success");
+				});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.saveInsertActAfterPre = function saveInsertActAfterPre(user,id,TarAct,PreAct,UseCase,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+	
+				query1={"user":user,"_id":ObjectID(id)};
+				//query1={"$where":"function(){for(key in this.operations){if(this.operations[key].position=="+positions[keys]+"){return true};}}"};
+				//console.log(query1);
+				var TargetActivity=TarAct.split('_');
+				var PreActivity=PreAct.split('_');
+				var Usecase=UseCase.split('_');
+				var keyValue="Insert "+TargetActivity[1]+" after "+PreActivity[1]+" in "+Usecase[1];
+				//console.log(keyValue);
+				var operationName="operations."+keyValue+".name";
+				var operationType="operations."+keyValue+".type";
+				var operationElement="operations."+keyValue+".element";
+				var operationTime="operations."+keyValue+".time";
+				var PreOperationElement="operations."+keyValue+".preElement";
+				var UseCaseElement="operations."+keyValue+".usecaseElement";
+				var operations={};
+					operations[operationName] = keyValue;
+					operations[operationType] = "I2";
+					operations[operationElement]=TargetActivity[0]+".element."+TargetActivity[1];
+					operations[PreOperationElement]=PreActivity[0]+".element."+PreActivity[1];
+					operations[UseCaseElement]=Usecase[0]+".element."+Usecase[1];
+					operations[operationTime]=new Date();
+				
+					
+			
+				query2={
+					"$set":
+							operations
+							//infor.dir:activityname,
+							//elements:elements[activityname]
+						
+					};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("createCondition success");
+				});
+
+				query2={$set:{"positions":positions}};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("createCondition success");
+				});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.saveInsertActBeforePost = function saveInsertActBeforePost(user,id,TarAct,PostAct,UseCase,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+	
+				query1={"user":user,"_id":ObjectID(id)};
+				//query1={"$where":"function(){for(key in this.operations){if(this.operations[key].position=="+positions[keys]+"){return true};}}"};
+				//console.log(query1);
+				var TargetActivity=TarAct.split('_');
+				var PostActivity=PostAct.split('_');
+				var Usecase=UseCase.split('_');
+				var keyValue="Insert "+TargetActivity[1]+" before "+PostActivity[1]+" in "+Usecase[1];
+				//console.log(keyValue);
+				var operationName="operations."+keyValue+".name";
+				var operationType="operations."+keyValue+".type";
+				var operationElement="operations."+keyValue+".element";
+				var operationTime="operations."+keyValue+".time";
+				var PostOperationElement="operations."+keyValue+".postElement";
+				var UseCaseElement="operations."+keyValue+".usecaseElement";
+				var operations={};
+					operations[operationName] = keyValue;
+					operations[operationType] = "I3";
+					operations[operationElement]=TargetActivity[0]+".element."+TargetActivity[1];
+					operations[PostOperationElement]=PostActivity[0]+".element."+PostActivity[1];
+					operations[UseCaseElement]=Usecase[0]+".element."+Usecase[1];
+					operations[operationTime]=new Date();
+				
+					
+			
+				query2={
+					"$set":
+							operations
+							//infor.dir:activityname,
+							//elements:elements[activityname]
+						
+					};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("createCondition success");
+				});
+
+				query2={$set:{"positions":positions}};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("createCondition success");
+				});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.saveInsertActAfterDecCon = function saveInsertActAfterDecCon(user,id,TarAct,Decision,Condition,UseCase,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+	
+				query1={"user":user,"_id":ObjectID(id)};
+				//query1={"$where":"function(){for(key in this.operations){if(this.operations[key].position=="+positions[keys]+"){return true};}}"};
+				//console.log(query1);
+				var TargetActivity=TarAct.split('_');
+				var TheCondition=Condition.split('_');
+				var TheDecision=Decision.split('_');
+				var Usecase=UseCase.split('_');
+				var keyValue="Insert "+TargetActivity[1]+" after "+TheDecision[1]+" , "+TheCondition[1]+" in "+Usecase[1];
+				//console.log(keyValue);
+				var operationName="operations."+keyValue+".name";
+				var operationType="operations."+keyValue+".type";
+				var operationElement="operations."+keyValue+".element";
+				var operationTime="operations."+keyValue+".time";
+				var decisionname="operations."+keyValue+".decision";
+				var conditionname="operations."+keyValue+".condition";
+				var UseCaseElement="operations."+keyValue+".usecaseElement";
+				var operations={};
+					operations[operationName] = keyValue;
+					operations[operationType] = "I4";
+					operations[operationElement]=TargetActivity[0]+".element."+TargetActivity[1];
+					operations[decisionname]=TheDecision[0]+".element."+TheDecision[1];
+					operations[conditionname]=TheCondition[0]+".element."+TheCondition[1];
+					operations[UseCaseElement]=Usecase[0]+".element."+Usecase[1];
+					operations[operationTime]=new Date();
+				
+					
+			
+				query2={
+					"$set":
+							operations
+							//infor.dir:activityname,
+							//elements:elements[activityname]
+						
+					};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("InsertActAfterDecCon success");
+				});
+
+				query2={$set:{"positions":positions}};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("InsertActAfterDecCon success");
+				});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(user,id,TarAct,PostAct,Condition,UseCase,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+	
+				query1={"user":user,"_id":ObjectID(id)};
+				//query1={"$where":"function(){for(key in this.operations){if(this.operations[key].position=="+positions[keys]+"){return true};}}"};
+				//console.log(query1);
+				var TargetActivity=TarAct.split('_');
+				var TheCondition=Condition.split('_');
+				var PostActivity=PostAct.split('_');
+				var Usecase=UseCase.split('_');
+				var keyValue="Insert "+TargetActivity[1]+" before "+PostActivity[1]+" , "+TheCondition[1]+" in "+Usecase[1];
+				//console.log(keyValue);
+				var operationName="operations."+keyValue+".name";
+				var operationType="operations."+keyValue+".type";
+				var operationElement="operations."+keyValue+".element";
+				var operationTime="operations."+keyValue+".time";
+				var postactivityname="operations."+keyValue+".postactivity";
+				var conditionname="operations."+keyValue+".condition";
+				var UseCaseElement="operations."+keyValue+".usecaseElement";
+				var operations={};
+					operations[operationName] = keyValue;
+					operations[operationType] = "I5";
+					operations[operationElement]=TargetActivity[0]+".element."+TargetActivity[1];
+					operations[postactivityname]=PostActivity[0]+".element."+PostActivity[1];
+					operations[conditionname]=TheCondition[0]+".element."+TheCondition[1];
+					operations[UseCaseElement]=Usecase[0]+".element."+Usecase[1];
+					operations[operationTime]=new Date();
+				
+					
+			
+				query2={
+					"$set":
+							operations
+							//infor.dir:activityname,
+							//elements:elements[activityname]
+						
+					};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("InsertActBeforeActCon success");
+				});
+
+				query2={$set:{"positions":positions}};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("InsertActBeforeActCon success");
+				});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,id,TarDec,PreAct,MainBranchCon,SupBranchCon,InserAct,TargetAct,UseCase,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+	
+				query1={"user":user,"_id":ObjectID(id)};
+				//query1={"$where":"function(){for(key in this.operations){if(this.operations[key].position=="+positions[keys]+"){return true};}}"};
+				//console.log(query1);
+				var TargetDecision=TarDec.split('_');
+				var PreActivity=PreAct.split('_');
+				var MainBranchCondition=MainBranchCon.split('_');
+				var SupBranchCondition=SupBranchCon.split('_');
+				var InserActivity=InserAct.split('_');
+				var TargetActivity=TargetAct.split('_');
+				var Usecase=UseCase.split('_');
+				var keyValue="Insert "+TargetDecision[1]+" after "+PreActivity[1]+" with ( "+MainBranchCondition[1]+" ),( "+SupBranchCondition[1]+" , ";
+					if(InserActivity[0]!="none")
+						keyValue=keyValue+InserActivity[1]+" , ";
+					keyValue=keyValue+TargetActivity[1]+" ) in "+Usecase[1];
+				//console.log(keyValue);
+				var operationName="operations."+keyValue+".name";
+				var operationType="operations."+keyValue+".type";
+				var operationElement="operations."+keyValue+".element";
+				var operationTime="operations."+keyValue+".time";
+				var preactivityname="operations."+keyValue+".preactivity";
+				var MainBranchConditionname="operations."+keyValue+".maincondition";
+				var SupBranchConditionname="operations."+keyValue+".supcondition";
+				var insertactivity="operations."+keyValue+".insertactivity";
+				var targetactivity="operations."+keyValue+".targetactivity";
+				var UseCaseElement="operations."+keyValue+".usecaseElement";
+
+				var operations={};
+					operations[operationName] = keyValue;
+					operations[operationType] = "I6";
+					operations[operationElement]=TargetDecision[0]+".element."+TargetDecision[1];
+					operations[preactivityname]=PreActivity[0]+".element."+PreActivity[1];
+					operations[MainBranchConditionname]=MainBranchCondition[0]+".element."+MainBranchCondition[1];
+					operations[SupBranchConditionname]=SupBranchCondition[0]+".element."+SupBranchCondition[1];
+					if(InserActivity[1]=="none")
+						operations[insertactivity]=[];
+					else
+						operations[insertactivity]=InserActivity[0]+".element."+InserActivity[1];
+					operations[targetactivity]=TargetActivity[0]+".element."+TargetActivity[1];
+					operations[UseCaseElement]=Usecase[0]+".element."+Usecase[1];
+					operations[operationTime]=new Date();
+				
+					
+			
+				query2={
+					"$set":
+							operations
+							//infor.dir:activityname,
+							//elements:elements[activityname]
+						
+					};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("saveInsertDecAfterActCon success");
+				});
+
+				query2={$set:{"positions":positions}};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("saveInsertDecAfterActCon success");
+				});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.saveInsertDecAfterDecCon = function saveInsertDecAfterDecCon(user,id,TarDec,InserDec,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+	
+				query1={"user":user,"_id":ObjectID(id)};
+				//query1={"$where":"function(){for(key in this.operations){if(this.operations[key].position=="+positions[keys]+"){return true};}}"};
+				//console.log(query1);
+				var TargetDecision=TarDec.split('_');
+				var InsertDecison=InserDec.split('_');
+				var InsertConditon=InserCon.split('_');
+				var MainBranchCondition=MainBranchCon.split('_');
+				var SupBranchCondition=SupBranchCon.split('_');
+				var InserActivity=InserAct.split('_');
+				var TargetDecisions=TargetDec.split('_');
+				var Usecase=UseCase.split('_');
+				var keyValue="Insert "+TargetDecision[1]+" after ( "+InsertDecison[1]+" , "+InsertConditon[1]+" ) with ( "+MainBranchCondition[1]+" ),( "+SupBranchCondition[1]+" , "+InserActivity[1]+" , "+TargetDecisions[1]+" ) in "+Usecase[1];
+				//console.log(keyValue);
+				var operationName="operations."+keyValue+".name";
+				var operationType="operations."+keyValue+".type";
+				var operationElement="operations."+keyValue+".element";
+				var operationTime="operations."+keyValue+".time";
+				var insertdecisionname="operations."+keyValue+".insertdecision";
+				var insertconditionname="operations."+keyValue+".insertcondition";
+				var MainBranchConditionname="operations."+keyValue+".maincondition";
+				var SupBranchConditionname="operations."+keyValue+".supcondition";
+				var insertactivity="operations."+keyValue+".insertactivity";
+				var targetdecision="operations."+keyValue+".targetdecision";
+				var UseCaseElement="operations."+keyValue+".usecaseElement";
+
+				var operations={};
+					operations[operationName] = keyValue;
+					operations[operationType] = "I7";
+					operations[operationElement]=TargetDecision[0]+".element."+TargetDecision[1];
+					operations[insertdecisionname]=InsertDecison[0]+".element."+InsertDecison[1];
+					operations[insertconditionname]=InsertConditon[0]+".element."+InsertConditon[1];
+					operations[MainBranchConditionname]=MainBranchCondition[0]+".element."+MainBranchCondition[1];
+					operations[SupBranchConditionname]=SupBranchCondition[0]+".element."+SupBranchCondition[1];
+					operations[insertactivity]=InserActivity[0]+".element."+InserActivity[1];
+					operations[targetdecision]=TargetDecision[0]+".element."+TargetDecisions[1];
+					operations[UseCaseElement]=Usecase[0]+".element."+Usecase[1];
+					operations[operationTime]=new Date();
+				
+					
+			
+				query2={
+					"$set":
+							operations
+							//infor.dir:activityname,
+							//elements:elements[activityname]
+						
+					};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("saveInsertDecAfterDecCon success");
+				});
+
+				query2={$set:{"positions":positions}};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("saveInsertDecAfterDecCon success");
+				});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.saveInsertDecBeforeAct = function saveInsertDecBeforeAct(user,id,TarDec,PostAct,Con1,Tar1,Con2,Tar2,UseCase,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+	
+				query1={"user":user,"_id":ObjectID(id)};
+				//query1={"$where":"function(){for(key in this.operations){if(this.operations[key].position=="+positions[keys]+"){return true};}}"};
+				//console.log(query1);
+				var TargetDecision=TarDec.split('_');
+				var PostActivity=PostAct.split('_');
+				var Condition1=Con1.split('_');
+				var Target1=Tar1.split('_');
+				var Condition2=Con2.split('_');
+				var Target2=Tar2.split('_');
+				var Usecase=UseCase.split('_');
+				var keyValue="Insert "+TargetDecision[1]+" before "+PostActivity[1]+" with ( "+Condition1[1]+" , "+Target1[1]+" ),( "+Condition2[1]+" , "+Target2[1]+" ) in "+Usecase[1];
+				
+				//console.log(keyValue);
+				var operationName="operations."+keyValue+".name";
+				var operationType="operations."+keyValue+".type";
+				var operationElement="operations."+keyValue+".element";
+				var operationTime="operations."+keyValue+".time";
+				var postactivityname="operations."+keyValue+".postactivity";
+				var Condition1name="operations."+keyValue+".condition1";
+				var Target1name="operations."+keyValue+".target1";
+				var Condition2name="operations."+keyValue+".condition2";
+				var Target2name="operations."+keyValue+".target2";
+				var UseCaseElement="operations."+keyValue+".usecaseElement";
+
+				var operations={};
+					operations[operationName] = keyValue;
+					operations[operationType] = "I8";
+					operations[operationElement]=TargetDecision[0]+".element."+TargetDecision[1];
+					operations[postactivityname]=PostActivity[0]+".element."+PostActivity[1];
+					operations[Condition1name]=Condition1[0]+".element."+Condition1[1];
+					operations[Target1name]=Target1[0]+".element."+Target1[1];	
+					operations[Condition2name]=Condition2[0]+".element."+Condition2[1];
+					operations[Target2name]=Target2[0]+".element."+Target2[1];
+					operations[UseCaseElement]=Usecase[0]+".element."+Usecase[1];
+					operations[operationTime]=new Date();
+				
+					
+			
+				query2={
+					"$set":
+							operations
+							//infor.dir:activityname,
+							//elements:elements[activityname]
+						
+					};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("saveInsertDecBeforeAct success");
+				});
+
+				query2={$set:{"positions":positions}};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("saveInsertDecBeforeAct success");
+				});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.saveInsertDecBeforeActWith = function saveInsertDecBeforeActWith(user,id,TarDec,PostAct,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+	
+				query1={"user":user,"_id":ObjectID(id)};
+				//query1={"$where":"function(){for(key in this.operations){if(this.operations[key].position=="+positions[keys]+"){return true};}}"};
+				//console.log(query1);
+				var TargetDecision=TarDec.split('_');
+				var PostActivity=PostAct.split('_');
+				var MainBranchCondition=MainBranchCon.split('_');
+				var SupBranchCondition=SupBranchCon.split('_');
+				var InserActivity=InserAct.split('_');
+				var TargetDecisions=TargetDec.split('_');
+				var Usecase=UseCase.split('_');
+				var keyValue="Insert "+TargetDecision[1]+" before "+PostActivity[1]+" with ( "+MainBranchCondition[1]+" ),( "+SupBranchCondition[1]+" , ";
+					if(InserActivity[0]!="none")
+						keyValue=keyValue+InserActivity[1]+" , ";
+					keyValue=keyValue+TargetDecisions[1]+" ) in "+Usecase[1];
+				//console.log(keyValue);
+				var operationName="operations."+keyValue+".name";
+				var operationType="operations."+keyValue+".type";
+				var operationElement="operations."+keyValue+".element";
+				var operationTime="operations."+keyValue+".time";
+				var postactivityname="operations."+keyValue+".postactivity";
+				var MainBranchConditionname="operations."+keyValue+".maincondition";
+				var SupBranchConditionname="operations."+keyValue+".supcondition";
+				var insertactivity="operations."+keyValue+".insertactivity";
+				var targetdecision="operations."+keyValue+".targetdecision";
+				var UseCaseElement="operations."+keyValue+".usecaseElement";
+
+				var operations={};
+					operations[operationName] = keyValue;
+					operations[operationType] = "I9";
+					operations[operationElement]=TargetDecision[0]+".element."+TargetDecision[1];
+					operations[postactivityname]=PostActivity[0]+".element."+PostActivity[1];
+					operations[MainBranchConditionname]=MainBranchCondition[0]+".element."+MainBranchCondition[1];
+					operations[SupBranchConditionname]=SupBranchCondition[0]+".element."+SupBranchCondition[1];
+					if(InserActivity[1]=="none")
+						operations[insertactivity]=[];
+					else
+						operations[insertactivity]=InserActivity[0]+".element."+InserActivity[1];
+					operations[targetdecision]=TargetDecisions[0]+".element."+TargetDecisions[1];
+					operations[UseCaseElement]=Usecase[0]+".element."+Usecase[1];
+					operations[operationTime]=new Date();
+				
+					
+			
+				query2={
+					"$set":
+							operations
+							//infor.dir:activityname,
+							//elements:elements[activityname]
+						
+					};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("saveInsertDecAfterActCon success");
+				});
+
+				query2={$set:{"positions":positions}};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("saveInsertDecAfterActCon success");
+				});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(user,id,TarDec,PostAct,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+	
+				query1={"user":user,"_id":ObjectID(id)};
+				//query1={"$where":"function(){for(key in this.operations){if(this.operations[key].position=="+positions[keys]+"){return true};}}"};
+				//console.log(query1);
+				var TargetDecision=TarDec.split('_');
+				var PostActivity=PostAct.split('_');
+				var InsertConditon=InserCon.split('_');
+				var MainBranchCondition=MainBranchCon.split('_');
+				var SupBranchCondition=SupBranchCon.split('_');
+				var InserActivity=InserAct.split('_');
+				var TargetDecisions=TargetDec.split('_');
+				var Usecase=UseCase.split('_');
+				var keyValue="Insert "+TargetDecision[1]+" before ( "+PostActivity[1]+" , "+InsertConditon[1]+" ) with ( "+MainBranchCondition[1]+" ),( "+SupBranchCondition[1]+" , "+InserActivity[1]+" , "+TargetDecisions[1]+" ) in "+Usecase[1];
+				//console.log(keyValue);
+				var operationName="operations."+keyValue+".name";
+				var operationType="operations."+keyValue+".type";
+				var operationElement="operations."+keyValue+".element";
+				var operationTime="operations."+keyValue+".time";
+				var postactivityname="operations."+keyValue+".postactivity";
+				var insertconditionname="operations."+keyValue+".insertcondition";
+				var MainBranchConditionname="operations."+keyValue+".maincondition";
+				var SupBranchConditionname="operations."+keyValue+".supcondition";
+				var insertactivity="operations."+keyValue+".insertactivity";
+				var targetdecision="operations."+keyValue+".targetdecision";
+				var UseCaseElement="operations."+keyValue+".usecaseElement";
+
+				var operations={};
+					operations[operationName] = keyValue;
+					operations[operationType] = "I10";
+					operations[operationElement]=TargetDecision[0]+".element."+TargetDecision[1];
+					operations[postactivityname]=PostActivity[0]+".element."+PostActivity[1];
+					operations[insertconditionname]=InsertConditon[0]+".element."+InsertConditon[1];
+					operations[MainBranchConditionname]=MainBranchCondition[0]+".element."+MainBranchCondition[1];
+					operations[SupBranchConditionname]=SupBranchCondition[0]+".element."+SupBranchCondition[1];
+					operations[insertactivity]=InserActivity[0]+".element."+InserActivity[1];
+					operations[targetdecision]=TargetDecisions[0]+".element."+TargetDecisions[1];
+					operations[UseCaseElement]=Usecase[0]+".element."+Usecase[1];
+					operations[operationTime]=new Date();
+				
+					
+			
+				query2={
+					"$set":
+							operations
+							//infor.dir:activityname,
+							//elements:elements[activityname]
+						
+					};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("saveInsertDecAfterDecCon success");
+				});
+
+				query2={$set:{"positions":positions}};
+				collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("saveInsertDecAfterDecCon success");
+				});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.deleteActivity = function deleteActivity(user,id,operation_name,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+			var name=operation_name.split(" ");
+			var length=name.length;
+			length=length-1;
+			console.log(operation_name+"#"+name[length]);
+			var elementName="elements."+name[length];
+			var elements={};
+			     elements[elementName]=name[length];
+			collection.update(query1,{"$unset":elements},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete element success");
+				});
+
+			var operationName="operations."+operation_name;
+			var operations={};
+					operations[operationName] = operation_name;
+			collection.update(query1,{"$unset":operations},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete element success");
+				});
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete Activity success");
+				});
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				console.log("OK");
+				docs.forEach(function(doc, index) {
+					console.log(doc.name);
+				});
+			});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.deleteDecision = function deleteDecision(user,id,operation_name,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+			var name=operation_name.split(" ");
+			var length=name.length;
+			length=length-1;
+			console.log(operation_name+"#"+name[length]);
+			var elementName="elements."+name[length];
+			var elements={};
+			     elements[elementName]=name[length];
+			collection.update(query1,{"$unset":elements},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete element success");
+				});
+
+			var operationName="operations."+operation_name;
+			var operations={};
+					operations[operationName] = operation_name;
+			collection.update(query1,{"$unset":operations},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete decision success");
+				});
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete Decision success");
+				});
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				console.log("OK");
+				docs.forEach(function(doc, index) {
+					console.log(doc.name);
+				});
+			});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.deleteCondition = function deleteCondition(user,id,operation_name,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+			var name=operation_name.split(" ");
+			var length=name.length;
+			length=length-1;
+			console.log(operation_name+"#"+name[length]);
+			var elementName="elements."+name[length];
+			var elements={};
+			     elements[elementName]=name[length];
+			collection.update(query1,{"$unset":elements},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete element success");
+				});
+
+			var operationName="operations."+operation_name;
+			var operations={};
+					operations[operationName] = operation_name;
+			collection.update(query1,{"$unset":operations},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete decision success");
+				});
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete Decision success");
+				});
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				console.log("OK");
+				docs.forEach(function(doc, index) {
+					console.log(doc.name);
+				});
+			});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.deleteUseCase = function deleteUseCase(user,id,operation_name,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+			var name=operation_name.split(" ");
+			var length=name.length;
+			length=length-1;
+			console.log(operation_name+"#"+name[length]);
+			var elementName="elements."+name[length];
+			var elements={};
+			     elements[elementName]=name[length];
+			collection.update(query1,{"$unset":elements},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete element success");
+				});
+
+			var operationName="operations."+operation_name;
+			var operations={};
+					operations[operationName] = operation_name;
+			collection.update(query1,{"$unset":operations},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete decision success");
+				});
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete Decision success");
+				});
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				console.log("OK");
+				docs.forEach(function(doc, index) {
+					console.log(doc.name);
+				});
+			});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,id,operation_name,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+
+			var operationName="operations."+operation_name;
+			var operations={};
+					operations[operationName] = operation_name;
+			collection.update(query1,{"$unset":operations},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete decision success");
+				});
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete Decision success");
+				});
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				console.log("OK");
+				docs.forEach(function(doc, index) {
+					console.log(doc.name);
+				});
+			});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.deleteInsertActBeforePost = function deleteInsertActBeforePost(user,id,operation_name,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+
+			var operationName="operations."+operation_name;
+			var operations={};
+					operations[operationName] = operation_name;
+			collection.update(query1,{"$unset":operations},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete decision success");
+				});
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete Decision success");
+				});
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				console.log("OK");
+				docs.forEach(function(doc, index) {
+					console.log(doc.name);
+				});
+			});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(user,id,operation_name,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+
+			var operationName="operations."+operation_name;
+			var operations={};
+					operations[operationName] = operation_name;
+			collection.update(query1,{"$unset":operations},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete decision success");
+				});
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete Decision success");
+				});
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				console.log("OK");
+				docs.forEach(function(doc, index) {
+					console.log(doc.name);
+				});
+			});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCon(user,id,operation_name,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+
+			var operationName="operations."+operation_name;
+			var operations={};
+					operations[operationName] = operation_name;
+			collection.update(query1,{"$unset":operations},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete decision success");
+				});
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete Decision success");
+				});
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				console.log("OK");
+				docs.forEach(function(doc, index) {
+					console.log(doc.name);
+				});
+			});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+
+Tracerule.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,id,operation_name,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+
+			var operationName="operations."+operation_name;
+			var operations={};
+					operations[operationName] = operation_name;
+			collection.update(query1,{"$unset":operations},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete decision success");
+				});
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete Decision success");
+				});
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				console.log("OK");
+				docs.forEach(function(doc, index) {
+					console.log(doc.name);
+				});
+			});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(user,id,operation_name,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+
+			var operationName="operations."+operation_name;
+			var operations={};
+					operations[operationName] = operation_name;
+			collection.update(query1,{"$unset":operations},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete decision success");
+				});
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete Decision success");
+				});
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				console.log("OK");
+				docs.forEach(function(doc, index) {
+					console.log(doc.name);
+				});
+			});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+Tracerule.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user,id,operation_name,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+
+			var operationName="operations."+operation_name;
+			var operations={};
+					operations[operationName] = operation_name;
+			collection.update(query1,{"$unset":operations},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete decision success");
+				});
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete Decision success");
+				});
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				console.log("OK");
+				docs.forEach(function(doc, index) {
+					console.log(doc.name);
+				});
+			});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+
+Tracerule.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActWith(user,id,operation_name,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+
+			var operationName="operations."+operation_name;
+			var operations={};
+					operations[operationName] = operation_name;
+			collection.update(query1,{"$unset":operations},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete decision success");
+				});
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete Decision success");
+				});
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				console.log("OK");
+				docs.forEach(function(doc, index) {
+					console.log(doc.name);
+				});
+			});
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+}
+
+
+Tracerule.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCon(user,id,operation_name,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+
+			var operationName="operations."+operation_name;
+			var operations={};
+					operations[operationName] = operation_name;
+			collection.update(query1,{"$unset":operations},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete decision success");
+				});
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("delete Decision success");
+				});
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				console.log("OK");
+				docs.forEach(function(doc, index) {
+					console.log(doc.name);
+				});
+			});
 
 			var query = {};
 			if (id) {
