@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 
-<% tracerules.forEach(function(trace,index){%>
+<% tracerules.forEach(function(trace,index){
+   if(trace._id==current_guard){
+
+  %>
 
 <div class="myBorderRadius">
     <div class="titles">
@@ -331,6 +334,7 @@
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
+                                <input type="hidden" id="hidden_insertactafterpre" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
                                   Target Activity:
@@ -413,8 +417,10 @@
                               Insert <b><%=target1[2]%></b> before <b><%=target2[2]%></b> in <b><%= target3[2]%></b>
                               <i class="icon-minus insertActBeforePost" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
                             </h4>
+
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
+                                <input type="hidden" id="hidden_insertActBeforePost" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
                                   Target Activity:
@@ -501,6 +507,7 @@
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
+                                <input type="hidden" id="hidden_insertActAfterDecCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
                                   Target Activity:
@@ -606,6 +613,7 @@
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
+                                 <input type="hidden" id="hidden_insertActBeforeActCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
                                   Target Activity:
@@ -728,6 +736,7 @@
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
+                                <input type="hidden" id="hidden_insertDecAfterAct" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
                                   Target Decision:
@@ -915,6 +924,7 @@
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
+                                 <input type="hidden" id="hidden_insertDecAfterDecCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>_<%= target8[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
                                   Target Decision:
@@ -1109,6 +1119,7 @@
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
+                                 <input type="hidden" id="hidden_insertDecBeforeAct" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
                                   Target Decision:
@@ -1281,6 +1292,7 @@
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
+                                 <input type="hidden" id="hidden_insertDecBeforeActWit" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
                                   Target Decision:
@@ -1454,6 +1466,7 @@
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
+                                <input type="hidden" id="hidden_insertDecBeforeActCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>_<%= target8[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
                                   Target Decision:
@@ -1655,4 +1668,6 @@
 
     </div>
    </div>
-  <%})%>
+  <%
+}
+  })%>

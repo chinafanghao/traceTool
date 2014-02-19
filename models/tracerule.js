@@ -1330,7 +1330,7 @@ Tracerule.saveInsertDecAfterDecCon = function saveInsertDecAfterDecCon(user,id,T
 					operations[MainBranchConditionname]=MainBranchCondition[0]+".element."+MainBranchCondition[1];
 					operations[SupBranchConditionname]=SupBranchCondition[0]+".element."+SupBranchCondition[1];
 					operations[insertactivity]=InserActivity[0]+".element."+InserActivity[1];
-					operations[targetdecision]=TargetDecision[0]+".element."+TargetDecisions[1];
+					operations[targetdecision]=TargetDecisions[0]+".element."+TargetDecisions[1];
 					operations[UseCaseElement]=Usecase[0]+".element."+Usecase[1];
 					operations[operationTime]=new Date();
 				

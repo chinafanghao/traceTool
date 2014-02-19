@@ -1164,9 +1164,22 @@ exports.deleteActivity = function(req, res){
  	 var user=param[0];
  	 var id=param[1];
  	 var operation_name=param[2];
+ 	 operation=operation_name.split(" ");
  	 var positions=param[3];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
+
+ 	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,todepenNum){
+ 	 	
+ 	 	if(todepenNum>0){
+ 	 		err = 'This activity still have dependent relation(s)';
+ 	 	}
+ 	 	if (err) {
+			req.flash('error', err);
+			return res.redirect('/T/'+current_guard_id);
+		}
+
+		else{
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
@@ -1205,6 +1218,8 @@ exports.deleteActivity = function(req, res){
 	
    });
   });
+ 	 }//else
+ 	}); //getToDepenNum
 }
 
 exports.deleteDecision = function(req, res){
@@ -1213,9 +1228,23 @@ exports.deleteDecision = function(req, res){
  	 var user=param[0];
  	 var id=param[1];
  	 var operation_name=param[2];
+ 	 operation=operation_name.split(" ");
  	 var positions=param[3];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
+
+ 	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,todepenNum){
+ 	 	
+ 	 	if(todepenNum>0){
+ 	 		err = 'This Decision still have dependent relation(s)';
+ 	 	}
+ 	 	if (err) {
+			req.flash('error', err);
+			return res.redirect('/T/'+current_guard_id);
+		}
+
+		
+ 	 else{
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
@@ -1254,6 +1283,8 @@ exports.deleteDecision = function(req, res){
 	
    });
   });
+ }//else
+ 	}); //getToDepenNum
 }
 
 exports.deleteCondition = function(req, res){
@@ -1262,9 +1293,23 @@ exports.deleteCondition = function(req, res){
  	 var user=param[0];
  	 var id=param[1];
  	 var operation_name=param[2];
+ 	 operation=operation_name.split(" ");
  	 var positions=param[3];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,todepenNum){
+ 	 	
+ 	 	if(todepenNum>0){
+ 	 		err = 'This Condition still have dependent relation(s)';
+ 	 	}
+ 	 	if (err) {
+			req.flash('error', err);
+			return res.redirect('/T/'+current_guard_id);
+		}
+
+		
+ 	 else{
+
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
@@ -1303,6 +1348,8 @@ exports.deleteCondition = function(req, res){
 	
    });
   });
+ 	 }//else
+ 	}); //getToDepenNum
 }
 
 exports.deleteUseCase = function(req, res){
@@ -1311,9 +1358,22 @@ exports.deleteUseCase = function(req, res){
  	 var user=param[0];
  	 var id=param[1];
  	 var operation_name=param[2];
+ 	 operation=operation_name.split(" ");
  	 var positions=param[3];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,todepenNum){
+ 	 	
+ 	 	if(todepenNum>0){
+ 	 		err = 'This Use Case still have dependent relation(s)';
+ 	 	}
+ 	 	if (err) {
+			req.flash('error', err);
+			return res.redirect('/T/'+current_guard_id);
+		}
+
+		
+ 	 else{
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
@@ -1352,8 +1412,11 @@ exports.deleteUseCase = function(req, res){
 	
    });
   });
+ 	 }//else
+ 	}); //getToDepenNum
 }
 
+//I2
 exports.deleteInsertActAfterPre = function(req, res){
 	 console.log(req.params.content);
  	 var param=req.params.content.split("分");
@@ -1361,13 +1424,14 @@ exports.deleteInsertActAfterPre = function(req, res){
  	 var id=param[1];
  	 var operation_name=param[2];
  	 var positions=param[3];
+ 	 var hidden_field=param[4];
  	 var current_guard_id=id;
- 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 console.log(user+" "+id+" "+operation_name+" "+positions+" "+hidden_field);
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
 		}
-		  ElementDepency.deleteInsertActAfterPre(req.session.user.name,id,operation_name,function(err,elementdepencys){
+		  ElementDepency.deleteInsertActAfterPre(req.session.user.name,id,operation_name,hidden_field,function(err,elementdepencys){
 	  		
 	  		if(err){
 	  			elementdepencys=[];
@@ -1402,7 +1466,7 @@ exports.deleteInsertActAfterPre = function(req, res){
    });
   });
 }
-
+//I3
 exports.deleteInsertActBeforePost = function(req, res){
 	 console.log(req.params.content);
  	 var param=req.params.content.split("分");
@@ -1410,13 +1474,14 @@ exports.deleteInsertActBeforePost = function(req, res){
  	 var id=param[1];
  	 var operation_name=param[2];
  	 var positions=param[3];
+ 	 var hidden_field=param[4];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
 		}
-		  ElementDepency.deleteInsertActBeforePost(req.session.user.name,id,operation_name,function(err,elementdepencys){
+		  ElementDepency.deleteInsertActBeforePost(req.session.user.name,id,operation_name,hidden_field,function(err,elementdepencys){
 	  		
 	  		if(err){
 	  			elementdepencys=[];
@@ -1451,6 +1516,7 @@ exports.deleteInsertActBeforePost = function(req, res){
    });
   });
 }
+//I4
 
 exports.deleteInsertActAfterDecCon = function(req, res){
 	 console.log(req.params.content);
@@ -1459,13 +1525,14 @@ exports.deleteInsertActAfterDecCon = function(req, res){
  	 var id=param[1];
  	 var operation_name=param[2];
  	 var positions=param[3];
+ 	 var hidden_field=param[4];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
 		}
-		  ElementDepency.deleteInsertActAfterDecCon(req.session.user.name,id,operation_name,function(err,elementdepencys){
+		  ElementDepency.deleteInsertActAfterDecCon(req.session.user.name,id,operation_name,hidden_field,function(err,elementdepencys){
 	  		
 	  		if(err){
 	  			elementdepencys=[];
@@ -1502,7 +1569,7 @@ exports.deleteInsertActAfterDecCon = function(req, res){
 }
 
 
-
+//I5
 exports.deleteInsertActBeforeActCon = function(req, res){
 	 console.log(req.params.content);
  	 var param=req.params.content.split("分");
@@ -1510,13 +1577,14 @@ exports.deleteInsertActBeforeActCon = function(req, res){
  	 var id=param[1];
  	 var operation_name=param[2];
  	 var positions=param[3];
+ 	 var hidden_field=param[4];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
 		}
-		  ElementDepency.deleteInsertActBeforeActCon(req.session.user.name,id,operation_name,function(err,elementdepencys){
+		  ElementDepency.deleteInsertActBeforeActCon(req.session.user.name,id,operation_name,hidden_field,function(err,elementdepencys){
 	  		
 	  		if(err){
 	  			elementdepencys=[];
@@ -1553,7 +1621,7 @@ exports.deleteInsertActBeforeActCon = function(req, res){
 }
 
 
-
+//I6
 exports.deleteInsertDecAfterAct = function(req, res){
 	 console.log(req.params.content);
  	 var param=req.params.content.split("分");
@@ -1561,13 +1629,14 @@ exports.deleteInsertDecAfterAct = function(req, res){
  	 var id=param[1];
  	 var operation_name=param[2];
  	 var positions=param[3];
+ 	 var hidden_field=param[4];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
 		}
-		  ElementDepency.deleteInsertDecAfterAct(req.session.user.name,id,operation_name,function(err,elementdepencys){
+		  ElementDepency.deleteInsertDecAfterAct(req.session.user.name,id,operation_name,hidden_field,function(err,elementdepencys){
 	  		
 	  		if(err){
 	  			elementdepencys=[];
@@ -1602,6 +1671,7 @@ exports.deleteInsertDecAfterAct = function(req, res){
    });
   });
 }
+//I7
 
 exports.deleteInsertDecAfterDecCon = function(req, res){
 	 console.log(req.params.content);
@@ -1610,13 +1680,14 @@ exports.deleteInsertDecAfterDecCon = function(req, res){
  	 var id=param[1];
  	 var operation_name=param[2];
  	 var positions=param[3];
+ 	 var hidden_field=param[4];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
 		}
-		ElementDepency.deleteInsertDecAfterDecCon(req.session.user.name,id,operation_name,function(err,elementdepencys){
+		ElementDepency.deleteInsertDecAfterDecCon(req.session.user.name,id,operation_name,hidden_field,function(err,elementdepencys){
 	  		
 	  		if(err){
 	  			elementdepencys=[];
@@ -1652,6 +1723,7 @@ exports.deleteInsertDecAfterDecCon = function(req, res){
   });
 }
 
+//I8
 
 exports.deleteInsertDecBeforeAct = function(req, res){
 	 console.log(req.params.content);
@@ -1660,13 +1732,14 @@ exports.deleteInsertDecBeforeAct = function(req, res){
  	 var id=param[1];
  	 var operation_name=param[2];
  	 var positions=param[3];
+ 	 var hidden_field=param[4];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
 		}
-		ElementDepency.deleteInsertDecBeforeAct(req.session.user.name,id,operation_name,function(err,elementdepencys){
+		ElementDepency.deleteInsertDecBeforeAct(req.session.user.name,id,operation_name,hidden_field,function(err,elementdepencys){
 	  		
 	  		if(err){
 	  			elementdepencys=[];
@@ -1701,6 +1774,7 @@ exports.deleteInsertDecBeforeAct = function(req, res){
    });
   });
 }
+//I9
 
 exports.deleteInsertDecBeforeActWith = function(req, res){
 	 console.log(req.params.content);
@@ -1709,13 +1783,14 @@ exports.deleteInsertDecBeforeActWith = function(req, res){
  	 var id=param[1];
  	 var operation_name=param[2];
  	 var positions=param[3];
+ 	 var hidden_field=param[4];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
 		}
-		ElementDepency.deleteInsertDecBeforeActWith(req.session.user.name,id,operation_name,function(err,elementdepencys){
+		ElementDepency.deleteInsertDecBeforeActWith(req.session.user.name,id,operation_name,hidden_field,function(err,elementdepencys){
 	  		
 	  		if(err){
 	  			elementdepencys=[];
@@ -1751,7 +1826,7 @@ exports.deleteInsertDecBeforeActWith = function(req, res){
   });
 }
 
-
+//I10
 
 exports.deleteInsertDecBeforeActCon = function(req, res){
 	 console.log(req.params.content);
@@ -1760,13 +1835,14 @@ exports.deleteInsertDecBeforeActCon = function(req, res){
  	 var id=param[1];
  	 var operation_name=param[2];
  	 var positions=param[3];
+ 	 var hidden_field=param[4];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
 		}
-		ElementDepency.deleteInsertDecBeforeActCon(req.session.user.name,id,operation_name,function(err,elementdepencys){
+		ElementDepency.deleteInsertDecBeforeActCon(req.session.user.name,id,operation_name,hidden_field,function(err,elementdepencys){
 	  		
 	  		if(err){
 	  			elementdepencys=[];
@@ -1800,4 +1876,26 @@ exports.deleteInsertDecBeforeActCon = function(req, res){
 	
    });
   });
+}
+
+exports.editUseCase=function(req,res){
+
+	 var nameMark=req.body.nameMark;
+	 var descriptionMark=req.body.descriptionMark;
+ 	 var user=req.body.user;
+ 	 var id=req.body.id;
+ 	 var usecasename=req.body.usecasename;
+ 	 var usecasedescription=req.body.usecasedescription;
+ 	 var oldusecasename=req.body.oldusecasename;
+ 	 var oldusecasedescription=req.body.oldusecasedescription;
+ 	 var positions=req.body.positions;
+	 var current_guard_id=req.body.current_guard_id;
+	 var type="UseCase";
+	 if(nameMark)
+	  ElementDepency.editUseCaseDependee(req.session.user.name,usecasename,oldusecasename,current_guard_id,type,function(err,elementdepencys){
+	  		console.log("change depency success");
+		});
+	  Tracerule.editUseCase(req.session.user.name,id,usecasename,usecasedescription,positions,function(){
+			console.log("change tracerule success");
+	});
 }

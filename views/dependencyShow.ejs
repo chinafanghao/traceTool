@@ -4,8 +4,12 @@
   <% elementdepencys.forEach(function(elementdepency,index){
       if(elementdepency.dependee==current_guard){
         for(key in elementdepency.depender){
-          var path=elementdepency.depender[key].split("_");
+        //  var path=elementdepency.depender[key].name.split("_");
+
+        if(elementdepency.depender[key].refer_num>0){
+          var path=key.split("_");
     %>
+      
       <tr>
            <td></td>
            <td><%=elementdepency.element%></td>
@@ -25,7 +29,9 @@
            </td>
       </tr>
 
-    <%}
+    <%
+        }
+      }
     }
   })%>
 

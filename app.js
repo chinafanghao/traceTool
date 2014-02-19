@@ -110,6 +110,7 @@ app.get('/DeleteInsertDecBeforeAct/:content',routes.deleteInsertDecBeforeAct);
 app.get('/DeleteInsertDecBeforeActWith/:content',routes.deleteInsertDecBeforeActWith);
 app.get('/DeleteInsertDecBeforeActCon/:content',routes.deleteInsertDecBeforeActCon);
 
+app.post('/EditUseCase',routes.editUseCase);
 app.post('/EditActivity',routes.EditActivity);
 
 http.createServer(app).listen(app.get('port'), function(){

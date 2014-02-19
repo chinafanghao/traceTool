@@ -215,12 +215,17 @@
          $activityName=$(this).parent().parent().parent().find('input').val();
          $activityDescription=$(this).parent().parent().parent().find('textarea').val();
          $activityExecutor=$(this).parent().parent().parent().find('.ActivityExecutor').find("option:selected").text();
+         /*
+
          $activityVirtual=$(this).parent().parent().parent().find('.ActivityVirtual').find("option:selected").text();
          if($activityVirtual=="Yes")
           $activityVirtual="true";
         else
           $activityVirtual="false";
         $operation_position="";
+
+        */
+
         var $mark=false;
        $(".section_accordion").each(function(){
           if($(this).attr("id")==$current_accordion)
@@ -247,7 +252,7 @@
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
          //var $activityName=
-         /*
+         
          $.ajax({
             type: "POST",
             url: "/EditActivity",
@@ -261,11 +266,18 @@
               current_guard_id:$current_guard_id
            },
             dataType:'json',
-          });*/
+          });
       })
-      
+      var $OldUseCaseName;
+      var $OldUseCaseDescription;
+
+      var $UseCaseName;
+      var $UseCaseDescription;
+
       $(".icon-pencil.editOperation.UseCase").click(function(){
         jQuery.each($(this).parent().parent().parent(),function(){
+          $OldUseCaseName=$(this).find('input').attr("placeholder");
+          $OldUseCaseDescription=$(this).find('textarea').text();
           $(this).find('input').attr("readonly",false);
           $(this).find('textarea').attr("readonly",false);
           
@@ -276,14 +288,68 @@
       })
 
       $(".icon-ok.editOperation.UseCase").click(function(){
+          
         jQuery.each($(this).parent().parent().parent(),function(){
-          $(this).find('input').attr("readonly",true);
-          $(this).find('textarea').attr("readonly",true);
-
+           $(this).find('input').attr("readonly",true);
+           $(this).find('textarea').attr("readonly",true);
         })
         //$(this).parent().parent().parent().('input').attr("readonly",false);
+
+          $operation_position="";
+          var $mark=false;
+       $(".section_accordion").each(function(){
+         
+          if($(this).attr("id")==$current_accordion)
+            $mark=true;
+
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          $operation_position=$operation_position+$(this).attr("id");
+          if($mark){
+            $mark=false;
+            if($operation_position!="")
+              $operation_position=$operation_position+"$";
+
+            $operation_position=$operation_position+"Create Use Case "+$usecasename;
+          }
+       })
          $(this).css("display","none");
          $(this).siblings().show();
+
+         jQuery.each($(this).parent().parent().parent(),function(){
+          $UseCaseName=$(this).find('input').val();
+          $UseCaseDescription=$(this).find('textarea').val();
+        })
+         var $nameMark;
+         var $DescriptionMark;
+         if($UseCaseName!==$OldUseCaseName)
+            $nameMark=true;
+          else
+            $nameMark=false;
+         if($UseCaseDescription!==$OldUseCaseDescription)
+            $DescriptionMark=true;
+          else
+            $DescriptionMark=false;
+
+         if($UseCaseName!==$OldUseCaseName || $UseCaseDescription!==$OldUseCaseDescription){
+          $.ajax({
+            type: "POST",
+            url: "/EditUseCase",
+            data: {
+              nameMark:$nameMark,
+              descriptionMark:$DescriptionMark,
+              user:"<%=tracerules[0].user%>",
+              id:"<%=tracerules[0]._id%>",
+              usecasename:$(this).find('input').val(),
+              usecasedescription:$UseCaseDescription,
+              oldusecasename:$OldUseCaseName,
+              oldusecasedescription:$OldUseCaseDescription,
+              positions:$operation_position,
+              current_guard_id:$current_guard_id 
+           },
+            dataType:'json',
+          }); 
+        }
       })
 
       $(".icon-pencil.editOperation.Decision").click(function(){
@@ -627,12 +693,15 @@
          window.location.href="/DeleteUseCase/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
 
       })
-
+//I2
       $(".icon-minus.insertactafterpre").click(function(){
          $current_accordion=$(this).parent().parent().parent().attr("id");
+          var $hidden_fields=$(this).parent().parent().find("#hidden_insertactafterpre").val();
+         
          $(this).parent().remove();
          $operation_position="";
         
+         
          $(".section_accordion").each(function(){
 
          if($operation_position!="" && $(this).attr("id")!=$current_accordion)
@@ -642,12 +711,13 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertActAfterPre/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         window.location.href="/DeleteInsertActAfterPre/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
 
       })
-
+//I3
       $(".icon-minus.insertActBeforePost").click(function(){
          $current_accordion=$(this).parent().parent().parent().attr("id");
+          var $hidden_fields=$(this).parent().parent().find("#hidden_insertActBeforePost").val();
          $(this).parent().remove();
          $operation_position="";
         
@@ -660,14 +730,15 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertActBeforePost/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         window.location.href="/DeleteInsertActBeforePost/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
 
       })
 
       
-
+//I4
       $(".icon-minus.deleteInsertActAfterDecCon").click(function(){
          $current_accordion=$(this).parent().parent().parent().attr("id");
+         var $hidden_fields=$(this).parent().parent().find("#hidden_insertActAfterDecCon").val();
          $(this).parent().remove();
          $operation_position="";
         
@@ -680,12 +751,13 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertActAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         window.location.href="/DeleteInsertActAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
 
       })
-      
+//I5      
       $(".icon-minus.deleteInsertActBeforeActCon").click(function(){
          $current_accordion=$(this).parent().parent().parent().attr("id");
+         var $hidden_fields=$(this).parent().parent().find("#hidden_insertActBeforeActCon").val();
          $(this).parent().remove();
          $operation_position="";
         
@@ -698,12 +770,13 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertActBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         window.location.href="/DeleteInsertActBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
 
       })
-
+//I6
       $(".icon-minus.deleteInsertDecAfterAct").click(function(){
          $current_accordion=$(this).parent().parent().parent().attr("id");
+         var $hidden_fields=$(this).parent().parent().find("#hidden_insertDecAfterAct").val();
          $(this).parent().remove();
          $operation_position="";
         
@@ -716,13 +789,14 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertDecAfterAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         window.location.href="/DeleteInsertDecAfterAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
 
       })
 
-
+//I7
       $(".icon-minus.deleteInsertDecAfterDecCon").click(function(){
          $current_accordion=$(this).parent().parent().parent().attr("id");
+         var $hidden_fields=$(this).parent().parent().find("#hidden_insertDecAfterDecCon").val();
          $(this).parent().remove();
          $operation_position="";
         
@@ -735,12 +809,13 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertDecAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         window.location.href="/DeleteInsertDecAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
 
       })
-
+//I8
     $(".icon-minus.deleteInsertDecBeforeAct").click(function(){
          $current_accordion=$(this).parent().parent().parent().attr("id");
+         var $hidden_fields=$(this).parent().parent().find("#hidden_insertDecBeforeAct").val();
          $(this).parent().remove();
          $operation_position="";
         
@@ -753,12 +828,13 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertDecBeforeAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         window.location.href="/DeleteInsertDecBeforeAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
 
       })
-
+//I9
       $(".icon-minus.deleteInsertDecBeforeActWith").click(function(){
          $current_accordion=$(this).parent().parent().parent().attr("id");
+         var $hidden_fields=$(this).parent().parent().find("#hidden_insertDecBeforeActWit").val();
          $(this).parent().remove();
          $operation_position="";
         
@@ -771,12 +847,13 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertDecBeforeActWith/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         window.location.href="/DeleteInsertDecBeforeActWith/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
 
       })
-
+//I10
     $(".icon-minus.deleteInsertDecBeforeActCon").click(function(){
          $current_accordion=$(this).parent().parent().parent().attr("id");
+         var $hidden_fields=$(this).parent().parent().find("#hidden_insertDecBeforeActCon").val();
          $(this).parent().remove();
          $operation_position="";
         
@@ -789,7 +866,7 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertDecBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         window.location.href="/DeleteInsertDecBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
 
       })
 
