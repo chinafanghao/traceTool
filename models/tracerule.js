@@ -1,4 +1,5 @@
 var mongodb = require('./db');
+var async = require('async');  
 
 function Tracerule(username,name,selfname,time,operations,elements,positions,_id) { //post means refinements list
 	this.user = username;
@@ -2637,5 +2638,152 @@ Tracerule.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCon(use
 				callback(null, tracerules);
 			});
 		});
+	});
+}
+
+Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,descriptionMark,oldusecasedescription,usecasedescription,positions,hidden_field)
+{
+	var Oldname=hidden_field+".element."+oldname;
+	var Newname=hidden_field+".element."+newname;
+	var oldnames=oldname;
+	var newnames=newname;
+	var refer_num;
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+
+			//查找user属性为username的文档，如果username为null则匹配全部
+
+			var query = {};
+			var ObjectID = require("mongodb").ObjectID;
+			if (user) {
+				
+				query={"user":user};
+			}
+			collection.find(query).toArray(function(err, docs) {
+
+				if (err) {
+					callback(err, null);
+				}
+
+			
+				
+				  docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+				    var ObjectID = require("mongodb").ObjectID;
+				  
+					if(doc._id==id)
+				{
+						query2={$set:{"positions":positions}};
+							collection.update({"user":user,"_id":ObjectID(id)},query2,{safe:true},function(err){
+							if(err) console.warn(err.message);
+							else console.log("yes");
+						});
+
+					for(key in doc.elements)
+					{
+						
+						if(doc.elements[key].name==oldnames)
+						{
+							
+							
+							
+							var elementName="elements."+doc.elements[key].name;
+							var element={};
+			     			element[elementName]=doc.elements[key].name;
+			     			var ObjectID = require("mongodb").ObjectID;
+			     			
+							collection.update({"user":doc.user,"_id":doc._id},{"$unset":element},function(err){
+							
+								elementName="elements."+newnames+".name";
+								elementDescription="elements."+newnames+".description";
+								elementType="elements."+newnames+".type";
+								elementTime="elements."+newnames+".time";
+								element={};
+			     				element[elementName]=newnames;
+			     				element[elementDescription]=usecasedescription;
+			     				element[elementType]="usecase";
+			     				element[elementTime]=new Date();
+								collection.update({"user":doc.user,"_id":doc._id},{"$set":element},function(err){
+							
+								});
+						});
+					  }
+					}
+				}else{
+					//bug 4
+
+					var newpositions=doc.positions.replace(new RegExp(oldname,"gm"),newname);
+						collection.update({"user":user,"_id":doc._id},{"$set":{"positions":newpositions}},{safe:true},function(err){
+							if(err) console.warn(err.message);
+							else console.log("yes");
+						});
+				}
+				
+					for(key in doc.operations)
+					{
+						console.log("operations.key:"+key);
+						var spl=doc.operations[key].name.split(" ");
+						var newkey="";
+						for(keys in spl)
+						{
+							if(newkey!="")
+								newkey=newkey+" ";
+							if(spl[keys]==oldnames)
+								newkey=newkey+newnames;
+							else
+								newkey=newkey+spl[keys];
+						}
+							
+							var newOpe;
+							
+							if(newkey!==doc.operations[key].name){
+								
+								newOpe={};
+								for(sub in doc.operations[key]){
+									var string="operations."+newkey+"."+sub;
+									if(doc.operations[key][sub]==doc.operations[key].name)
+									{
+										newOpe[string]=newkey;
+									}
+									else{
+										if(doc.operations[key][sub]==Oldname)
+										{
+											newOpe[string]=Newname;
+										}
+										else{
+											newOpe[string]=doc.operations[key][sub];
+										}
+									}
+
+								}
+								
+								var ObjectID = require("mongodb").ObjectID;
+								collection.update({"user":doc.user,"_id":doc._id},{"$set":newOpe},function(err){
+									var oldOpe={};
+									var oldstring="operations."+doc.operations[key].name;
+									oldOpe[oldstring]=doc.operations[key].name;
+									
+									collection.update({"user":doc.user,"_id":doc._id},{"$unset":oldOpe},function(err){
+									})
+								});
+							}
+					}
+				
+					
+				});
+			});
+				
+				
+			
+		});
+		mongodb.close();
 	});
 }

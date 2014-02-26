@@ -1,4 +1,5 @@
 var mongodb = require('./db');
+var async = require('async');  
 
 function ElementDepency(username, element,dependee,depender,todepen,todepenNum,type,_id) { //post means refinements list
 	this.user = username;
@@ -129,8 +130,12 @@ ElementDepency.getToDepenNum = function getToDepenNum(user, element,callback) {
 	});
 };
 
-ElementDepency.replaceDependKeyName = function replaceDependKeyName(user,oldname,newname,callback) {
-	
+ElementDepency.replaceDependKeyName = function replaceDependKeyName(user,oldname,newname,hide_field,callback) {
+	console.log("oldname:"+oldname);
+	console.log("newname:"+newname);
+	var Oldnames=hide_field+"_"+oldname;
+	var Newnames=hide_field+"_"+newname;
+	var refer_num;
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -149,69 +154,77 @@ ElementDepency.replaceDependKeyName = function replaceDependKeyName(user,oldname
 				
 				query={"user":user};
 			}
-			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).toArray(function(err, docs) {
 
 				if (err) {
 					callback(err, null);
 				}
 
-				var elementdepencys = [];
 				
+
+
 				docs.forEach(function(doc, index) {
 					var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.todepen,doc.todepenNum,doc.type,doc._id);
-					if(doc.element==oldname)
-						doc.element=newname;
+					
 					for(key in doc.depender)
 					{
-						if(key==oldname)
+						
+						if(key==Oldnames)
 						{
-							var refer_num=doc.depender[key].refer_num;
-							var dependerKey="depender."+key+".refer_num";
-							var depender={};
-			     			depender[dependerKey]=refer_num;
-						collection.update({"user":doc.user,"element":doc.element},{"$unset":depender},function(err){
 							
+							var refer_num=doc.depender[key].refer_num;
+							
+							var dependerKey="depender."+key;
+							var depender={};
+			     			depender[dependerKey]=key;
+							collection.update({"user":doc.user,"element":doc.element},{"$unset":depender},function(err){
+								dependerKey="depender."+Newnames+".refer_num";
+								depender={};
+			     				depender[dependerKey]=refer_num;
+								collection.update({"user":doc.user,"element":doc.element},{"$set":depender},function(err){
+							
+								});
 						});
 
-						dependerKey="depender."+newname+".refer_num";
-						depender={};
-			     			depender[dependerKey]=refer_num;
-						collection.update({"user":doc.user,"element":doc.element},{"$set":depender},function(err){
-							
-						});
+						
 
 						}
 					}
+
 					for(key in doc.todepen)
 					{
-						if(key==oldname)
-						{
-							var refer_num=doc.todepen[key].refer_num;
+						
+						if(key==Oldnames)
+						{	
+						 	refer_num=doc.todepen[key].refer_num;
 
-							var todepenKey="todepen."+key+".refer_num";
+							var todepenKey="todepen."+key;
 							var todepen={};
-			     			todepen[todepenKey]=refer_num;
+			     			todepen[todepenKey]=key;
 						collection.update({"user":doc.user,"element":doc.element},{"$unset":todepen},function(err){
-							
-						});
-
-						
-						todepenKey="todepen."+newname+".refer_num";
-						todepen={};
+							todepenKey="todepen."+Newnames+".refer_num";
+							todepen={};
 			     			todepen[todepenKey]=refer_num;
-						collection.update({"user":doc.user,"element":doc.element},{"$set":todepen},function(err){
+							collection.update({"user":doc.user,"element":doc.element},{"$set":todepen},function(err){
 							
+							});
 						});
-						
-
-						}
+					  }
 					}
-					elementdepencys.push(elementdepency);
-				});
+					if(doc.element==oldname){
 
-				callback(null, elementdepencys);
+						collection.update({"user":doc.user,"element":doc.element},{"$set":{"element":newname}},function(err){
+							
+								});
+					}
+					
+				});
+				
+				
 			});
+			mongodb.close();
 		});
+		callback();
 	});
 };
 
@@ -3138,3 +3151,7 @@ ElementDepency.editUseCaseDependee = function editUseCaseDependee(user,elementna
 		
 	});
 };
+
+ElementDepency.editUseCase = function editUseCase(user,id,usecasemark,oldusecasename,usecasename,descriptionmark,olddescription,description,positions){
+
+}

@@ -275,9 +275,12 @@
       var $UseCaseDescription;
 
       $(".icon-pencil.editOperation.UseCase").click(function(){
+
+          $OldUseCaseName=$(this).parent().find('input').val();
+          $OldUseCaseDescription=$(this).parent().parent().parent().find('textarea').text();
+          
         jQuery.each($(this).parent().parent().parent(),function(){
-          $OldUseCaseName=$(this).find('input').attr("placeholder");
-          $OldUseCaseDescription=$(this).find('textarea').text();
+          
           $(this).find('input').attr("readonly",false);
           $(this).find('textarea').attr("readonly",false);
           
@@ -288,38 +291,56 @@
       })
 
       $(".icon-ok.editOperation.UseCase").click(function(){
+        var $hidden_fields=$(this).parent().parent().parent().find("#hidden_editusecase").val();
+          $UseCaseName=$(this).parent().find('input').val();
+          $UseCaseDescription=$(this).parent().parent().parent().find('textarea').val();
           
         jQuery.each($(this).parent().parent().parent(),function(){
            $(this).find('input').attr("readonly",true);
            $(this).find('textarea').attr("readonly",true);
         })
         //$(this).parent().parent().parent().('input').attr("readonly",false);
+        $("b").each(function(i){
+          if($(this).html()==$OldUseCaseName){
+            $(this).html($UseCaseName);
+          }
+        })
 
+        $("option").each(function(i){
+          
+          var spl=$(this).val().split(".");
+          if(spl.length===2 && spl[1]==$OldUseCaseName){
+
+            $(this).val(spl[0]+"."+$UseCaseName);
+            $(this).html($UseCaseName);
+          }
+          
+        })
           $operation_position="";
           var $mark=false;
        $(".section_accordion").each(function(){
-         
-          if($(this).attr("id")==$current_accordion)
-            $mark=true;
-
           if($operation_position!="")
             $operation_position=$operation_position+"$";
-          $operation_position=$operation_position+$(this).attr("id");
-          if($mark){
-            $mark=false;
-            if($operation_position!="")
-              $operation_position=$operation_position+"$";
+          var temp_operation=$(this).attr("id").split(" ");
+          var temps="";
+          for(temp in temp_operation)
+          {
+            if(temps!="")
+              temps=temps+" ";
+            
+            if(temp_operation[temp]==$OldUseCaseName)
+            {
+              temp_operation[temp]=$UseCaseName;
+            }
+            temps=temps+temp_operation[temp];
 
-            $operation_position=$operation_position+"Create Use Case "+$usecasename;
           }
+          $(this).attr("id",temps);
+          $operation_position=$operation_position+$(this).attr("id");
        })
          $(this).css("display","none");
          $(this).siblings().show();
 
-         jQuery.each($(this).parent().parent().parent(),function(){
-          $UseCaseName=$(this).find('input').val();
-          $UseCaseDescription=$(this).find('textarea').val();
-        })
          var $nameMark;
          var $DescriptionMark;
          if($UseCaseName!==$OldUseCaseName)
@@ -340,12 +361,13 @@
               descriptionMark:$DescriptionMark,
               user:"<%=tracerules[0].user%>",
               id:"<%=tracerules[0]._id%>",
-              usecasename:$(this).find('input').val(),
+              usecasename:$UseCaseName,
               usecasedescription:$UseCaseDescription,
               oldusecasename:$OldUseCaseName,
               oldusecasedescription:$OldUseCaseDescription,
               positions:$operation_position,
-              current_guard_id:$current_guard_id 
+              current_guard_id:$current_guard_id,
+              hidden_fields:$hidden_fields
            },
             dataType:'json',
           }); 

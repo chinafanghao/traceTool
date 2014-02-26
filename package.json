@@ -11,6 +11,8 @@
 	"ejs" : "*",
 	"connect-mongo" : "*",
 	"mongodb" : "*",
-	"express-partials" : "*"
+  "mongoose":"*",
+	"express-partials" : "*",
+  "async":"*"
   }
 }

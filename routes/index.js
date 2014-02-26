@@ -9,6 +9,7 @@ var Post = require('../models/post.js');
 var Tracerule = require('../models/tracerule.js');
 var Guardlist = require('../models/guardlist.js');
 var ElementDepency = require('../models/elementdepency.js');
+var async = require('async'); 
 
 exports.index = function(req, res){
 	Post.get(null, function(err, posts) {
@@ -1891,11 +1892,19 @@ exports.editUseCase=function(req,res){
  	 var positions=req.body.positions;
 	 var current_guard_id=req.body.current_guard_id;
 	 var type="UseCase";
-	 if(nameMark)
-	  ElementDepency.editUseCaseDependee(req.session.user.name,usecasename,oldusecasename,current_guard_id,type,function(err,elementdepencys){
+	 var hidden_fields=req.body.hidden_fields;
+	 console.log(oldusecasename+" "+usecasename+" "+hidden_fields);
+	 if(nameMark || descriptionMark){
+	  ElementDepency.replaceDependKeyName(req.session.user.name,oldusecasename,usecasename,hidden_fields,function(){
 	  		console.log("change depency success");
+	  		
+	  		Tracerule.editUseCase(req.session.user.name,id,nameMark,oldusecasename,usecasename,descriptionMark,oldusecasedescription,usecasedescription,positions,hidden_fields,function(){
+				console.log("change tracerule success");
+			});
+
 		});
-	  Tracerule.editUseCase(req.session.user.name,id,usecasename,usecasedescription,positions,function(){
-			console.log("change tracerule success");
-	});
+	}
+
+
+	  
 }
