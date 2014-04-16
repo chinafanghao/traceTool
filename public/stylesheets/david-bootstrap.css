@@ -136,15 +136,23 @@
 }
 
 .myBorderRadius {
-    border:1px solid #c3c3c3;
+    /*border:1px solid #c3c3c3;*/
     -webkit-border-radius: 10px;
      -moz-border-radius: 10px;
           border-radius: 10px;
     min-height: 500px;
 }
 
-.myBorderRadiusPlus {
+.BorderGuard {
     border:1px solid #c3c3c3;
+    -webkit-border-radius: 10px;
+     -moz-border-radius: 10px;
+          border-radius: 10px;
+    min-height: 40px;
+}
+
+.myBorderRadiusPlus {
+  /*  border:1px solid #c3c3c3; */
     -webkit-border-radius: 10px;
      -moz-border-radius: 10px;
           border-radius: 10px;

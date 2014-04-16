@@ -5,21 +5,24 @@
 
   %>
 
-<div class="myBorderRadius">
+<div class="BorderGuard">
     <div class="titles">
       Trace Rule
     </div>
     
     <div style="margin-top:8px">
       <ul class="nav nav-list" id="guardlist">
-        <li class="nav-list-11"><a href="javascript:;" class="myInsidePlus" style="text-align:left;margin-bottom:0px;vertical-align:middle;font-size:120%" id="guardNameShow">Guard:  <%=trace.name%><i class="icon-plus" style="float:right;margin-right:6px;display:none;margin-top:8px"></i><i class="icon-pencil editGuard" style="float:right;margin-right:6px;display:none;margin-top:8px"></i></a></li>
+        <li class="nav-list-11"><a href="javascript:;" class="myInsidePlus" style="text-align:left;margin-bottom:0px;vertical-align:middle;font-size:120%" id="guardNameShow" name="<%=trace.name%>">Guard:  <%=trace.name%><i class="icon-plus" style="float:right;margin-right:6px;display:none;margin-top:8px"></i><i class="icon-pencil editGuard" style="float:right;margin-right:6px;display:none;margin-top:8px"></i></a></li>
       </ul>
-
+        
+          <input type="hidden" id="hiddenselfname" value="<%=trace.selfname%>">
+          <input type="hidden" id="hiddenguardname" value="<%=trace.name%>">
+        
     </div>
 </div>
 
 
-<div class="myBorderRadius" style="margin-top:15px">
+<div class="BorderGuard" style="margin-top:15px">
     <div class="ostitles" style="line-height:18px">
       Operation Sequence
     </div>
@@ -30,9 +33,10 @@
           <div class="accordion_wrapper sortable" rel="sections">
               <% 
                 var positions=new Array();
-               
+                console.log("trace.positions: "+trace.positions);
+               if(trace.positions!=""){
                 positions=trace.positions.split('$');
-
+                console.log("positions: "+positions);
                 for(key in positions){
                       var element_path=new Array();
                       if(trace.operations[positions[key]].element!=""){
@@ -46,6 +50,7 @@
                         //var element_is_virtual=trace.elements[element_path[2]].is_virtual;
                         }
                         if(trace.operations[positions[key]].type=="C2"){
+                          var target1=trace.operations[positions[key]].element.split(".");
                 %>
                         <div id="<%=positions[key]%>" class="section_accordion">
                           <div class="accordion">
@@ -77,7 +82,9 @@
                               <i class="icon-minus deleteActivity"style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                              
                               <form class="form-horizontal">
+                                <input type="hidden" id="hidden_editactivity" value="<%= target1[0]%>">
                                 <div class="control-group">
                                   <label class="control-label" for="ActivityName">Name:</label>
                                   <div class="controls">
@@ -145,6 +152,7 @@
                   <%
                 }else{
                   if(trace.operations[positions[key]].type=="C3"){
+                    var target1=trace.operations[positions[key]].element.split(".");
                     %>
 
                         <div id="<%=positions[key]%>" class="section_accordion">
@@ -155,6 +163,7 @@
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
+                                 <input type="hidden" id="hidden_editdecision" value="<%= target1[0]%>">
                                 <div class="control-group">
                                   <label class="control-label" for="DecisionName">Name:</label>
                                   <div class="controls">
@@ -188,8 +197,9 @@
                     <%
                   }else{
                     if(trace.operations[positions[key]].type=="C4"){
+                      var target1=trace.operations[positions[key]].element.split(".");
                       %>
-                       <div id="<%=positions[key]%>" class="section_accordion">
+                      <div id="<%=positions[key]%>" class="section_accordion">
                           <div class="accordion">
                             <h4>
                               Create Condition <b><%= element_name%></b>
@@ -197,6 +207,7 @@
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
+                                <input type="hidden" id="hidden_editcondition" value="<%= target1[0]%>">
                                 <div class="control-group">
                                   <label class="control-label" for="ConditionName">Name:</label>
                                   <div class="controls">
@@ -214,7 +225,7 @@
                               </form>
                             </div>
                           </div>
-                        </div>
+                      </div>
                       <%
                     }else{
                       if(trace.operations[positions[key]].type=="I1"){
@@ -224,7 +235,7 @@
                          var target4=trace.operations[positions[key]].usecaseElement.split('.');
                         %>
                           <div id="<%=positions[key]%>" class="section_accordion">
-                          <div class="accordion">
+                            <div class="accordion">
                             <h4>
                               Insert <b><%=target1[2]%></b> between <b><%= target2[2]%></b> and <b><%=target3[2]%></b> in <b><%=target4[2]%></b>
                               <i class="icon-minus" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
@@ -233,8 +244,8 @@
                               <form class="form-horizontal">
                                 <div style="margin-top:10px">
                                   <div>
-                                  Target Activity:
-                                  <select style="width:72%;margin-left:20px" class="InterBetTar" disabled=true>
+                                    Target Activity:
+                                    <select style="width:72%;margin-left:20px" class="InterBetTar" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
@@ -248,12 +259,11 @@
                                     %>
                                         <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                     <%
+                                      }
+                                     }
                                     }
-                                   }
-                                  }
-                                  %>
-              
-                                  </select>
+                                   %>
+                                    </select>
                                     <i class="icon-pencil editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer"></i>
                                     <i class="icon-ok editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
                                   </div>
@@ -273,11 +283,9 @@
                                           }
                                             }
                                       %>
-
                                     </select>
-   
                                   </div>
-                                <div style="margin-top:20px">
+                                  <div style="margin-top:20px">
                                   Post Activity:
                                   <select style="width:72%;margin-left:36px" class="InterBetPost" disabled=true>
                 
@@ -295,11 +303,10 @@
                                     }%>
 
                                   </select>
-       
-                                </div>
-                                <div style="margin-top:20px">
-                                  Use Case:
-                                  <select style="width:72%;margin-left:60px" class="InterBetUseCase" disabled=true>
+                                  </div>
+                                  <div style="margin-top:20px">
+                                   Use Case:
+                                    <select style="width:72%;margin-left:60px" class="InterBetUseCase" disabled=true>
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
@@ -314,13 +321,13 @@
                                         }
                                       }%>
 
-                                  </select>
-                                </div>
+                                    </select>
+                                  </div>
                                </div>
                               </form>
                             </div>
+                            </div>
                           </div>
-                        </div>
                         <%
                       }else{ 
                         if(trace.operations[positions[key]].type=="I2"){
@@ -339,8 +346,8 @@
                                 <input type="hidden" id="hidden_insertactafterpre" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
-                                  Target Activity:
-                                  <select style="width:72%;margin-left:20px" class="InterBetTar" disabled=true>
+                                    Target Activity:
+                                    <select style="width:72%;margin-left:20px" class="InterBetTar" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
@@ -349,18 +356,17 @@
 
                                         %>
                                       <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
-                                    <%}else{
-                                      %>
+                                      <%}else{
+                                        %>
                                         <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
-                                    }
-                                   }
-                                  }%>
+                                           }
+                                         }
+                                      }%>
               
-                                  </select>
-                                  <i class="icon-pencil editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer"></i>
-                                  <i class="icon-ok editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
-        
+                                    </select>
+                                    <i class="icon-pencil editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>       
                                   </div>
                                   <div style="margin-top:20px">
                                     Pre Activity:
@@ -379,9 +385,8 @@
                                             }%>
 
                                     </select>
-   
                                   </div>
-                                <div style="margin-top:20px">
+                                  <div style="margin-top:20px">
                                   Use Case:
                                   <select style="width:72%;margin-left:60px" class="InterBetUseCase" disabled=true>
                 
@@ -400,9 +405,8 @@
                                       }%>
 
                                   </select>
+                                  </div>
                                 </div>
-       
-                               </div>
                               </form>
                             </div>
                           </div>
@@ -426,8 +430,8 @@
                                 <input type="hidden" id="hidden_insertActBeforePost" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
-                                  Target Activity:
-                                  <select style="width:72%;margin-left:20px" class="InterBetTar" disabled=true>
+                                    Target Activity:
+                                    <select style="width:72%;margin-left:20px" class="InterBetTar" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
@@ -436,17 +440,18 @@
 
                                         %>
                                       <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
-                                    <%}else{
+                                      <%}else{
                                       %>
                                         <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
-                                    }
-                                   }
-                                  }%>
+                                        }
+                                      }
+                                     }
+                                    %>
               
-                                  </select>
-                                  <i class="icon-pencil editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer"></i>
-                                  <i class="icon-ok editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                    </select>
+                                    <i class="icon-pencil editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation InsertBetween" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
         
                                   </div>
                                   <div style="margin-top:20px">
@@ -468,9 +473,9 @@
                                     </select>
    
                                   </div>
-                                <div style="margin-top:20px">
-                                  Use Case:
-                                  <select style="width:72%;margin-left:60px" class="InterBetUseCase" disabled=true>
+                                  <div style="margin-top:20px">
+                                    Use Case:
+                                    <select style="width:72%;margin-left:60px" class="InterBetUseCase" disabled=true>
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
@@ -485,10 +490,10 @@
                                         }
                                       }%>
 
-                                  </select>
-                                </div>
+                                    </select>
+                                  </div>
        
-                               </div>
+                                </div>
                               </form>
                             </div>
                           </div>
@@ -503,18 +508,18 @@
                             var target4=trace.operations[positions[key]].usecaseElement.split('.');
                     %>
                            <div id="<%=positions[key]%>" class="section_accordion">
-                          <div class="accordion">
-                            <h4>
+                              <div class="accordion">
+                                <h4>
                               Insert <b><%=target1[2]%></b> after <b><%=target2[2]%></b> , <b><%=target3[2]%></b> in <b><%= target4[2]%></b>
                               <i class="icon-minus deleteInsertActAfterDecCon" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
-                            </h4>
-                            <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
+                                </h4>
+                                <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
                                 <input type="hidden" id="hidden_insertActAfterDecCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
-                                  Target Activity:
-                                  <select style="width:72%;margin-left:20px" class="InterAfterDecConAct" disabled=true>
+                                    Target Activity:
+                                    <select style="width:72%;margin-left:20px" class="InterAfterDecConAct" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
@@ -527,13 +532,13 @@
                                       %>
                                         <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
-                                    }
-                                   }
-                                  }%>
+                                        }
+                                      }
+                                    }%>
               
-                                  </select>
-                                  <i class="icon-pencil editOperation InsertAfterDecCon" style="float:right;margin-right:0px;cursor:pointer"></i>
-                                  <i class="icon-ok editOperation InsertAfterDecCon" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                    </select>
+                                    <i class="icon-pencil editOperation InsertAfterDecCon" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation InsertAfterDecCon" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
         
                                   </div>
                                   <div style="margin-top:20px">
@@ -573,10 +578,10 @@
 
                                     </select>
    
-                                </div>
-                                <div style="margin-top:20px">
-                                  Use Case:
-                                  <select style="width:72%;margin-left:60px" class="InterAfterDecConUseCase" disabled=true>
+                                  </div>
+                                  <div style="margin-top:20px">
+                                    Use Case:
+                                    <select style="width:72%;margin-left:60px" class="InterAfterDecConUseCase" disabled=true>
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
@@ -591,14 +596,14 @@
                                         }
                                       }%>
 
-                                  </select>
-                                </div>
+                                    </select>
+                                  </div>
        
-                               </div>
+                                </div>
                               </form>
-                            </div>
-                          </div>
-                        </div>
+                                </div>
+                              </div>
+                           </div>
                     <%
                           } //end I4
                         else{
@@ -608,7 +613,7 @@
                             var target3=trace.operations[positions[key]].condition.split('.');
                             var target4=trace.operations[positions[key]].usecaseElement.split('.');
                     %>
-                          <div id="<%=positions[key]%>" class="section_accordion">
+                        <div id="<%=positions[key]%>" class="section_accordion">
                           <div class="accordion">
                             <h4>
                               Insert <b><%=target1[2]%></b> before <b><%=target2[2]%></b> , <b><%=target3[2]%></b> in <b><%= target4[2]%></b>
@@ -619,8 +624,8 @@
                                  <input type="hidden" id="hidden_insertActBeforeActCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
-                                  Target Activity:
-                                  <select style="width:72%;margin-left:20px" class="InterBeforeActConTar" disabled=true>
+                                    Target Activity:
+                                    <select style="width:72%;margin-left:20px" class="InterBeforeActConTar" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
@@ -633,13 +638,13 @@
                                       %>
                                         <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
-                                    }
-                                   }
-                                  }%>
+                                        }
+                                      }
+                                    }%>
               
-                                  </select>
-                                  <i class="icon-pencil editOperation InsertBeforeActCon" style="float:right;margin-right:0px;cursor:pointer"></i>
-                                  <i class="icon-ok editOperation InsertBeforeActCon" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                    </select>
+                                    <i class="icon-pencil editOperation InsertBeforeActCon" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation InsertBeforeActCon" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
         
                                   </div>
                                   <div style="margin-top:20px">
@@ -679,8 +684,8 @@
 
                                     </select>
    
-                                </div>
-                                <div style="margin-top:20px">
+                                  </div>
+                                  <div style="margin-top:20px">
                                   Use Case:
                                   <select style="width:72%;margin-left:60px" class="InterBeforeActConUseCase" disabled=true>
                 
@@ -698,7 +703,7 @@
                                       }%>
 
                                   </select>
-                                </div>
+                                  </div>
        
                                </div>
                               </form>
@@ -721,17 +726,17 @@
                               var target6=trace.operations[positions[key]].targetactivity.split('.');
                               var target7=trace.operations[positions[key]].usecaseElement.split('.');
                     %>
-                         <div id="<%=positions[key]%>" class="section_accordion">
+                        <div id="<%=positions[key]%>" class="section_accordion">
                           <div class="accordion">
                             <h4>
                               Insert <b><%=target1[2]%></b> after <b><%=target2[2]%></b> with ( <b><%=target3[2]%></b> ),( <b><%=target4[2]%></b> ,  
-                          <%
-                              if(target5!=""){
-                          %>
-                              <b><%=target5[2]%></b> ,
-                          <%
-                            }
-                          %>
+                              <%
+                                if(target5!=""){
+                              %>
+                                <b><%=target5[2]%></b> ,
+                              <%
+                                }
+                              %>
                               <b><%=target6[2]%></b> )
 
                               in <b><%= target7[2]%></b>
@@ -742,8 +747,8 @@
                                 <input type="hidden" id="hidden_insertDecAfterAct" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
-                                  Target Decision:
-                                  <select style="width:60%;margin-left:88px" class="InsertDecAfterActDec" disabled=true>
+                                    Target Decision:
+                                    <select style="width:60%;margin-left:88px" class="InsertDecAfterActDec" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
@@ -756,13 +761,13 @@
                                       %>
                                         <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
-                                    }
-                                   }
-                                  }%>
+                                        }
+                                      }
+                                    }%>
               
-                                  </select>
-                                  <i class="icon-pencil editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer"></i>
-                                  <i class="icon-ok editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                    </select>
+                                    <i class="icon-pencil editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
         
                                   </div>
                                   <div style="margin-top:20px">
@@ -802,9 +807,9 @@
 
                                     </select>
    
-                                </div>
+                                  </div>
 
-                                <div style="margin-top:20px">
+                                  <div style="margin-top:20px">
                                     Additonal Branch Condition:
                                     <select style="width:60%;margin-left:5px" class="InsertDecAfterActSupCon" disabled=true>
                
@@ -815,46 +820,46 @@
                                             <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
                                             <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
-                                      <%
-                                        }
+                                        <%
                                           }
-                                            }%>
+                                            }
+                                              }%>
 
                                     </select>
    
-                                </div>
+                                  </div>
 
-                                <div style="margin-top:20px">
+                                  <div style="margin-top:20px">
                                     Inserted Activity(optional):
                                     <select style="width:60%;margin-left:7px" class="InsertDecAfterActInserAct" disabled=true>
                
                                       <% 
-                                    if(target5!=""){
-                                      for(keyss in elementdepencys){
-                                        if(elementdepencys[keyss].type=="activity"){
+                                      if(target5!=""){
+                                        for(keyss in elementdepencys){
+                                          if(elementdepencys[keyss].type=="activity"){
                                             
-                                        if(elementdepencys[keyss].element!=target5[2]){%>
+                                          if(elementdepencys[keyss].element!=target5[2]){%>
                                             <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
-                                      <%}else{%>
+                                        <%}else{%>
                                             <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
-                                      <%
-                                        }
+                                        <%
                                           }
                                             }
-                                          }else{
-                                             for(keyss in elementdepencys){
-                                        if(elementdepencys[keyss].type=="activity"){
+                                              }
+                                            }else{
+                                              for(keyss in elementdepencys){
+                                          if(elementdepencys[keyss].type=="activity"){
                                             
-                                        if(elementdepencys[keyss].element!=""){%>
+                                          if(elementdepencys[keyss].element!=""){%>
                                             <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
-                                      <%}else{%>
+                                       <%}else{%>
                                             <option value="none" selected="selected">
                                               no inserted activity</option>
-                                      <%
-                                        }
+                                        <%
                                           }
                                             }
-                                          }%>
+                                              }
+                                            }%>
 
                                     </select>
    
@@ -880,7 +885,7 @@
    
                                   </div>
 
-                                <div style="margin-top:20px">
+                                  <div style="margin-top:20px">
                                   Use Case:
                                   <select style="width:60%;margin-left:134px" class="InterBeforeActConUseCase" disabled=true>
                 
@@ -898,9 +903,9 @@
                                       }%>
 
                                   </select>
-                                </div>
+                                  </div>
        
-                               </div>
+                                </div>
                               </form>
                             </div>
                           </div>
@@ -919,7 +924,7 @@
                               var target7=trace.operations[positions[key]].targetdecision.split('.');
                               var target8=trace.operations[positions[key]].usecaseElement.split('.');
                     %>
-                         <div id="<%=positions[key]%>" class="section_accordion">
+                        <div id="<%=positions[key]%>" class="section_accordion">
                           <div class="accordion">
                             <h4>
                               Insert <b><%=target1[2]%></b> after ( <b><%=target2[2]%></b> , <b><%=target3[2]%></b> ) with ( <b><%=target4[2]%></b> ),( <b><%=target5[2]%></b> , <b><%=target6[2]%></b> , <b><%=target7[2]%></b> ) in <b><%= target8[2]%></b>
@@ -930,8 +935,8 @@
                                  <input type="hidden" id="hidden_insertDecAfterDecCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>_<%= target8[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
-                                  Target Decision:
-                                  <select style="width:60%;margin-left:88px" class="InsertDecAfterDecConDec" disabled=true>
+                                    Target Decision:
+                                    <select style="width:60%;margin-left:88px" class="InsertDecAfterDecConDec" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
@@ -944,13 +949,13 @@
                                       %>
                                         <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
-                                    }
-                                   }
-                                  }%>
+                                        }
+                                      }
+                                    }%>
               
-                                  </select>
-                                  <i class="icon-pencil editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer"></i>
-                                  <i class="icon-ok editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                    </select>
+                                    <i class="icon-pencil editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
         
                                   </div>
                                   <div style="margin-top:20px">
@@ -991,7 +996,7 @@
 
                                     </select>
    
-                                </div>
+                                  </div>
 
 
                                   <div style="margin-top:20px">
@@ -1012,9 +1017,9 @@
 
                                     </select>
    
-                                </div>
+                                  </div>
 
-                                <div style="margin-top:20px">
+                                  <div style="margin-top:20px">
                                     Additonal Branch Condition:
                                     <select style="width:60%;margin-left:5px" class="InsertDecAfterActSupCon" disabled=true>
                
@@ -1032,9 +1037,9 @@
 
                                     </select>
    
-                                </div>
+                                  </div>
 
-                                <div style="margin-top:20px">
+                                  <div style="margin-top:20px">
                                     Inserted Activity:
                                     <select style="width:60%;margin-left:82px" class="InsertDecAfterActInserAct" disabled=true>
                
@@ -1077,7 +1082,7 @@
    
                                   </div>
 
-                                <div style="margin-top:20px">
+                                  <div style="margin-top:20px">
                                   Use Case:
                                   <select style="width:60%;margin-left:134px" class="InterBeforeActConUseCase" disabled=true>
                 
@@ -1095,9 +1100,9 @@
                                       }%>
 
                                   </select>
-                                </div>
+                                  </div>
        
-                               </div>
+                                </div>
                               </form>
                             </div>
                           </div>
@@ -1114,7 +1119,7 @@
                                    var target6=trace.operations[positions[key]].target2.split('.');
                                    var target7=trace.operations[positions[key]].usecaseElement.split('.');
                   %>
-                         <div id="<%=positions[key]%>" class="section_accordion">
+                        <div id="<%=positions[key]%>" class="section_accordion">
                           <div class="accordion">
                             <h4>
                               Insert <b><%=target1[2]%></b> before <b><%=target2[2]%></b> with ( <b><%=target3[2]%></b> , <b><%=target4[2]%></b> ),( <b><%=target5[2]%></b> , <b><%=target6[2]%></b> ) in <b><%= target7[2]%></b>
@@ -1122,35 +1127,35 @@
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
-                                 <input type="hidden" id="hidden_insertDecBeforeAct" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>">
+                                <input type="hidden" id="hidden_insertDecBeforeAct" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
-                                  Target Decision:
-                                  <select style="width:72%;margin-left:15px" class="InsertDecBeforeActDec" disabled=true>
+                                    Target Decision:
+                                    <select style="width:72%;margin-left:15px" class="InsertDecBeforeActDec" disabled=true>
                                      
-                                    <% for(keyss in elementdepencys){
+                                      <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
                                         
                                         if(elementdepencys[keyss].element!=target1[2]){
 
                                         %>
                                       <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
-                                    <%}else{
-                                      %>
+                                      <%}else{
+                                        %>
                                         <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
-                                      <%
-                                    }
-                                   }
-                                  }%>
+                                        <%
+                                          }
+                                        }
+                                      }%>
               
-                                  </select>
-                                  <i class="icon-pencil editOperation InsertDecBeforeAct" style="float:right;margin-right:0px;cursor:pointer"></i>
-                                  <i class="icon-ok editOperation InsertDecBeforeAct" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                    </select>
+                                    <i class="icon-pencil editOperation InsertDecBeforeAct" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation InsertDecBeforeAct" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
         
-                                  </div>
-                                  <div style="margin-top:20px">
-                                    Post-Activity:
-                                    <select style="width:72%;margin-left:36px" class="InsertDecBeforeActPostAct" disabled=true>
+                                    </div>
+                                    <div style="margin-top:20px">
+                                      Post-Activity:
+                                      <select style="width:72%;margin-left:36px" class="InsertDecBeforeActPostAct" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
@@ -1164,12 +1169,12 @@
                                           }
                                             }%>
 
-                                    </select>
+                                      </select>
    
-                                  </div>
-                                  <div style="margin-top:20px">
-                                    Condition 1:
-                                    <select style="width:72%;margin-left:46px" class="InsertDecBeforeActCon1" disabled=true>
+                                    </div>
+                                    <div style="margin-top:20px">
+                                      Condition 1:
+                                      <select style="width:72%;margin-left:46px" class="InsertDecBeforeActCon1" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
@@ -1183,13 +1188,13 @@
                                           }
                                             }%>
 
-                                    </select>
+                                      </select>
    
-                                </div>
+                                    </div>
 
-                                <div style="margin-top:20px">
-                                    Target Activity 1:
-                                    <select style="width:72%;margin-left:5px" class="InsertDecBeforeActTar1" disabled=true>
+                                    <div style="margin-top:20px">
+                                      Target Activity 1:
+                                      <select style="width:72%;margin-left:5px" class="InsertDecBeforeActTar1" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
@@ -1203,13 +1208,13 @@
                                           }
                                             }%>
 
-                                    </select>
+                                      </select>
    
-                                </div>
+                                    </div>
 
-                                <div style="margin-top:20px">
-                                    Condition 2:
-                                    <select style="width:72%;margin-left:46px" class="InsertDecBeforeActCon2" disabled=true>
+                                    <div style="margin-top:20px">
+                                      Condition 2:
+                                      <select style="width:72%;margin-left:46px" class="InsertDecBeforeActCon2" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
@@ -1222,13 +1227,13 @@
                                         }
                                           }
                                             }%>
-                                    </select>
+                                      </select>
    
-                                  </div>
+                                    </div>
 
-                                  <div style="margin-top:20px">
-                                    Target Activity 2:
-                                    <select style="width:72%;margin-left:5px" class="InsertDecBeforeActTar2" disabled=true>
+                                    <div style="margin-top:20px">
+                                      Target Activity 2:
+                                      <select style="width:72%;margin-left:5px" class="InsertDecBeforeActTar2" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
@@ -1242,11 +1247,11 @@
                                           }
                                             }%>
 
-                                    </select>
+                                      </select>
    
-                                  </div>
+                                    </div>
 
-                                <div style="margin-top:20px">
+                                    <div style="margin-top:20px">
                                   Use Case:
                                   <select style="width:72%;margin-left:60px" class="InterBeforeActUseCase" disabled=true>
                 
@@ -1264,9 +1269,9 @@
                                       }%>
 
                                   </select>
-                                </div>
+                                  </div>
        
-                               </div>
+                                </div>
                               </form>
                             </div>
                           </div>
@@ -1295,11 +1300,11 @@
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
-                                 <input type="hidden" id="hidden_insertDecBeforeActWit" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>">
+                                <input type="hidden" id="hidden_insertDecBeforeActWit" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
-                                  Target Decision:
-                                  <select style="width:60%;margin-left:88px" class="InsertDecBeforeActWithTar" disabled=true>
+                                    Target Decision:
+                                    <select style="width:60%;margin-left:88px" class="InsertDecBeforeActWithTar" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
@@ -1312,13 +1317,13 @@
                                       %>
                                         <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
-                                    }
-                                   }
-                                  }%>
+                                        }
+                                      }
+                                    }%>
               
-                                  </select>
-                                  <i class="icon-pencil editOperation InsertDecBeforeActWith" style="float:right;margin-right:0px;cursor:pointer"></i>
-                                  <i class="icon-ok editOperation InsertDecBeforeActWith" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                    </select>
+                                    <i class="icon-pencil editOperation InsertDecBeforeActWith" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation InsertDecBeforeActWith" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
         
                                   </div>
                                   <div style="margin-top:20px">
@@ -1358,9 +1363,9 @@
 
                                     </select>
    
-                                </div>
+                                  </div>
 
-                                <div style="margin-top:20px">
+                                  <div style="margin-top:20px">
                                     Additonal Branch Condition:
                                     <select style="width:60%;margin-left:5px" class="InsertDecBeforeActWithSupCon" disabled=true>
                
@@ -1378,9 +1383,9 @@
 
                                     </select>
    
-                                </div>
+                                  </div>
 
-                                <div style="margin-top:20px">
+                                  <div style="margin-top:20px">
                                     Inserted Activity:
                                     <select style="width:60%;margin-left:82px" class="InsertDecBeforeActWithInserAct" disabled=true>
                
@@ -1422,9 +1427,9 @@
    
                                   </div>
 
-                                <div style="margin-top:20px">
-                                  Use Case:
-                                  <select style="width:60%;margin-left:134px" class="InsertDecBeforeActWithUseCase" disabled=true>
+                                  <div style="margin-top:20px">
+                                    Use Case:
+                                    <select style="width:60%;margin-left:134px" class="InsertDecBeforeActWithUseCase" disabled=true>
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
@@ -1439,10 +1444,10 @@
                                         }
                                       }%>
 
-                                  </select>
-                                </div>
+                                    </select>
+                                  </div>
        
-                               </div>
+                                </div>
                               </form>
                             </div>
                           </div>
@@ -1472,8 +1477,8 @@
                                 <input type="hidden" id="hidden_insertDecBeforeActCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>_<%= target8[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
-                                  Target Decision:
-                                  <select style="width:60%;margin-left:88px" class="InsertDecBeforeActConTar" disabled=true>
+                                    Target Decision:
+                                    <select style="width:60%;margin-left:88px" class="InsertDecBeforeActConTar" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
@@ -1482,17 +1487,17 @@
 
                                         %>
                                       <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
-                                    <%}else{
+                                      <%}else{
                                       %>
                                         <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
-                                    }
-                                   }
-                                  }%>
+                                        }
+                                      }
+                                    }%>
               
-                                  </select>
-                                  <i class="icon-pencil editOperation InsertDecBeforeActCon" style="float:right;margin-right:0px;cursor:pointer"></i>
-                                  <i class="icon-ok editOperation InsertDecBeforeActCon" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                    </select>
+                                    <i class="icon-pencil editOperation InsertDecBeforeActCon" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation InsertDecBeforeActCon" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
         
                                   </div>
                                   <div style="margin-top:20px">
@@ -1533,7 +1538,7 @@
 
                                     </select>
    
-                                </div>
+                                  </div>
 
 
                                   <div style="margin-top:20px">
@@ -1554,9 +1559,9 @@
 
                                     </select>
    
-                                </div>
+                                  </div>
 
-                                <div style="margin-top:20px">
+                                  <div style="margin-top:20px">
                                     Additonal Branch Condition:
                                     <select style="width:60%;margin-left:5px" class="InsertDecBeforeActConSupCon" disabled=true>
                
@@ -1567,16 +1572,16 @@
                                             <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
                                             <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
-                                      <%
-                                        }
+                                        <%
                                           }
-                                            }%>
+                                            }
+                                              }%>
 
                                     </select>
    
-                                </div>
+                                  </div>
 
-                                <div style="margin-top:20px">
+                                  <div style="margin-top:20px">
                                     Inserted Activity:
                                     <select style="width:60%;margin-left:80px" class="InsertDecBeforeActConInserAct" disabled=true>
                
@@ -1619,7 +1624,7 @@
    
                                   </div>
 
-                                <div style="margin-top:20px">
+                                  <div style="margin-top:20px">
                                   Use Case:
                                   <select style="width:60%;margin-left:134px" class="InsertDecBeforeActConUseCase" disabled=true>
                 
@@ -1637,9 +1642,9 @@
                                       }%>
 
                                   </select>
-                                </div>
+                                  </div>
        
-                               </div>
+                                </div>
                               </form>
                             </div>
                           </div>
@@ -1662,7 +1667,7 @@
                 }
               }  
             }
-            
+            }
             %>
             
           </div>
@@ -1672,5 +1677,6 @@
     </div>
    </div>
   <%
-}
-  })%>
+
+  }
+    })%>

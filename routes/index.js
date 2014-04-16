@@ -9,7 +9,9 @@ var Post = require('../models/post.js');
 var Tracerule = require('../models/tracerule.js');
 var Guardlist = require('../models/guardlist.js');
 var ElementDepency = require('../models/elementdepency.js');
+var Configuration=require('../models/configuration.js');
 var async = require('async'); 
+var Feature = require('../models/feature.js');
 
 exports.index = function(req, res){
 	Post.get(null, function(err, posts) {
@@ -25,6 +27,7 @@ exports.index = function(req, res){
 		});
 	});
 };
+
 
 exports.user = function(req, res) {
 	User.get(req.params.user, function(err, user) {
@@ -127,7 +130,7 @@ exports.doReg = function(req, res) {
 
 exports.login = function(req, res) {
 	res.render('login', {
-		title: '用户登录',
+		title: 'Login',
 		user : req.session.user,
 		success : req.flash('success').toString(),
 		error : req.flash('error').toString()
@@ -136,7 +139,7 @@ exports.login = function(req, res) {
 
 exports.F = function(req, res) {
 	res.render('F', {
-		title: '用户登录',
+		title: 'Feature Model',
 		user : req.session.user,
 		success : req.flash('success').toString(),
 		error : req.flash('error').toString()
@@ -185,7 +188,10 @@ exports.T = function(req, res) {console.log(req.params.current_guard);
 			}
 				//var aaa=JSON.stringify(tracerules[0].operations);
 				//console.log(req.session.user.name+"+"+req.params.current_guard+"+"+aaa+"+"+tracerules[0].position);
-				
+				if(guardlists.length>0){
+					console.log("there");
+				   if(req.params.current_guard!=undefined){
+
 					res.render('T', {
 						title : 'Traceability',
 						posts : posts,
@@ -196,7 +202,34 @@ exports.T = function(req, res) {console.log(req.params.current_guard);
 						current_guard : req.params.current_guard,
 						success : req.flash('success').toString(),
 						error : req.flash('error').toString()
-				});	
+						});	
+				}else{
+					res.render('TTT', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : req.params.current_guard,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+						});	
+				}
+			  }else{
+			  	console.log("here");
+			  		res.render('TT', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : req.params.current_guard,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});
+			  }
 			});
 		});
 	});
@@ -238,7 +271,6 @@ exports.doT = function(req, res) {
 				tracerules = [];
 			}
 				
-				
 					res.render('T', {
 						title : 'Traceability',
 						posts : posts,
@@ -246,7 +278,7 @@ exports.doT = function(req, res) {
 						tracerules : tracerules,
 						elementdepencys : elementdepencys,
 						user : req.session.user,
-						current_guard : req.params.current_guard,
+						current_guard : current_guard_id,
 						success : req.flash('success').toString(),
 						error : req.flash('error').toString()
 				});	
@@ -257,6 +289,74 @@ exports.doT = function(req, res) {
 
 	
 	//res.redirect('/T');
+};
+
+exports.deleteTraceRule = function(req, res) {
+
+ console.log(req.params.content);
+ 	var param=req.params.content.split("分");
+ 	var username=param[0];
+ 	var deleteID=param[1];
+ 	var positions=param[2];
+ 	var current_guard_id=param[3];
+ 	ElementDepency.returnDeleteDependency(username,deleteID,function(err,showDepend){
+ 		if(showDepend.length>0){
+ 			err = 'Certain trace rules depend to this trace rule';
+			req.flash('error', err);
+			return res.redirect('/T/'+current_guard_id);
+ 		}else{
+ 			Post.get(null, function(err, posts) {
+				if (err) {
+					posts = [];
+				}
+	 		
+	 		 ElementDepency.removeTraceRule(req.session.user.name,deleteID,function(err,elementdepencys){
+	  			if(err){
+	  				elementdepencys=[];
+	  			}
+				Guardlist.removeTraceRule(req.session.user.name,deleteID,function(err, guardlists) {
+					if (err) {
+						guradlists = [];
+					}
+
+					Tracerule.removeTraceRule(username,deleteID, function(err, tracerules) {
+						if (err) {
+							tracerules = [];
+						}
+				
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : current_guard_id,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});	
+			});
+		});
+	  });
+	})
+ 		}
+
+ 	})
+ /*Tracerule.returnElements(username,deleteID,function(err,showElement){
+ 		var jStr=JSON.stringify(showElement);
+ 		if(jStr=="{}")
+ 		{
+ 			
+			return res.redirect('/T/'+current_guard_id);
+			
+ 		}
+ 		else{
+ 			err = 'This trace rule still has operations';
+			req.flash('error', err);
+			return res.redirect('/T/'+current_guard_id);
+ 		}
+
+ 	});*/
 };
 
 exports.createActivity = function(req, res){
@@ -274,6 +374,23 @@ exports.createActivity = function(req, res){
 	 var current_guard_id=param[7];
      var type="activity";
  	 console.log(user+" "+id+" "+activityname+" "+activitydescription+" "+activityexecutor+" position:"+positions);
+ 	 
+ 	 ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+	  		for(key in elementdepencys){
+	  			if(elementdepencys[key].element==activityname)
+	  			{
+	  				err = 'There are duplicate names of this activity name ( '+activityname+' ), please change another name';
+	  				break;
+	  			}
+	  		}
+	  		if (err) {
+			req.flash('error', err);
+			return res.redirect('/T/'+current_guard_id);
+		}else{
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
@@ -316,7 +433,9 @@ exports.createActivity = function(req, res){
 		});
 	
    });
-  });
+  }); //end post
+	}
+ }); // elementdepency.get
 }
 
 exports.EditActivity=function(req,res){
@@ -326,7 +445,7 @@ exports.EditActivity=function(req,res){
 };
 
 exports.createUseCase = function(req, res){
-	 console.log(req.params.content);
+	 console.log("create Use Case: "+req.params.content);
  	 var param=req.params.content.split("分");
  	 var user=param[0];
  	 var id=param[1];
@@ -335,6 +454,23 @@ exports.createUseCase = function(req, res){
  	 var positions=param[4];
 	 var current_guard_id=param[5];
 	 var type="UseCase";
+
+	 ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+	  		for(key in elementdepencys){
+	  			if(elementdepencys[key].element==usecasename)
+	  			{
+	  				err = 'There are duplicate names of this use case name ( '+usecasename+' ), please change another name';
+	  				break;
+	  			}
+	  		}
+	  		if (err) {
+			req.flash('error', err);
+			return res.redirect('/T/'+current_guard_id);
+		}else{
 
  	 Post.get(null, function(err, posts) {
 		if (err) {
@@ -370,6 +506,8 @@ exports.createUseCase = function(req, res){
 		});
 	});
   });
+ 	}
+ });
 }
 
 exports.createDecision = function(req, res){
@@ -386,6 +524,24 @@ exports.createDecision = function(req, res){
 	 var type="decision";
 
  	 console.log(user+" "+id+" "+decisionname+" "+decisiondescription+" "+decisionexecutor+" "+" position:"+positions);
+ 	 
+ 	 ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+	  		for(key in elementdepencys){
+	  			if(elementdepencys[key].element==decisionname)
+	  			{
+	  				err = 'There are duplicate names of this decision name ( '+decisionname+' ), please change another name';
+	  				break;
+	  			}
+	  		}
+	  		if (err) {
+			req.flash('error', err);
+			return res.redirect('/T/'+current_guard_id);
+		}else{
+
  	 Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
@@ -421,6 +577,8 @@ exports.createDecision = function(req, res){
 		});
 	});
   });
+ 	}
+ });
 }
 
 exports.createCondition = function(req, res){
@@ -433,6 +591,23 @@ exports.createCondition = function(req, res){
  	 var positions=param[4];
 	 var current_guard_id=param[5];
 	 var type="condition";
+
+	 ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+	  		for(key in elementdepencys){
+	  			if(elementdepencys[key].element==conditionname)
+	  			{
+	  				err = 'There are duplicate names of this condition name( '+conditionname+' ), please change another name';
+	  				break;
+	  			}
+	  		}
+	  		if (err) {
+			req.flash('error', err);
+			return res.redirect('/T/'+current_guard_id);
+		}else{
 
  	 Post.get(null, function(err, posts) {
 		if (err) {
@@ -468,6 +643,8 @@ exports.createCondition = function(req, res){
 		});
 	});
   });
+ }
+});
 }
 
 exports.insertBetween = function(req, res){
@@ -1008,16 +1185,6 @@ exports.insertDecBeforeActCon = function(req, res){
 }
 
 
-exports.C = function(req, res) {
-	res.render('C', {
-		title: '用户登录',
-		user : req.session.user,
-		success : req.flash('success').toString(),
-		error : req.flash('error').toString()
-    });
-};
-
-
 exports.doLogin = function(req, res) {
 	//生成口令的散列值
     var md5 = crypto.createHash('md5');
@@ -1168,12 +1335,41 @@ exports.deleteActivity = function(req, res){
  	 operation=operation_name.split(" ");
  	 var positions=param[3];
  	 var current_guard_id=id;
- 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 console.log("operation[operation.length-1]:"+operation[operation.length-1]);
 
- 	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,todepenNum){
- 	 	
- 	 	if(todepenNum>0){
- 	 		err = 'This activity still have dependent relation(s)';
+ 	 Guardlist.get(req.session.user.name, function(err, guardlists) {
+				if (err) {
+				guradlists = [];
+			}
+
+ 	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,dependencyElement){
+		 	 	
+ 	 	if(dependencyElement[0].todepenNum>0){
+ 	 		err = 'This activity still has dependent relation(s):';
+ 	 		var flag=false;
+
+
+ 	 		for(key in dependencyElement[0].todepen)
+ 	 		{
+ 	 			var keys=key.split("_");
+ 	 			if(flag)
+ 	 			{
+ 	 				err=err+", ";
+ 	 			}
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
+ 	 				console.log("haha:"+guardlists[keyss].selfname+" "+guardlists[keyss]._id+" "+keys[0]);
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
+ 	 	 
  	 	}
  	 	if (err) {
 			req.flash('error', err);
@@ -1221,6 +1417,7 @@ exports.deleteActivity = function(req, res){
   });
  	 }//else
  	}); //getToDepenNum
+		})
 }
 
 exports.deleteDecision = function(req, res){
@@ -1234,10 +1431,25 @@ exports.deleteDecision = function(req, res){
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
 
- 	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,todepenNum){
+ 	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,dependencyElement){
  	 	
- 	 	if(todepenNum>0){
- 	 		err = 'This Decision still have dependent relation(s)';
+ 	 	if(dependencyElement[0].todepenNum>0){
+ 	 		err = 'This decision still have dependent relation(s):';
+ 	 		var flag=false;
+ 	 		for(key in dependencyElement[0].todepen)
+ 	 		{
+ 	 			var keys=key.split("_");
+ 	 			if(flag)
+ 	 			{
+ 	 				err=err+",";
+ 	 			}
+ 	 			err=err+" "+keys[1];
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
  	 	}
  	 	if (err) {
 			req.flash('error', err);
@@ -1298,10 +1510,25 @@ exports.deleteCondition = function(req, res){
  	 var positions=param[3];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
- 	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,todepenNum){
+ 	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,dependencyElement){
  	 	
- 	 	if(todepenNum>0){
- 	 		err = 'This Condition still have dependent relation(s)';
+ 	 	if(dependencyElement[0].todepenNum>0){
+ 	 		err = 'This condition still have dependent relation(s):';
+ 	 		var flag=false;
+ 	 		for(key in dependencyElement[0].todepen)
+ 	 		{
+ 	 			var keys=key.split("_");
+ 	 			if(flag)
+ 	 			{
+ 	 				err=err+",";
+ 	 			}
+ 	 			err=err+" "+keys[1];
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
  	 	}
  	 	if (err) {
 			req.flash('error', err);
@@ -1363,10 +1590,25 @@ exports.deleteUseCase = function(req, res){
  	 var positions=param[3];
  	 var current_guard_id=id;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
- 	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,todepenNum){
+ 	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,dependencyElement){
  	 	
- 	 	if(todepenNum>0){
- 	 		err = 'This Use Case still have dependent relation(s)';
+ 	 	if(dependencyElement[0].todepenNum>0){
+ 	 		err = 'This use case still have dependent relation(s):';
+ 	 		var flag=false;
+ 	 		for(key in dependencyElement[0].todepen)
+ 	 		{
+ 	 			var keys=key.split("_");
+ 	 			if(flag)
+ 	 			{
+ 	 				err=err+",";
+ 	 			}
+ 	 			err=err+" "+keys[1];
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
  	 	}
  	 	if (err) {
 			req.flash('error', err);
@@ -1895,16 +2137,754 @@ exports.editUseCase=function(req,res){
 	 var hidden_fields=req.body.hidden_fields;
 	 console.log(oldusecasename+" "+usecasename+" "+hidden_fields);
 	 if(nameMark || descriptionMark){
-	  ElementDepency.replaceDependKeyName(req.session.user.name,oldusecasename,usecasename,hidden_fields,function(){
-	  		console.log("change depency success");
-	  		
-	  		Tracerule.editUseCase(req.session.user.name,id,nameMark,oldusecasename,usecasename,descriptionMark,oldusecasedescription,usecasedescription,positions,hidden_fields,function(){
-				console.log("change tracerule success");
+
+	 Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+	  ElementDepency.replaceDependKeyName(req.session.user.name,oldusecasename,usecasename,hidden_fields,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+		Guardlist.get(req.session.user.name, function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}		
+	  		Tracerule.editUseCase(req.session.user.name,id,nameMark,oldusecasename,usecasename,descriptionMark,oldusecasedescription,usecasedescription,positions,hidden_fields,function(err,tracerules){
+				res.send(
+						
+						{elementdepencys:elementdepencys}
+	
+				);	
 			});
+	  	  });
 
 		});
-	}
-
-
-	  
+	});
+  }  
 }
+
+exports.editActivity=function(req,res){
+
+	 var nameMark=req.body.nameMark;
+	 var descriptionMark=req.body.descriptionMark;
+	 var executorMark=req.body.executorMark;
+ 	 var user=req.body.user;
+ 	 var id=req.body.id;
+ 	 var activityname=req.body.activityname;
+ 	 var activitydescription=req.body.activitydescription;
+ 	 var activityexecutor=req.body.activityexecutor;
+ 	 var oldactivityname=req.body.oldactivityname;
+ 	 var oldactivitydescription=req.body.oldactivitydescription;
+ 	 var oldactivityexecutor=req.body.oldactivityexecutor;
+ 	 var positions=req.body.positions;
+	 var current_guard_id=req.body.current_guard_id;
+	 var type="activity";
+	 var hidden_fields=req.body.hidden_fields;
+	 console.log(oldactivityname+" "+activityname+" "+hidden_fields);
+	 if(nameMark || descriptionMark){
+
+	
+	  ElementDepency.replaceDependKeyName(req.session.user.name,oldactivityname,activityname,hidden_fields,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}		
+	  		Tracerule.editActivity(req.session.user.name,id,nameMark,oldactivityname,activityname,descriptionMark,oldactivitydescription,activitydescription,executorMark,oldactivityexecutor,activityexecutor,positions,hidden_fields,function(err,tracerules){
+				res.send(
+						
+						{elementdepencys:elementdepencys}
+	
+				);	
+			});
+	  	  
+
+		});	
+  }  
+}
+
+exports.editDecision=function(req,res){
+
+	 var nameMark=req.body.nameMark;
+	 var descriptionMark=req.body.descriptionMark;
+	 var executorMark=req.body.executorMark;
+ 	 var user=req.body.user;
+ 	 var id=req.body.id;
+ 	 var decisionname=req.body.decisionname;
+ 	 var decisiondescription=req.body.decisiondescription;
+ 	 var decisionexecutor=req.body.decisionexecutor;
+ 	 var olddecisionname=req.body.olddecisionname;
+ 	 var olddecisiondescription=req.body.olddecisiondescription;
+ 	 var olddecisionexecutor=req.body.olddecisionexecutor;
+ 	 var positions=req.body.positions;
+	 var current_guard_id=req.body.current_guard_id;
+	 var type="decision";
+	 var hidden_fields=req.body.hidden_fields;
+	 console.log(olddecisionname+" "+decisionname+" "+hidden_fields);
+	 if(nameMark || descriptionMark){
+
+	
+	  ElementDepency.replaceDependKeyName(req.session.user.name,olddecisionname,decisionname,hidden_fields,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}		
+	  		Tracerule.editDecision(req.session.user.name,id,nameMark,olddecisionname,decisionname,descriptionMark,olddecisiondescription,decisiondescription,executorMark,olddecisionexecutor,decisionexecutor,positions,hidden_fields,function(err,tracerules){
+				res.send(
+						
+						{elementdepencys:elementdepencys}
+	
+				);	
+			});
+	  	  
+
+		});	
+  }  
+}
+
+exports.editCondition=function(req,res){
+
+	 var nameMark=req.body.nameMark;
+	 var descriptionMark=req.body.descriptionMark;
+ 	 var user=req.body.user;
+ 	 var id=req.body.id;
+ 	 var conditionname=req.body.conditionname;
+ 	 var conditiondescription=req.body.conditiondescription;
+ 	 var oldconditionname=req.body.oldconditionname;
+ 	 var oldconditiondescription=req.body.oldconditiondescription;
+ 	 var positions=req.body.positions;
+	 var current_guard_id=req.body.current_guard_id;
+	 var type="condition";
+	 var hidden_fields=req.body.hidden_fields;
+	 console.log(oldconditionname+" "+conditionname+" "+hidden_fields);
+	 if(nameMark || descriptionMark){
+
+
+	  ElementDepency.replaceDependKeyName(req.session.user.name,oldconditionname,conditionname,hidden_fields,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}	
+	  		Tracerule.editCondition(req.session.user.name,id,nameMark,oldconditionname,conditionname,descriptionMark,oldconditiondescription,conditiondescription,positions,hidden_fields,function(err,tracerules){
+				res.send(
+						
+						{elementdepencys:elementdepencys}
+	
+				);	
+			});
+	  	 
+
+		});
+	
+  }  
+}
+
+
+exports.insertActAfterPreDialog = function(req, res) {
+	  console.log("content:"+req.params.content);
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+				
+					res.render('InsertActAfterPre', {
+						"layout":false,
+						elementdepencys : elementdepencys,
+						current_guard : req.params.content
+				});	
+			
+		
+	});
+  	  
+};
+
+exports.insertActBeforePostDialog = function(req, res) {
+		
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+				
+					res.render('InsertActBeforePost', {
+						"layout":false,
+						elementdepencys : elementdepencys,
+						current_guard : req.params.content
+				});	
+			
+		
+	});
+  	  
+};
+
+exports.insertActAfterDecConDialog = function(req, res) {
+		
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+				
+					res.render('InsertActAfterDecCon', {
+						"layout":false,
+						elementdepencys : elementdepencys,
+						current_guard : req.params.content
+				});	
+			
+		
+	});
+  	  
+};
+
+exports.insertActBeforeActConDialog = function(req, res) {
+		
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+				
+					res.render('InsertActBeforeActCon', {
+						"layout":false,
+						elementdepencys : elementdepencys,
+						current_guard : req.params.content
+				});	
+			
+		
+	});
+  	  
+};
+
+exports.insertDecAfterActDialog = function(req, res) {
+		
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+				
+					res.render('InsertDecAfterAct', {
+						"layout":false,
+						elementdepencys : elementdepencys,
+						current_guard : req.params.content
+				});	
+			
+		
+	});
+  	  
+};
+
+exports.insertDecAfterDecConDialog = function(req, res) {
+		
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+				
+					res.render('InsertDecAfterDecCon', {
+						"layout":false,
+						elementdepencys : elementdepencys,
+						current_guard : req.params.content
+				});	
+			
+		
+	});
+  	  
+};
+
+exports.insertDecBeforeActDialog = function(req, res) {
+		
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+				
+					res.render('InsertDecBeforeAct', {
+						"layout":false,
+						elementdepencys : elementdepencys,
+						current_guard : req.params.content
+				});	
+			
+		
+	});
+  	  
+};
+
+exports.insertDecBeforeActWithDialog = function(req, res) {
+		
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+				
+					res.render('InsertDecBeforeActWith', {
+						"layout":false,
+						elementdepencys : elementdepencys,
+						current_guard : req.params.content
+				});	
+			
+		
+	});
+  	  
+};
+
+exports.insertDecBeforeDecConDialog = function(req, res) {
+		
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+				
+					res.render('InsertDecBeforeDecCon', {
+						"layout":false,
+						elementdepencys : elementdepencys,
+						current_guard : req.params.content
+				});	
+			
+		
+	});
+  	  
+};
+
+exports.insertDecBeforeActConDialog = function(req, res) {
+		
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+				
+					res.render('InsertDecBeforeActCon', {
+						"layout":false,
+						elementdepencys : elementdepencys,
+						current_guard : req.params.content
+				});	
+			
+		
+	});
+  	  
+};
+
+
+
+//feature model related
+
+exports.addNewFeature = function(req,res){
+  console.log("\n" + req.body.text + "在index.js中的 \"addNewFeature\"开始了！");
+  var newFeature = new Feature({
+		text        : req.body.text        ,
+		parent_id   : req.body.parent_id   ,
+		description : req.body.description ,
+		root        : req.body.root        ,
+		optionality : req.body.optionality ,
+		VP          : req.body.VP          ,
+		level       : parseInt(req.body.level),
+  });
+
+  Feature.getByTextAndRoot(newFeature.text, newFeature.root, function(err, feature) {
+  	console.log("haha"+newFeature.text);
+  	if (feature)
+  	  err = 'Feature already exists.';
+  	if (err) {
+  		req.flash('error', err);
+  		console.log("Feature already exists.");
+  		return res.redirect('/');
+  	}
+  	newFeature.save(function(err) {
+  		if (err)  {
+  			req.flash('error', err);
+  			return res.redirect('/');
+  		}
+  		console.log("FUCKing No ERR");
+ 			Feature.getByTextAndRoot(newFeature.text, newFeature.root, function(err, thefeature) {
+ 				if (!thefeature)
+ 					err = 'Feature has not be inserted.';
+ 				if (err) {
+ 					req.flash('error', err);
+ 					console.log("Feature has not be inserted.");
+ 					return res.redirect('/');
+ 				}
+ 				res.send({'_id': thefeature._id});
+ 				console.log("ADD NEW FEATURE: SUCCESS");
+ 			});
+  	});
+  });
+};
+
+exports.loadFeatureModel = function(req,res){
+	console.log("START \"loadFeatureModel\"");
+	Feature.getAll(function(err, features) {
+		if (err) {
+			console.log("LOAD FEATURE MODLE: FAIL");
+			req.flash('error', err);
+			return res.redirect('/F');
+		}
+		res.send({'features': features});
+		
+		console.log("FINISH SENDING")
+	});
+};
+
+exports.removeFeature = function(req,res) {
+	console.log("START \"removeFeature\"");
+	var _id = req.body._id;
+	Feature.remove(_id, function(err) {
+		if (err) {
+			req.flash('error', err);
+			return res.redirect('/');
+		}
+		res.send({});
+		console.log("DELETE FEATURE: SUCCESS");
+	});
+};
+
+exports.removeSubtree = function(req,res) {
+	console.log("START \"removeSubtree\"");
+	var _id = req.body._id;
+	Feature.removeSubtree(_id, function(err) {
+		if (err) {
+			req.flash('error', err);
+			return res.redirect('/');
+		}
+		res.send({});
+		console.log("DELETE SUBTREE: SUCCESS");
+	});
+};
+
+exports.updateText = function(req,res) {
+	console.log("START \"updateText\"");
+	var _id = req.body._id;
+	var newText = req.body.text;
+	Feature.updateText(_id, newText, function(err) {
+		if (err) {
+			req.flash('error', err);
+			return res.redirect('/');
+		}
+		console.log("UPDATE NAME: SUCCESS");
+	});
+};
+
+exports.updateDescription = function(req,res) {
+	console.log("START \"updateDescription\"");
+	var _id = req.body._id;
+	var newDescription = req.body.description;
+	Feature.updateDescription(_id, newDescription, function(err) {
+		if (err) {
+			req.flash('error', err);
+			return res.redirect('/');
+		}
+		console.log("UPDATE DESCRIPTION: SUCCESS");
+	});
+};
+
+exports.updateOptionality = function(req,res) {
+	console.log("START \"updateOptionality\"");
+	var _id = req.body._id;
+	var newOptionality = req.body.optionality;
+	Feature.updateOptionality(_id, newOptionality, function(err) {
+		if (err) {
+			req.flash('error', err);
+			return res.redirect('/');
+		}
+		console.log("UPDATE OPTIONALITY: SUCCESS");
+	});
+};
+
+exports.updateParent_id = function(req,res) {
+	console.log("START \"updateParent_id\"");
+	var _id = req.body._id;
+	var newParent_id = req.body.parent_id;
+	Feature.updateParent_id(_id, newParent_id, function(err) {
+		if (err) {
+			req.flash('error', err);
+			return res.redirect('/');
+		}
+		console.log("UPDATE PARENT: SUCCESS");
+	});
+};
+
+exports.updateVP = function(req,res) {
+	console.log("START \"updateVP\"");
+	var _id = req.body._id;
+	var newVP = req.body.VP;
+	Feature.updateVP(_id, newVP, function(err) {
+		if (err) {
+			req.flash('error', err);
+			return res.redirect('/');
+		}
+		console.log("UPDATE VP: SUCCESS");
+	});
+};
+
+exports.configurationTree = function(req,res){
+	res.render('configurationTree', {
+						"layout":false,
+						
+				});	
+};
+
+exports.addTraceRule = function(req, res){
+	console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	  var $user=param[0];
+ 	 var $id=param[1];
+ 	 var $selfname=param[2];
+ 	 var $guardname=param[3];
+ 	 var $positionss=param[4];
+ 	 var $current_guard_id=param[5];
+ 	 var $newGuardId;
+ 	 console.log($user+" "+$id+" "+$selfname+" "+$guardname+" "+$positionss+" "+$current_guard_id);
+ 	 
+
+ 	
+	Tracerule.savePositions($user,$id,$positionss,function(err){
+		
+ 	 Tracerule.getByName($user,$guardname, function(err,tracerule ) {
+		if (tracerule)
+			err = 'Guardname already exists.';
+		if (err) {
+			req.flash('error', err);
+			return res.redirect('/T/'+$current_guard_id);
+		}
+		console.log("1");
+		 Tracerule.getBySelfName($user,$selfname, function(err,tracerule ) {
+			if (tracerule)
+				err = 'Selfname already exists.';
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('/T/'+$current_guard_id);
+			}
+
+				Tracerule.addNewTraceRule($user,$guardname,$selfname,function(err,tracerules){
+					if (err) {
+						req.flash('error', err);
+						return res.redirect('/T/'+$current_guard_id);
+					}
+					Tracerule.returnIDByName($user,$guardname, function(err,returnID) {
+						console.log("$$$$$ "+returnID);
+						
+    					$newGuardId=returnID;
+/*
+    					NewGuard.save(function(err,guardlists) {
+							if (err) {
+								req.flash('error', err);
+								return res.redirect('/T/'+current_guard_id);
+							}
+*/
+				console.log($newGuardId+" %%%%%");
+ 				Guardlist.addNewGuardList($user,$selfname,$newGuardId, function(err, guardlists) {
+					if (err) {
+						guradlists = [];
+							}
+								Post.get(null, function(err, posts) {
+									if (err) {
+										posts = [];
+									}
+									 ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  									if(err){
+	  										console.log("elementdepencys is null!");
+	  										elementdepencys=[];
+	  									}
+	  									console.log("haha:"+tracerules.length);
+	  									res.render('TTT', {
+											title : 'Traceability',
+											posts : posts,
+											guardlists : guardlists,
+											tracerules : tracerules,
+											elementdepencys : elementdepencys,
+											user : req.session.user,
+											current_guard : returnID,
+											success : req.flash('success').toString(),
+											error : req.flash('error').toString()
+										});	
+	  									
+	  								});
+
+								});
+							
+			
+						});				
+					});
+				});
+		
+		});
+	});
+  });
+}
+
+exports.addTraceRuleZero = function(req, res){
+	console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	 var $user=req.session.user.name;
+ 	 
+ 	 var $selfname=param[0];
+ 	 var $guardname=param[1];
+
+ 	 var $newGuardId;
+
+				Tracerule.addNewTraceRule($user,$guardname,$selfname,function(err,tracerules){
+					if (err) {
+						req.flash('error', err);
+						return res.redirect('/T/'+$current_guard_id);
+					}
+					Tracerule.returnIDByName($user,$guardname, function(err,returnID) {
+						console.log("$$$$$ "+returnID);
+				
+    					$newGuardId=returnID;
+/*
+    					NewGuard.save(function(err,guardlists) {
+							if (err) {
+								req.flash('error', err);
+								return res.redirect('/T/'+current_guard_id);
+							}
+*/
+				console.log($newGuardId+" %%%%%");
+ 				Guardlist.addNewGuardList($user,$selfname,$newGuardId, function(err, guardlists) {
+					if (err) {
+						guradlists = [];
+							}
+								Post.get(null, function(err, posts) {
+									if (err) {
+										posts = [];
+									}
+									 ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  									if(err){
+	  										console.log("elementdepencys is null!");
+	  										elementdepencys=[];
+	  									}
+	  									res.render('T', {
+											title : 'Traceability',
+											posts : posts,
+											guardlists : guardlists,
+											tracerules : tracerules,
+											elementdepencys : elementdepencys,
+											user : req.session.user,
+											current_guard : $newGuardId,
+											success : req.flash('success').toString(),
+											error : req.flash('error').toString()
+										});	
+	  									
+	  								});
+
+								});
+							
+			
+						});				
+					});
+				});
+	
+  
+}
+
+exports.editTraceRule = function(req, res){
+	console.log(req.params.content);
+ 	 var param=req.params.content.split("分");
+ 	  var $user=param[0];
+ 	 var $id=param[1];
+ 	 var $selfname=param[2];
+ 	 var $guardname=param[3];
+ 	 var $positionss=param[4];
+ 	 var $current_guard_id=param[5];
+ 	 var $newGuardId;
+ 	 console.log($user+" "+$id+" "+$selfname+" "+$guardname+" "+$positionss+" "+$current_guard_id);
+ 	 
+
+ 	
+	Tracerule.editTraceRuleGuardSelfname($user,$id,$guardname,$selfname,$positionss,function(err,tracerules){
+
+
+ 				Guardlist.updateSelfname($user,$current_guard_id, $selfname,function(err, guardlists) {
+					if (err) {
+						guradlists = [];
+							}
+								Post.get(null, function(err, posts) {
+									if (err) {
+										posts = [];
+									}
+									 ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  									if(err){
+	  										console.log("elementdepencys is null!");
+	  										elementdepencys=[];
+	  									}
+	  									res.render('T', {
+											title : 'Traceability',
+											posts : posts,
+											guardlists : guardlists,
+											tracerules : tracerules,
+											elementdepencys : elementdepencys,
+											user : req.session.user,
+											current_guard : $current_guard_id,
+											success : req.flash('success').toString(),
+											error : req.flash('error').toString()
+										});	
+	  									
+	  								});
+
+								});
+							
+			
+						});				
+		
+  });
+}
+
+
+exports.C = function(req, res) {
+	Configuration.get(req.session.user.name,null,function(err,configurations){
+		res.render('C', {
+		title: 'Configuration',
+		user : req.session.user,
+		configurations:configurations,
+		current_configuration_id:"",
+		success : req.flash('success').toString(),
+		error : req.flash('error').toString()
+    });
+	})
+	
+};
+
+
+exports.newConfiguration=function(req,res){
+	var $configurationname=req.params.content;
+	var $current_configuration_id;
+
+	Configuration.addNewConfiguration(req.session.user.name,$configurationname,function(err,configurations,currentID){
+
+		res.render('C', {
+				title : 'Configuration',
+				user: req.session.user,
+				configurations:configurations,
+				current_configuration_id:currentID,
+				success : req.flash('success').toString(),
+				error : req.flash('error').toString()
+			});
+	});
+};
+
+exports.deleteConfiguration=function(req,res){
+	var $deleteId=req.params.content;
+
+	Configuration.removeConfiguration(req.session.user.name,$deleteId,function(err,configurations){
+		if(configurations.length>0){
+		res.render('C', {
+				title : 'Configuration',
+				user: req.session.user,
+				configurations:configurations,
+				current_configuration_id:configurations[0]._id,
+				success : req.flash('success').toString(),
+				error : req.flash('error').toString()
+			});
+		}else{
+			res.render('C', {
+				title : 'Configuration',
+				user: req.session.user,
+				configurations:configurations,
+				current_configuration_id:"",
+				success : req.flash('success').toString(),
+				error : req.flash('error').toString()
+			});
+		}
+	});
+};

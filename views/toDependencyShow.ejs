@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<table class="table" contenteditable="true">
+  <% elementdepencys.forEach(function(elementdepency,index){
+      if(elementdepency.dependee==current_guard&&elementdepency.type!="UseCase"){
+        for(key in elementdepency.todepen){
+        //  var path=elementdepency.depender[key].name.split("_");
+
+        if(elementdepency.todepen[key].refer_num>0){
+          var path=key.split("_");
+          
+    %>
+      
+      <tr>
+           <td></td>
+           <td><%=elementdepency.element%></td>
+           <td><b><---</b></td>
+           <td><%=path[1]%></td>
+           <td><b>∈</b>&nbsp;</td>
+           <td>
+            <%
+              guardLists.forEach(function(guard,index){
+                if(guard.trace_rule_id==path[0]){
+            %>
+                <%=guard.selfname%>
+            <%
+                }
+                })
+            %>
+           </td>
+      </tr>
+
+    <%
+          
+        }
+      }
+    }
+  })%>
+
+  
+</table>
+    

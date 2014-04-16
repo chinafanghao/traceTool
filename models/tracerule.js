@@ -39,15 +39,73 @@ Tracerule.prototype.save = function save(callback) {
 				mongodb.close();
 				return callback(err);
 			}
-			collection.ensureIndex('user');
 			
-			collection.insert(tracerule, {safe: true}, function(err, tracerule) {
+			collection.insert(tracelist, {safe: true}, function(err, tracelist) {
 				mongodb.close();
-				callback(err, tracerule);
+				callback(err, tracelist);
 			});
 		});
 	});
 };
+
+Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname,callback) {
+	// 存入 Mongodb 的文檔
+// 存入 Mongodb 的文檔
+	var newTraceRule = {
+				user: username,
+				name:guardname,
+				selfname:selfname,
+				positions:"",
+				operations:{},
+				elements:{}
+			};
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+	   
+	   db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			
+			collection.ensureIndex('user');
+			collection.insert(newTraceRule, {safe: true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("insert new tracerule success");
+				});
+
+					var query = {};
+			if (username) {
+				
+				query={"user":username};
+			}
+			collection.ensureIndex('user');
+
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+
+		  });
+		
+	});
+};
+
 
 
 Tracerule.get = function get(username, guard_id,callback) {
@@ -91,6 +149,137 @@ Tracerule.get = function get(username, guard_id,callback) {
 		});
 	});
 };
+
+Tracerule.getByName = function getByName(usernames, guardnames ,callback) {
+	console.log(usernames+"###"+guardnames+"#####");
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query = {};
+
+				query={"user":usernames,"name":guardnames};
+		
+				collection.findOne(query, function(err, doc) {
+				mongodb.close();
+				if (doc) {
+					var tracerule = new Tracerule(doc);
+					console.log("hahahahha "+doc._id);
+					callback(null, tracerule);
+				} else {
+					callback(err, null);
+				}
+			});
+			
+		});
+	});
+};
+
+Tracerule.returnIDByName = function returnIDByName(usernames, guardnames ,callback) {
+	console.log(usernames+"###"+guardnames+"#####");
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query = {};
+
+				query={"user":usernames,"name":guardnames};
+		
+				collection.findOne(query, function(err, doc) {
+				mongodb.close();
+				if (doc) {
+					var tracerule = new Tracerule(doc);
+					
+					callback(null, doc._id);
+				} else {
+					callback(err, null);
+				}
+			});
+			
+		});
+	});
+};
+
+Tracerule.returnElements = function returnElements(username, deleteID ,callback) {
+
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query = {};
+
+				query={"user":username,"_id":ObjectID(deleteID)};
+		
+				collection.findOne(query, function(err, doc) {
+				mongodb.close();
+				if (doc) {
+					
+					callback(null, doc.elements);
+				} else {
+					callback(err, null);
+				}
+			});
+			
+		});
+	});
+};
+
+
+Tracerule.getBySelfName = function getBySelfName(username, selfname ,callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query = {};
+
+				query={"user":username,"selfname":selfname};
+		
+
+			collection.findOne(query, function(err, doc) {
+				mongodb.close();
+				if (doc) {
+					var tracerule = new Tracerule(doc);
+					callback(err, tracerule);
+				} else {
+					callback(err, null);
+				}
+			});
+		});
+	});
+};
+
 
 Tracerule.del = function del(username, operation_name,callback) {
 	console.log(username+" "+operation_name+"#");
@@ -190,6 +379,52 @@ Tracerule.updateSelfname = function updateSelfname(selfname, user,name,id,callba
 	});
 };
 
+Tracerule.removeTraceRule = function removeTraceRule(user,deleteID,callback){
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query = {};
+			if (deleteID) {
+				
+				query={"user":user,"_id":ObjectID(deleteID)};
+			}
+			collection.remove(query,function(err){
+								if(err) {console.warn(err.message);
+										mongodb.close();}
+								else {
+									console.log("delete element success");
+									query={"user":user};
+									collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
+										mongodb.close();
+
+										if (err) {
+											callback(err, null);
+										}
+
+										var tracerules = [];
+				
+										docs.forEach(function(doc, index) {
+											var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+											tracerules.push(tracerule);
+										});
+
+										callback(null, tracerules);
+									});
+									}
+							});
+		});
+	});
+}
+
 Tracerule.createActivity = function createActivity(user,id,activityname,activitydescription,activityexecutor,current_accordion,positions,callback){
 	// 存入 Mongodb 的文檔
 	mongodb.open(function(err, db) {
@@ -264,125 +499,54 @@ Tracerule.createActivity = function createActivity(user,id,activityname,activity
 					};
 				collection.update(query1,query2,{safe:true},function(err){
 					if(err) console.warn(err.message);
-					else console.log("createActivity success");
-				});
-				query2={"$set":elements}
-				collection.update(query1,query2,{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("createActivity success");
-				});
-
-				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("createActivity success");
-				});
-			//query1={"user":user,"_id":ObjectID(id)};
-			
-				
-			//query1={"user":user,"_id":ObjectID(id),"name":name};
-			//query2={$set:{"selfname":selfname}};
-			
-			//collection.update(query1,query2);
-
-			var query = {};
-			if (id) {
-				
-				query={"user":user,"_id":ObjectID(id)};
-			}
-			else{
-				query={"user":user};
-			}
-
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
-				if (err) {
-					callback(err, null);
-				}
-
-				var tracerules = [];
-				
-				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
-					tracerules.push(tracerule);
-				});
-
-				callback(null, tracerules);
-			});
-		});
-	});
-}
-
-Tracerule.EditActivity = function EditActivity(user,operationname,activityname,activitydescription,activityexecutor,activityvirtual,positions,id,callback){
-	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
-			var ObjectID = require("mongodb").ObjectID;
-			//查找user属性为username的文档，如果username为null则匹配全部
-			var query1 = {};
-			var query2 = {};
-				query1={"user":user,"_id":ObjectID(id)};
-			
-				var keyValue="Create Activity "+activityname;
-				console.log(keyValue);
-				var operationName="operations."+keyValue+".name";
-				var operationType="operations."+keyValue+".type";
-				var operationPosition="operations."+keyValue+".position";
-				var operationElement="operations."+keyValue+".element";
-				var operationTime="operations."+keyValue+".time";
-				var operations={};
-					operations[operationName] = keyValue;
-					operations[operationType] = "C2";
-					operations[operationPosition]=current_accordion;
-					operations[operationElement]=id+".element."+activityname;
-					operations[operationTime]=new Date();
-					
-				var elementName="elements."+activityname+".name";
-				var elementDescription="elements."+activityname+".description";
-				var elementType="elements."+activityname+".type";
-				var elementExecutor="elements."+activityname+".executor";
-				var elementTime="elements."+activityname+".time";
-				var elementIsVirtual="elements."+activityname+".is_virtual";
-				var elements={};
-					
-					elements[elementName]=activityname;
-					elements[elementDescription]=activitydescription;
-					elements[elementType]="activity";
-					elements[elementExecutor]=activityexecutor;
-					elements[elementTime]=new Date();
-					elements[elementIsVirtual]=activityvirtual;
-			
-				query2={
-					"$set":
-							operations
-							//infor.dir:activityname,
-							//elements:elements[activityname]
+					else {
+						console.log("createActivity success");
+						query2={"$set":elements}
 						
-					};
-				collection.update(query1,query2,{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("createActivity success");
-				});
-				query2={"$set":elements}
-				collection.update(query1,query2,{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("createActivity success");
+						collection.update(query1,query2,{safe:true},function(err){
+							if(err) console.warn(err.message);
+							else {
+								console.log("createActivity success");
+								query2={$set:{"positions":positions}};
+								collection.update(query1,query2,{safe:true},function(err){
+									if(err) console.warn(err.message);
+									else {
+										console.log("createActivity success");
+
+										var query = {};
+										if (id) {
+				
+											query={"user":user,"_id":ObjectID(id)};
+										}
+										else{
+											query={"user":user};
+										}
+
+										collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+											mongodb.close();
+
+											if (err) {
+												callback(err, null);
+											}
+
+											var tracerules = [];
+				
+											docs.forEach(function(doc, index) {
+												var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+												tracerules.push(tracerule);
+											});
+
+											callback(null, tracerules);
+										});
+									}
+								});
+							}
+						});
+					}
 				});
 				
-				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("createActivity success");
-				});
+
+				
 			//query1={"user":user,"_id":ObjectID(id)};
 			
 				
@@ -391,34 +555,11 @@ Tracerule.EditActivity = function EditActivity(user,operationname,activityname,a
 			
 			//collection.update(query1,query2);
 
-			var query = {};
-			if (id) {
-				
-				query={"user":user,"_id":ObjectID(id)};
-			}
-			else{
-				query={"user":user};
-			}
-
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
-				if (err) {
-					callback(err, null);
-				}
-
-				var tracerules = [];
-				
-				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
-					tracerules.push(tracerule);
-				});
-
-				callback(null, tracerules);
-			});
 		});
 	});
 }
+
+
 
 
 Tracerule.createUseCase = function createUseCase(user,id,usecasename,usecasedescription,positions,callback){
@@ -477,45 +618,51 @@ Tracerule.createUseCase = function createUseCase(user,id,usecasename,usecasedesc
 					};
 				collection.update(query1,query2,{safe:true},function(err){
 					if(err) console.warn(err.message);
-					else console.log("createUseCase success");
-				});
-				query2={"$set":elements}
-				collection.update(query1,query2,{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("createUseCase success");
-				});
-
-				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("createUseCase success");
-				});
-
-			var query = {};
-			if (id) {
+					else {
+						console.log("createUseCase success");
+						query2={"$set":elements}
+						collection.update(query1,query2,{safe:true},function(err){
+							if(err) console.warn(err.message);
+							else {
+								console.log("createUseCase success");
+								query2={$set:{"positions":positions}};
+									collection.update(query1,query2,{safe:true},function(err){
+										if(err) console.warn(err.message);
+										else {
+											console.log("createUseCase success");
+											
+											var query = {};
+											if (id) {
 				
-				query={"user":user,"_id":ObjectID(id)};
-			}
-			else{
-				query={"user":user};
-			}
+												query={"user":user,"_id":ObjectID(id)};
+											}
+											else{
+												query={"user":user};
+											}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+											collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+												mongodb.close();
 
-				if (err) {
-					callback(err, null);
-				}
+												if (err) {
+													callback(err, null);
+												}
 
-				var tracerules = [];
+												var tracerules = [];
 				
-				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
-					tracerules.push(tracerule);
-				});
+												docs.forEach(function(doc, index) {
+													var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+													tracerules.push(tracerule);
+												});
 
-				callback(null, tracerules);
-			});
+												callback(null, tracerules);
+											});
+										}
+								});
+							}
+						});
+					}
+				});
+				
 		});
 	});
 }
@@ -538,10 +685,9 @@ Tracerule.createDecision = function createActivity(user,id,decisionname,decision
 			var query2 = {};
 			
 				query1={"user":user,"_id":ObjectID(id)};
-				//query1={"$where":"function(){for(key in this.operations){if(this.operations[key].position=="+positions[keys]+"){return true};}}"};
-				console.log(query1);
+				
 				var keyValue="Create Decision "+decisionname;
-				console.log(keyValue);
+				
 				var operationName="operations."+keyValue+".name";
 				var operationType="operations."+keyValue+".type";
 				var operationElement="operations."+keyValue+".element";
@@ -575,19 +721,53 @@ Tracerule.createDecision = function createActivity(user,id,decisionname,decision
 					};
 				collection.update(query1,query2,{safe:true},function(err){
 					if(err) console.warn(err.message);
-					else console.log("create Decision success");
-				});
-				query2={"$set":elements}
-				collection.update(query1,query2,{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("create Decision success");
-				});
+					else {
+						console.log("create Decision success");
+						query2={"$set":elements}
+						collection.update(query1,query2,{safe:true},function(err){
+							if(err) console.warn(err.message);
+							else {
+								console.log("create Decision success");
+								query2={$set:{"positions":positions}};
+								collection.update(query1,query2,{safe:true},function(err){
+									if(err) console.warn(err.message);
+									else {
+										console.log("create Decision success");
 
-				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("create Decision success");
+										var query = {};
+										if (id) {
+				
+											query={"user":user,"_id":ObjectID(id)};
+										}
+										else{
+											query={"user":user};
+										}
+
+										collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+											mongodb.close();
+
+											if (err) {
+												callback(err, null);
+											}
+
+											var tracerules = [];
+				
+											docs.forEach(function(doc, index) {
+												var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+												tracerules.push(tracerule);
+											});
+
+											callback(null, tracerules);
+										});
+									}
+								});
+							}
+						});
+					}
 				});
+				
+
+				
 			//query1={"user":user,"_id":ObjectID(id)};
 			
 				
@@ -596,31 +776,6 @@ Tracerule.createDecision = function createActivity(user,id,decisionname,decision
 			
 			//collection.update(query1,query2);
 
-			var query = {};
-			if (id) {
-				
-				query={"user":user,"_id":ObjectID(id)};
-			}
-			else{
-				query={"user":user};
-			}
-
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
-				if (err) {
-					callback(err, null);
-				}
-
-				var tracerules = [];
-				
-				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
-					tracerules.push(tracerule);
-				});
-
-				callback(null, tracerules);
-			});
 		});
 	});
 }
@@ -2641,7 +2796,7 @@ Tracerule.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCon(use
 	});
 }
 
-Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,descriptionMark,oldusecasedescription,usecasedescription,positions,hidden_field)
+Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,descriptionMark,oldusecasedescription,usecasedescription,positions,hidden_field,callback)
 {
 	var Oldname=hidden_field+".element."+oldname;
 	var Newname=hidden_field+".element."+newname;
@@ -2650,11 +2805,13 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 	var refer_num;
 	mongodb.open(function(err, db) {
 		if (err) {
+			console.log("#11");
 			return callback(err);
 		}
 	
 		db.collection('tracerule', function(err, collection) {
 			if (err) {
+				console.log("#22");
 				mongodb.close();
 				return callback(err);
 			}
@@ -2670,6 +2827,7 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 			collection.find(query).toArray(function(err, docs) {
 
 				if (err) {
+					console.log("#33");
 					callback(err, null);
 				}
 
@@ -2729,7 +2887,7 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 				
 					for(key in doc.operations)
 					{
-						console.log("operations.key:"+key);
+						//console.log("operations.key:"+key);
 						var spl=doc.operations[key].name.split(" ");
 						var newkey="";
 						for(keys in spl)
@@ -2777,13 +2935,656 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 							}
 					}
 				
-					
 				});
+				
+				
 			});
 				
+			query = {};
+			if (id) {
 				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
 			
 		});
-		mongodb.close();
+		
+		
+		
+	});
+}
+
+Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,descriptionMark,oldactivitydescription,activitydescription,executorMark,oldactivityexecutor,activityexecutor,positions,hidden_field,callback)
+{
+	var Oldname=hidden_field+".element."+oldname;
+	var Newname=hidden_field+".element."+newname;
+	var oldnames=oldname;
+	var newnames=newname;
+	var refer_num;
+	mongodb.open(function(err, db) {
+		if (err) {
+			
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				
+				mongodb.close();
+				return callback(err);
+			}
+
+			//查找user属性为username的文档，如果username为null则匹配全部
+
+			var query = {};
+			var ObjectID = require("mongodb").ObjectID;
+			if (user) {
+				
+				query={"user":user};
+			}
+			collection.find(query).toArray(function(err, docs) {
+
+				if (err) {
+					
+					callback(err, null);
+				}
+
+			
+				
+				  docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+				    var ObjectID = require("mongodb").ObjectID;
+				  
+					if(doc._id==id)
+				{
+						query2={$set:{"positions":positions}};
+							collection.update({"user":user,"_id":ObjectID(id)},query2,{safe:true},function(err){
+							if(err) console.warn(err.message);
+							else console.log("yes");
+						});
+
+					for(key in doc.elements)
+					{
+						
+						if(doc.elements[key].name==oldnames)
+						{
+							
+							
+							
+							var elementName="elements."+doc.elements[key].name;
+							var element={};
+			     			element[elementName]=doc.elements[key].name;
+			     			var ObjectID = require("mongodb").ObjectID;
+			     			
+							collection.update({"user":doc.user,"_id":doc._id},{"$unset":element},function(err){
+							
+								elementName="elements."+newnames+".name";
+								elementDescription="elements."+newnames+".description";
+								elementExecutor="elements."+newnames+".executor";
+								elementType="elements."+newnames+".type";
+								elementTime="elements."+newnames+".time";
+								element={};
+			     				element[elementName]=newnames;
+			     				element[elementDescription]=activitydescription;
+			     				element[elementExecutor]=activityexecutor;
+			     				element[elementType]="activity";
+			     				element[elementTime]=new Date();
+								collection.update({"user":doc.user,"_id":doc._id},{"$set":element},function(err){
+							
+								});
+						});
+					  }
+					}
+				}else{
+					//bug 4
+
+					var newpositions=doc.positions.replace(new RegExp(oldname,"gm"),newname);
+
+						collection.update({"user":user,"_id":doc._id},{"$set":{"positions":newpositions}},{safe:true},function(err){
+							if(err) console.warn(err.message);
+							else console.log("yes");
+						});
+				}
+				
+					for(key in doc.operations)
+					{
+						//console.log("operations.key:"+key);
+						var spl=doc.operations[key].name.split(" ");
+						var newkey="";
+						for(keys in spl)
+						{
+							if(newkey!="")
+								newkey=newkey+" ";
+							if(spl[keys]==oldnames)
+								newkey=newkey+newnames;
+							else
+								newkey=newkey+spl[keys];
+						}
+							
+							var newOpe;
+							
+							if(newkey!==doc.operations[key].name){
+								
+								newOpe={};
+								for(sub in doc.operations[key]){
+									var string="operations."+newkey+"."+sub;
+									if(doc.operations[key][sub]==doc.operations[key].name)
+									{
+										newOpe[string]=newkey;
+									}
+									else{
+										if(doc.operations[key][sub]==Oldname)
+										{
+											newOpe[string]=Newname;
+										}
+										else{
+											newOpe[string]=doc.operations[key][sub];
+										}
+									}
+
+								}
+								
+								var ObjectID = require("mongodb").ObjectID;
+								collection.update({"user":doc.user,"_id":doc._id},{"$set":newOpe},function(err){
+									var oldOpe={};
+									var oldstring="operations."+doc.operations[key].name;
+									oldOpe[oldstring]=doc.operations[key].name;
+									
+									collection.update({"user":doc.user,"_id":doc._id},{"$unset":oldOpe},function(err){
+									})
+								});
+							}
+					}
+				
+				});
+				
+				
+			});
+				
+			query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+			
+		});
+		
+		
+		
+	});
+}
+
+Tracerule.editDecision = function editDecision(user,id,nameMark,oldname,newname,descriptionMark,olddecisiondescription,decisiondescription,executorMark,olddecisionexecutor,decisionexecutor,positions,hidden_field,callback)
+{
+	var Oldname=hidden_field+".element."+oldname;
+	var Newname=hidden_field+".element."+newname;
+	var oldnames=oldname;
+	var newnames=newname;
+	var refer_num;
+	mongodb.open(function(err, db) {
+		if (err) {
+			
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				
+				mongodb.close();
+				return callback(err);
+			}
+
+			//查找user属性为username的文档，如果username为null则匹配全部
+
+			var query = {};
+			var ObjectID = require("mongodb").ObjectID;
+			if (user) {
+				
+				query={"user":user};
+			}
+			collection.find(query).toArray(function(err, docs) {
+
+				if (err) {
+					
+					callback(err, null);
+				}
+
+			
+				
+				  docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+				    var ObjectID = require("mongodb").ObjectID;
+				  
+					if(doc._id==id)
+				{
+						query2={$set:{"positions":positions}};
+							collection.update({"user":user,"_id":ObjectID(id)},query2,{safe:true},function(err){
+							if(err) console.warn(err.message);
+							else console.log("yes");
+						});
+
+					for(key in doc.elements)
+					{
+						
+						if(doc.elements[key].name==oldnames)
+						{
+							
+							
+							
+							var elementName="elements."+doc.elements[key].name;
+							var element={};
+			     			element[elementName]=doc.elements[key].name;
+			     			var ObjectID = require("mongodb").ObjectID;
+			     			
+							collection.update({"user":doc.user,"_id":doc._id},{"$unset":element},function(err){
+							
+								elementName="elements."+newnames+".name";
+								elementDescription="elements."+newnames+".description";
+								elementExecutor="elements."+newnames+".executor";
+								elementType="elements."+newnames+".type";
+								elementTime="elements."+newnames+".time";
+								element={};
+			     				element[elementName]=newnames;
+			     				element[elementDescription]=decisiondescription;
+			     				element[elementExecutor]=decisionexecutor;
+			     				element[elementType]="decision";
+			     				element[elementTime]=new Date();
+								collection.update({"user":doc.user,"_id":doc._id},{"$set":element},function(err){
+							
+								});
+						});
+					  }
+					}
+				}else{
+					//bug 4
+
+					var newpositions=doc.positions.replace(new RegExp(oldname,"gm"),newname);
+					
+						collection.update({"user":user,"_id":doc._id},{"$set":{"positions":newpositions}},{safe:true},function(err){
+							if(err) console.warn(err.message);
+							else console.log("yes");
+						});
+				}
+				
+					for(key in doc.operations)
+					{
+						//console.log("operations.key:"+key);
+						var spl=doc.operations[key].name.split(" ");
+						var newkey="";
+						for(keys in spl)
+						{
+							if(newkey!="")
+								newkey=newkey+" ";
+							if(spl[keys]==oldnames)
+								newkey=newkey+newnames;
+							else
+								newkey=newkey+spl[keys];
+						}
+							
+							var newOpe;
+							
+							if(newkey!==doc.operations[key].name){
+								
+								newOpe={};
+								for(sub in doc.operations[key]){
+									var string="operations."+newkey+"."+sub;
+									if(doc.operations[key][sub]==doc.operations[key].name)
+									{
+										newOpe[string]=newkey;
+									}
+									else{
+										if(doc.operations[key][sub]==Oldname)
+										{
+											newOpe[string]=Newname;
+										}
+										else{
+											newOpe[string]=doc.operations[key][sub];
+										}
+									}
+
+								}
+								
+								var ObjectID = require("mongodb").ObjectID;
+								collection.update({"user":doc.user,"_id":doc._id},{"$set":newOpe},function(err){
+									var oldOpe={};
+									var oldstring="operations."+doc.operations[key].name;
+									oldOpe[oldstring]=doc.operations[key].name;
+									
+									collection.update({"user":doc.user,"_id":doc._id},{"$unset":oldOpe},function(err){
+									})
+								});
+							}
+					}
+				
+				});
+				
+				
+			});
+				
+			query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+			
+		});
+		
+		
+		
+	});
+}
+
+Tracerule.editCondition = function editCondition(user,id,nameMark,oldname,newname,descriptionMark,oldconditiondescription,conditiondescription,positions,hidden_field,callback)
+{
+	var Oldname=hidden_field+".element."+oldname;
+	var Newname=hidden_field+".element."+newname;
+	var oldnames=oldname;
+	var newnames=newname;
+	var refer_num;
+	mongodb.open(function(err, db) {
+		if (err) {
+			console.log("#11");
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				console.log("#22");
+				mongodb.close();
+				return callback(err);
+			}
+
+			//查找user属性为username的文档，如果username为null则匹配全部
+
+			var query = {};
+			var ObjectID = require("mongodb").ObjectID;
+			if (user) {
+				
+				query={"user":user};
+			}
+			collection.find(query).toArray(function(err, docs) {
+
+				if (err) {
+					console.log("#33");
+					callback(err, null);
+				}
+
+			
+				
+				  docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+				    var ObjectID = require("mongodb").ObjectID;
+				  
+					if(doc._id==id)
+				{
+						query2={$set:{"positions":positions}};
+							collection.update({"user":user,"_id":ObjectID(id)},query2,{safe:true},function(err){
+							if(err) console.warn(err.message);
+							else console.log("yes");
+						});
+
+					for(key in doc.elements)
+					{
+						
+						if(doc.elements[key].name==oldnames)
+						{
+							
+							
+							
+							var elementName="elements."+doc.elements[key].name;
+							var element={};
+			     			element[elementName]=doc.elements[key].name;
+			     			var ObjectID = require("mongodb").ObjectID;
+			     			
+							collection.update({"user":doc.user,"_id":doc._id},{"$unset":element},function(err){
+							
+								elementName="elements."+newnames+".name";
+								elementDescription="elements."+newnames+".description";
+								elementType="elements."+newnames+".type";
+								elementTime="elements."+newnames+".time";
+								element={};
+			     				element[elementName]=newnames;
+			     				element[elementDescription]=conditiondescription;
+			     				element[elementType]="condition";
+			     				element[elementTime]=new Date();
+								collection.update({"user":doc.user,"_id":doc._id},{"$set":element},function(err){
+							
+								});
+						});
+					  }
+					}
+				}else{
+					//bug 4
+
+					var newpositions=doc.positions.replace(new RegExp(oldname,"gm"),newname);
+						collection.update({"user":user,"_id":doc._id},{"$set":{"positions":newpositions}},{safe:true},function(err){
+							if(err) console.warn(err.message);
+							else console.log("yes");
+						});
+				}
+				
+					for(key in doc.operations)
+					{
+						//console.log("operations.key:"+key);
+						var spl=doc.operations[key].name.split(" ");
+						var newkey="";
+						for(keys in spl)
+						{
+							if(newkey!="")
+								newkey=newkey+" ";
+							if(spl[keys]==oldnames)
+								newkey=newkey+newnames;
+							else
+								newkey=newkey+spl[keys];
+						}
+							
+							var newOpe;
+							
+							if(newkey!==doc.operations[key].name){
+								
+								newOpe={};
+								for(sub in doc.operations[key]){
+									var string="operations."+newkey+"."+sub;
+									if(doc.operations[key][sub]==doc.operations[key].name)
+									{
+										newOpe[string]=newkey;
+									}
+									else{
+										if(doc.operations[key][sub]==Oldname)
+										{
+											newOpe[string]=Newname;
+										}
+										else{
+											newOpe[string]=doc.operations[key][sub];
+										}
+									}
+
+								}
+								
+								var ObjectID = require("mongodb").ObjectID;
+								collection.update({"user":doc.user,"_id":doc._id},{"$set":newOpe},function(err){
+									var oldOpe={};
+									var oldstring="operations."+doc.operations[key].name;
+									oldOpe[oldstring]=doc.operations[key].name;
+									
+									collection.update({"user":doc.user,"_id":doc._id},{"$unset":oldOpe},function(err){
+									})
+								});
+							}
+					}
+				
+				});
+				
+				
+			});
+				
+			query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+			
+		});
+		
+		
+		
+	});
+}
+
+Tracerule.savePositions=function savePositions(user,id,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+
+
+			query2={$set:{"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else {mongodb.close();console.log("Update positions success");callback(err);}
+				});
+
+		});
+
+	});
+}
+
+Tracerule.editTraceRuleGuardSelfname=function editTraceRuleGuardSelfname(user,id,guardname,selfname,positions,callback){
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+				query1={"user":user,"_id":ObjectID(id)};
+
+
+			query2={$set:{"name":guardname,"selfname":selfname,"positions":positions}};
+			collection.update(query1,query2,{safe:true},function(err){
+					if(err) console.warn(err.message);
+					else {
+						collection.find(query1, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});}
+				});
+
+
+		});
+
 	});
 }

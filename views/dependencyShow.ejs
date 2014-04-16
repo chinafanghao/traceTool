@@ -8,6 +8,18 @@
 
         if(elementdepency.depender[key].refer_num>0){
           var path=key.split("_");
+          var $mark=true;
+       
+          for(indexs in checkelementdepencys){
+            if(checkelementdepencys[indexs].element==path[1]){
+              if(checkelementdepencys[indexs].type=="UseCase"){
+                $mark=false;
+              }
+              break;
+            }
+          }
+          
+          if($mark){
     %>
       
       <tr>
@@ -30,7 +42,8 @@
       </tr>
 
     <%
-        }
+         } 
+        } // end if refer_num
       }
     }
   })%>

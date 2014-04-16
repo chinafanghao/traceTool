@@ -42,6 +42,61 @@ Guardlist.prototype.save = function save(callback) {
 	});
 };
 
+Guardlist.addNewGuardList = function addNewGuardList(username,selfname,trace_rule_id,callback) {
+	// 存入 Mongodb 的文檔
+// 存入 Mongodb 的文檔
+	console.log("addNewGuarList########");
+	var newGuardList = {
+				user: username,
+				selfname:selfname,
+				trace_rule_id:trace_rule_id
+			};
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+	   
+	   db.collection('guardlist', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			
+			collection.ensureIndex('user');
+			collection.insert(newGuardList, {safe: true},function(err){
+					if(err) console.warn(err.message);
+					else console.log("insert new guardlist success");
+				});
+
+					var query = {};
+			if (username) {
+				
+				query={"user":username};
+			}
+			collection.ensureIndex('user');
+
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var guardlists = [];
+				
+				docs.forEach(function(doc, index) {
+					var guardlist = new Guardlist(doc.user, doc.selfname,doc.trace_rule_id,doc.time,doc._id);
+					guardlists.push(guardlist);
+				});
+
+				callback(null, guardlists);
+			});
+
+		  });
+		
+	});
+};
 
 Guardlist.get = function get(user, callback) {
 	console.log(user+"#");
@@ -83,6 +138,7 @@ Guardlist.get = function get(user, callback) {
 		});
 	});
 };
+
 
 Guardlist.del = function del(username, guard,callback) {
 	console.log(username+" "+guard);
@@ -146,21 +202,20 @@ Guardlist.updateSelfname = function updateSelfname(user,id,selfname, callback) {
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 			
+
 			var query1={};
 			var query2={};
-
-			query1={"user":user,"trace_rule_id":id};
+			var ObjectID = require("mongodb").ObjectID;
+			query1={"user":user,"trace_rule_id":ObjectID(id)};
 			query2={$set:{"selfname":selfname}};
 
-			collection.update(query1,query2);
-
-			var query = {};
-			if (user) {
+			collection.update(query1,query2,{safe:true},function(err){
+				var query = {};
+				if (user) {
 				
-				query={"user":user};
-			}
-
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+					query={"user":user};
+				}
+				collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -175,7 +230,67 @@ Guardlist.updateSelfname = function updateSelfname(user,id,selfname, callback) {
 				});
 
 				callback(null, guardlists);
+				});
 			});
+
+			
+
+			
+		});
+	});
+};
+
+Guardlist.removeTraceRule = function removeTraceRule(user,deleteID, callback) {
+	
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('guardlist', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+
+			//查找user属性为username的文档，如果username为null则匹配全部
+			
+
+			var query1={};
+			var query2={};
+			var ObjectID = require("mongodb").ObjectID;
+			query1={"user":user,"trace_rule_id":ObjectID(deleteID)};
+			
+
+			collection.remove(query1,function(err){
+								if(err) {console.warn(err.message);
+												mongodb.close();}
+								else {
+										console.log("delete element success");
+										var query = {};
+										if (user) {
+				
+											query={"user":user};
+										}
+										collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+											mongodb.close();
+
+											if (err) {
+												callback(err, null);
+											}
+
+											var guardlists = [];
+				
+											docs.forEach(function(doc, index) {
+												var guardlist = new Guardlist(doc.user, doc.selfname,doc.trace_rule_id,doc.time,doc._id);
+												guardlists.push(guardlist);
+											});
+
+											callback(null, guardlists);
+										});
+									}
+								});
+			
 		});
 	});
 };

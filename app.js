@@ -109,9 +109,40 @@ app.get('/DeleteInsertDecAfterDecCon/:content',routes.deleteInsertDecAfterDecCon
 app.get('/DeleteInsertDecBeforeAct/:content',routes.deleteInsertDecBeforeAct);
 app.get('/DeleteInsertDecBeforeActWith/:content',routes.deleteInsertDecBeforeActWith);
 app.get('/DeleteInsertDecBeforeActCon/:content',routes.deleteInsertDecBeforeActCon);
+app.get('/InsertActAfterPreDialog/:content',routes.insertActAfterPreDialog);
+app.get('/InsertActBeforePostDialog/:content',routes.insertActBeforePostDialog);
+app.get('/InsertActAfterDecConDialog/:content',routes.insertActAfterDecConDialog);
+app.get('/InsertActBeforeActConDialog/:content',routes.insertActBeforeActConDialog);
+app.get('/InsertDecAfterActDialog/:content',routes.insertDecAfterActDialog);
+app.get('/InsertDecAfterDecConDialog/:content',routes.insertDecAfterDecConDialog);
+app.get('/InsertDecBeforeActDialog/:content',routes.insertDecBeforeActDialog);
+app.get('/InsertDecBeforeActWithDialog/:content',routes.insertDecBeforeActWithDialog);
+app.get('/InsertDecBeforeDecConDialog/:content',routes.insertDecBeforeDecConDialog);
+app.get('/InsertDecBeforeActConDialog/:content',routes.insertDecBeforeActConDialog);
+app.get('/ConfigurationTree',routes.configurationTree);
+app.get('/addTraceRule/:content',routes.addTraceRule);
+app.get('/addTraceRuleZero/:content',routes.addTraceRuleZero);
+app.get('/editTraceRule/:content',routes.editTraceRule);
+app.get('/DeleteTraceRule/:content',routes.deleteTraceRule);
+
 
 app.post('/EditUseCase',routes.editUseCase);
-app.post('/EditActivity',routes.EditActivity);
+app.post('/EditActivity',routes.editActivity);
+app.post('/EditDecision',routes.editDecision);
+app.post('/EditCondition',routes.editCondition);
+
+app.post('/addNewFeature',routes.addNewFeature);
+app.post('/loadFeatureModel', routes.loadFeatureModel);
+app.post('/removeFeature', routes.removeFeature);
+app.post('/updateText', routes.updateText);
+app.post('/updateDescription', routes.updateDescription);
+app.post('/updateOptionality', routes.updateOptionality);
+app.post('/updateParent_id', routes.updateParent_id);
+app.post('/updateVP', routes.updateVP);
+app.post('/removeSubtree', routes.removeSubtree);
+
+app.get('/newConfiguration/:content',routes.newConfiguration);
+app.get('/deleteConfiguration/:content',routes.deleteConfiguration);
 
 http.createServer(app).listen(app.get('port'), function(){
 	console.log("Express server listening on port " + app.get('port'));

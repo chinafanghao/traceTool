@@ -31,7 +31,7 @@ var FMTreeConfig = {
 };
 
 var FMTreeHandler = {
-  idCounter : 0, /* 新建一个结点时会调用getID，此时Counter自加，并作为新结点的ID被分配 */
+  //idCounter : 0, /* 新建一个结点时会调用getID，此时Counter自加，并作为新结点的ID被分配 */
   idPrefix  : "FM_tree_object_",
   all       : {}, /* 每新建一个结点，该结点就会将自己的副本放到all数组中 */
   active    : null,
@@ -66,11 +66,21 @@ var FMTreeHandler = {
     document.getElementById(FMTreeHandler.active.id + "-anchor").innerHTML = name;
     //document.getElementById("infoLine1").onmouseover="infoLineButton1.className=''";
     //document.getElementById("infoLine1").onmouseout="infoLineButton1.className='invisible'";
+    $.ajax({
+      type: "POST",
+      url: "/updateText",
+      data: {
+        _id : FMTreeHandler.active.id.substring(15),
+        text : FMTreeHandler.active.text,
+      },
+      //dataType:'json',
+    }); 
+
     FMTreeHandler.changingName = false;
   },
   editDescription: function () {
     FMTreeHandler.changingDescription = true;
-    document.getElementById("info-description").innerHTML = "<textarea rows=\"4\"id=\"description\">" + FMTreeHandler.active.description + "</textarea>";
+    document.getElementById("info-description").innerHTML = "<textarea rows=\"5\" id=\"description\">" + FMTreeHandler.active.description + "</textarea>";
     document.getElementById("infoLineButton2").innerHTML="<i class=\"icon-ok\" onclick=\"FMTreeHandler.doEditDescription();\"></i>";
     //document.getElementById("infoLineButton2").className="";
     //document.getElementById("infoLine2").onmouseover='';
@@ -84,6 +94,17 @@ var FMTreeHandler = {
     //document.getElementById("infoLineButton2").className="invisible";
     //document.getElementById("infoLine2").onmouseover="infoLineButton2.className=''";
     //document.getElementById("infoLine2").onmouseout="infoLineButton2.className='invisible'";
+
+    $.ajax({
+      type: "POST",
+      url: "/updateDescription",
+      data: {
+        _id : FMTreeHandler.active.id.substring(15),
+        description : FMTreeHandler.active.description,
+      },
+      //dataType:'json',
+    }); 
+
     FMTreeHandler.changingDescription = false;
   },
   editOptionality: function () {
@@ -110,6 +131,10 @@ var FMTreeHandler = {
       //document.getElementById("optRightButton").src = FMTreeConfig.optRightWhiteButton;
     }
     else {
+      if (FMTreeHandler.active.parentNode.VP == "OR" || FMTreeHandler.active.parentNode.VP == "XOR") {
+        window.alert("\"" + FMTreeHandler.active.parentNode.text + "\", its parent, is a VP, so you can't do this changing.");
+        return;
+      }
       FMTreeHandler.active_optionality='Mandatory';
       document.getElementById("optLeftButton").src = FMTreeConfig.optLeftGreyButton;
       document.getElementById("optRightButton").src = FMTreeConfig.optRightWhiteButton;
@@ -142,6 +167,17 @@ var FMTreeHandler = {
     //document.getElementById("infoLineButton3").className="invisible";
     //document.getElementById("infoLine3").onmouseover="infoLineButton3.className=''";
     //document.getElementById("infoLine3").onmouseout="infoLineButton3.className='invisible'";
+    
+    $.ajax({
+      type: "POST",
+      url: "/updateOptionality",
+      data: {
+        _id : FMTreeHandler.active.id.substring(15),
+        optionality : FMTreeHandler.active.optionality,
+      },
+      //dataType:'json',
+    }); 
+
     FMTreeHandler.active_optionality = '';
     FMTreeHandler.changingOptionality = false;
   },
@@ -217,6 +253,16 @@ var FMTreeHandler = {
       }
     }
     var newChild = FMTreeHandler.doEditParentAdd(FMTreeHandler.all[parent_id], FMTreeHandler.active);
+    window.alert(FMTreeHandler.active.id.substring(15));
+    $.ajax({
+      type: "POST",
+      url: "/updateParent_id",
+      data: {
+        _id : FMTreeHandler.active.id.substring(15),
+        parent_id : parent_id.substring(15),
+      },
+      //dataType:'json',
+    });
     FMTreeHandler.active.remove();
     var ancestor = FMTreeHandler.all[parent_id];
     while (ancestor.parentNode) {
@@ -230,7 +276,7 @@ var FMTreeHandler = {
     FMTreeHandler.changingParent = false;
   },
   doEditParentAdd : function (newParent, oldChild) {
-    var newChild = new FMTreeItem(oldChild.text, oldChild.description, oldChild.optionality, oldChild.VP);
+    var newChild = new FMTreeItem(oldChild.text, oldChild.description, oldChild.optionality, oldChild.VP, oldChild.id);
     newParent.add(newChild);
     for (var i = 0; i < oldChild.childNodes.length; i++) {
       FMTreeHandler.doEditParentAdd(newChild, oldChild.childNodes[i]);
@@ -248,7 +294,7 @@ var FMTreeHandler = {
     }
     else if (FMTreeHandler.active_VP == 'OR') {
       document.getElementById("info-VP").innerHTML = "<img id=\"vpLeftButton\" class=\"myButton\" src=\"" + FMTreeConfig.vpLeftWhiteButton + "\" onclick=\"FMTreeHandler.clickVPLeft();\"/>&nbsp;&nbsp;<img id=\"vpMiddleButton\" class=\"myButton\" src=\"" + FMTreeConfig.vpMiddleGreyButton + "\" onclick=\"FMTreeHandler.clickVPMiddle();\"/><img id=\"vpRightButton\" class=\"myButton\" src=\"" + FMTreeConfig.vpRightWhiteButton + "\" onclick=\"FMTreeHandler.clickVPRight();\"/>";
-    }
+    } 
     else if (FMTreeHandler.active_VP == 'XOR') {
       document.getElementById("info-VP").innerHTML = "<img id=\"vpLeftButton\" class=\"myButton\" src=\"" + FMTreeConfig.vpLeftWhiteButton + "\" onclick=\"FMTreeHandler.clickVPLeft();\"/>&nbsp;&nbsp;<img id=\"vpMiddleButton\" class=\"myButton\" src=\"" + FMTreeConfig.vpMiddleWhiteButton + "\" onclick=\"FMTreeHandler.clickVPMiddle();\"/><img id=\"vpRightButton\" class=\"myButton\" src=\"" + FMTreeConfig.vpRightGreyButton + "\" onclick=\"FMTreeHandler.clickVPRight();\"/>";
     }
@@ -264,6 +310,13 @@ var FMTreeHandler = {
     }
   },
   clickVPMiddle: function () {
+    //检查子结点中有无mandatory的
+    for (var i = 0; i < FMTreeHandler.active.childNodes.length; i++) {
+      if (FMTreeHandler.active.childNodes[i].optionality == "Mandatory") {
+        window.alert("\"" + FMTreeHandler.active.childNodes[i].text + "\", one of its children, is mandatory, so you can't do this changing.");
+        return;  
+      }
+    }
     if (FMTreeHandler.active_VP != 'OR') {
       FMTreeHandler.active_VP='OR';
       document.getElementById("vpLeftButton").src = FMTreeConfig.vpLeftWhiteButton;
@@ -272,6 +325,12 @@ var FMTreeHandler = {
     }
   },
   clickVPRight: function () {
+    for (var i = 0; i < FMTreeHandler.active.childNodes.length; i++) {
+      if (FMTreeHandler.active.childNodes[i].optionality == "Mandatory") {
+        window.alert("\"" + FMTreeHandler.active.childNodes[i].text + "\", one of its children, is mandatory, so you can't do this changing.");
+        return;  
+      }
+    }
     if (FMTreeHandler.active_VP != 'XOR') {
       FMTreeHandler.active_VP='XOR';
       document.getElementById("vpLeftButton").src = FMTreeConfig.vpLeftWhiteButton;
@@ -293,6 +352,17 @@ var FMTreeHandler = {
     else {
       document.getElementById(FMTreeHandler.active.id + "-optVPIcon").src = document.getElementById(FMTreeHandler.active.id + "-optVPIcon").src.replace('XOR','NonVP').replace('OOR','NonVP');
     }
+
+    $.ajax({
+      type: "POST",
+      url: "/updateVP",
+      data: {
+        _id : FMTreeHandler.active.id.substring(15),
+        VP : FMTreeHandler.active.VP,
+      },
+      //dataType:'json',
+    }); 
+
     FMTreeHandler.changingVP = false;
   },
   /* 将sHTML插入HTML中 */
@@ -320,10 +390,9 @@ var FMTreeHandler = {
  * FMTreeAbstractNode class
  */
 
-function FMTreeAbstractNode(sText, sDescription, sOptionality, sVP, sAction) {
-  this.id_no  = FMTreeHandler.getId();
-  this.id     = FMTreeHandler.idPrefix + this.id_no;
-  this.text   = sText || FMTreeConfig.defaultText;
+function FMTreeAbstractNode(sText, sDescription, sOptionality, sVP, sId, sAction) {
+  this.id  = FMTreeHandler.idPrefix + sId;
+  this.text   = sText || FMTreeConfig.defaultText; 
   this.description = sDescription || '';
   if (sOptionality == 'Mandatory' || sOptionality == 'Optional') {
     this.optionality = sOptionality;
@@ -342,33 +411,15 @@ function FMTreeAbstractNode(sText, sDescription, sOptionality, sVP, sAction) {
   this._last  = false; /*该结点是否是兄弟中最后一个 */
   FMTreeHandler.all[this.id] = this;
 }
-/*
-FMTreeAbstractNode.prototype.save = function save() {
-  //存入 Mongodb 的文档
-  var feature = {
-    id_no: this.id_no;
-    text: this.text;
-    parent: this.parentNode.id_no;
-  }
-  mongodb.open(function(err,db) {
-    if (err) {
-      return;
-    }
-    db.collection('features', function(err, collection) {
-      if (err) {
-        mongodb.close();
-        return;
-      }
-      collection.ensureIndex('id_no', {unique: true});
-      collection.insert(feature, {safe: true}, function(err, user) {
-        mongodb.close();
-      });
-    });
-  });
-}
-*/
+
 /* 添加一个子结点到当前节点，node为子结点实例，bNoIdent为true时将防止在增加结点时树的折叠*/
 FMTreeAbstractNode.prototype.add = function (node, bNoIdent) {
+  node.level = this.level + 1;
+
+  /* root为根结点 */
+  var root = this;
+  while (root.parentNode) { root = root.parentNode; }
+
   node.parentNode = this;
   this.childNodes[this.childNodes.length] = node;
   
@@ -377,11 +428,7 @@ FMTreeAbstractNode.prototype.add = function (node, bNoIdent) {
     this.childNodes[this.childNodes.length - 2]._last = false;
   }
 
-  /* root为根结点 */
-  var root = this;
-  while (root.parentNode) { root = root.parentNode; }
-  
-  /* 如果该树已被创建，且已经被渲染 */
+    /* 如果该树已被创建，且已经被渲染 */
   if (root.rendered) {
     if (this.childNodes.length >= 2) {
       /* 父结点的前任last子结点如今已经不是last子结点了，因此要更换树结构图标 */
@@ -423,23 +470,67 @@ FMTreeAbstractNode.prototype.add = function (node, bNoIdent) {
 FMTreeAbstractNode.prototype.addChild = function() {
   var child_text = window.prompt("Type the name of the feature:", "New Feature");
   if (child_text) {
-  	var child = new FMTreeItem(child_text);
-  	this.add(child);
-    if (this.folder) {
-  	  if (!this.open) {
-  	    this.expand();
-  	  }
-    }
-    FMTreeHandler.click(child);
+    var root = this;
+    while (root.parentNode) { root = root.parentNode; }
+    var temp = this;
+    //window.alert(typeof(this.level + 1));
+    $.ajax({
+      type: "POST",
+      url: "/addNewFeature",
+      data: {
+        text        : child_text,
+        parent_id   : this.id.substring(15),
+        root        : root.id.substring(15),
+        optionality : 'Optional',
+        VP          : 'Non-VP',
+        level       : this.level + 1,
+      },
+      dataType:'json', 
+      success: function(data) {
+        var child = new FMTreeItem(child_text, null, 'Optional', 'Non-VP', data._id);
+        temp.add(child);
+        if (temp.folder) {
+          if (!temp.open) {
+            temp.expand();
+          }
+        }
+        FMTreeHandler.click(child);
+      },
+      error: function(data) {
+        window.alert("FAILED!!!\nFeature \"" + child_text + "\" is already exist, or there's something wrong with DB.");
+      }
+    }); 
   }
 }
 
 FMTreeAbstractNode.prototype.addSibling = function() {
   var sibling_text = (window.prompt("Type the name of the feature", "New Feature"));
   if (sibling_text) {
-  	var sibling = new FMTreeItem(sibling_text);
-    this.parentNode.add(sibling);
-    FMTreeHandler.click(sibling);
+  	//var sibling = new FMTreeItem(sibling_text);
+    var root = this;
+    while (root.parentNode) { root = root.parentNode; }
+    var temp = this;
+    $.ajax({
+      type: "POST",
+      url: "/addNewFeature",
+      data: {
+        text        : sibling_text,
+        parent_id   : this.parentNode.id.substring(15),
+        root        : root.id.substring(15),
+        optionality : 'Optional',
+        VP          : 'Non-VP',
+        level       : this.level,
+      },
+      dataType:'json',
+      success: function(data) {
+        var sibling = new FMTreeItem(sibling_text, null, 'Optional', 'Non-VP', data._id);
+        temp.parentNode.add(sibling);
+        FMTreeHandler.click(sibling);
+      },
+      error: function(data) {
+        window.alert("FAILED!!!\nFeature \"" + sibling_text + "\" is already exist, or there's something wrong with DB.");
+      },
+    }); 
   }
 }
 
@@ -510,8 +601,17 @@ FMTreeAbstractNode.prototype.click = function() {
 FMTreeAbstractNode.prototype.delete = function() {
   if (this.folder) {
   	if (window.confirm("Do you want to delete \"" + this.text + "\" and all its descendants?")) {
-  	  this.remove();
-  	  if (FMTreeHandler.active.id == this.id) {
+  	  window.alert(this.id.substring(15));
+      $.ajax({
+        type: "POST",
+        url: "/removeSubtree",
+        data: {
+          _id : this.id.substring(15),
+        },
+        //dataType:'json',
+      }); 
+      
+  	  if (FMTreeHandler.active && FMTreeHandler.active.id == this.id) {
   	  	FMTreeHandler.active = null;
   	    document.getElementById("info-name").innerHTML="";
     		document.getElementById("info-description").innerHTML="";
@@ -519,12 +619,22 @@ FMTreeAbstractNode.prototype.delete = function() {
     		document.getElementById("info-parent").innerHTML="";
     		document.getElementById("info-VP").innerHTML="";
     	}
+      this.remove();
     }
   }
   else {
   	if (window.confirm("Do you want to delete \"" + this.text + "\"?")) {
-  	  this.remove();
-  	  if (FMTreeHandler.active.id == this.id) {
+  	  //alert(this.id);
+      $.ajax({
+        type: "POST",
+        url: "/removeSubtree",
+        data: {
+          _id : this.id.substring(15),
+        },
+        //dataType:'json',
+      }); 
+      
+  	  if (FMTreeHandler.active && FMTreeHandler.active.id == this.id) {
   	  	FMTreeHandler.active = null;
   	    document.getElementById("info-name").innerHTML="";
 		    document.getElementById("info-description").innerHTML="";
@@ -532,6 +642,7 @@ FMTreeAbstractNode.prototype.delete = function() {
 		    document.getElementById("info-parent").innerHTML="";
 		    document.getElementById("info-VP").innerHTML="";
 	    }
+      this.remove();
     }
   }
 }
@@ -610,15 +721,16 @@ FMTreeAbstractNode.prototype.indent = function(lvl, del, last, level, nodesLeft)
  * FMTree class
  */
 
-function FMTree(sText, sDescription, sOptionality, sVP, sAction) {
+function FMTree(sText, sDescription, sOptionality, sVP, sId, sAction) {
   this.base = FMTreeAbstractNode;
-  this.base(sText, sDescription, sOptionality, sVP, sAction);
+  this.base(sText, sDescription, sOptionality, sVP, sId, sAction);
   this.plus = FMTreeConfig.lPlusIcon;
 
   /* Defaults to open */
   this.open  = true;
   this.folder    = true;
   this.rendered  = false;
+  this.level = 0;
 }
 
 FMTree.prototype = new FMTreeAbstractNode;
@@ -677,9 +789,9 @@ FMTree.prototype.toString = function() {
  * FMTreeItem class
  */
 
-function FMTreeItem(sText, sDescription, sOptionality, sVP, sAction, eParent) {
+function FMTreeItem(sText, sDescription, sOptionality, sVP, sId, sAction, eParent) {
   this.base = FMTreeAbstractNode;
-  this.base(sText, sDescription, sOptionality, sVP, sAction);
+  this.base(sText, sDescription, sOptionality, sVP, sId, sAction);
   /* Defaults to close */
   this.open = false;
   if (eParent) { eParent.add(this); }
@@ -717,7 +829,9 @@ FMTreeItem.prototype.remove = function() {
         iconSrc = iconSrc.replace('minus', '').replace('plus', '');
       }
       document.getElementById(prevSibling.id + '-plus').src = iconSrc;
-}  }  }
+    }
+  }
+}
 
 FMTreeItem.prototype._remove = function() {
   for (var i = this.childNodes.length - 1; i >= 0; i--) {
@@ -838,11 +952,4 @@ FMTreeItem.prototype.toString = function (nItem, nItemCount) {
   this.minusIcon = ((this.parentNode._last)?FMTreeConfig.lMinusIcon:FMTreeConfig.tMinusIcon);
   return str + sb.join("") + "</div>";
 }
-
-exports.FMTreeHandler = FMTreeHandler;
-exports.FMTree = FMTree;
-exports.FMTreeItem = FMTreeItem;
-
- 
-  
 

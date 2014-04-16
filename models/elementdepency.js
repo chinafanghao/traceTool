@@ -50,6 +50,7 @@ ElementDepency.get = function get(user, callback) {
 	console.log(user+"#");
 	mongodb.open(function(err, db) {
 		if (err) {
+
 			return callback(err);
 		}
 	
@@ -88,6 +89,149 @@ ElementDepency.get = function get(user, callback) {
 		});
 	});
 };
+
+ElementDepency.returnDeleteDependency = function returnDeleteDependency(username,deleteID, callback) {
+	
+	mongodb.open(function(err, db) {
+		if (err) {
+
+			return callback(err);
+		}
+	
+		db.collection('elementdepency', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+
+			//查找user属性为username的文档，如果username为null则匹配全部
+
+			var query = {};
+			if (username) {
+				
+				query={"user":username,"dependee":deleteID};
+			}
+			collection.ensureIndex('user');
+
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var elementdepencys = [];
+				
+				docs.forEach(function(doc, index) {
+					var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.todepen,doc.todepenNum,doc.type,doc._id);
+					if(doc.todepenNum>0){
+					elementdepencys.push(elementdepency);}
+
+				});
+
+				callback(null, elementdepencys);
+			});
+		});
+	});
+};
+
+ElementDepency.removeTraceRule = function removeTraceRule(user,deleteID,callback){
+	
+	var refer_num;
+	mongodb.open(function(err, db) {
+		if (err) {
+			
+			return callback(err);
+		}
+	var elementdepencys = [];
+		db.collection('elementdepency', function(err, collection) {
+			if (err) {
+				
+				mongodb.close();
+				return callback(err);
+			}
+
+			//查找user属性为username的文档，如果username为null则匹配全部
+
+			var query = {};
+			if (user) {
+				
+				query={"user":user};
+			}
+			collection.find(query).toArray(function(err, docs) {
+
+				if (err) {
+					
+					callback(err, null);
+				}
+
+				
+
+
+				docs.forEach(function(doc, index) {
+					var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.todepen,doc.todepenNum,doc.type,doc._id);
+					if(doc.dependee==deleteID){
+							collection.remove({'dependee':deleteID},function(err){
+								if(err) console.warn(err.message);
+								else console.log("delete element success");
+							});
+					}else{
+						for(key in doc.todepen)
+						{
+							var $path=new Array();
+							$path=key.split("_");
+							if($path[0]==deleteID)
+							{	
+							
+
+								dependerNum="todepen."+key+".refer_num";
+				 				depender={};
+								depender[dependerNum]=-1;
+								
+								collection.update({"user":user,"element":doc.element},{"$inc":{"todepenNum":-1}},true,function(){
+									collection.update({"user":user,"element":doc.element},{"$inc":depender},true,function(){
+
+									}); 
+								}); 	
+					  		}
+						}
+					}
+					if(doc.dependee==deleteID){
+							collection.remove({'dependee':deleteID},function(err){
+								if(err) console.warn(err.message);
+								else console.log("delete element success");
+							});
+					}
+					
+				});
+				
+				
+			});
+			query={"user":user};
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var elementdepencys = [];
+				
+				docs.forEach(function(doc, index) {
+					var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.todepen,doc.todepenNum,doc.type,doc._id);
+					elementdepencys.push(elementdepency);
+
+				});
+		
+				callback(null, elementdepencys);
+			});
+			
+		});
+		
+	});
+};
+
+
 
 ElementDepency.getToDepenNum = function getToDepenNum(user, element,callback) {
 	
@@ -131,18 +275,19 @@ ElementDepency.getToDepenNum = function getToDepenNum(user, element,callback) {
 };
 
 ElementDepency.replaceDependKeyName = function replaceDependKeyName(user,oldname,newname,hide_field,callback) {
-	console.log("oldname:"+oldname);
-	console.log("newname:"+newname);
+	
 	var Oldnames=hide_field+"_"+oldname;
 	var Newnames=hide_field+"_"+newname;
 	var refer_num;
 	mongodb.open(function(err, db) {
 		if (err) {
+			console.log("#1");
 			return callback(err);
 		}
-	
+	var elementdepencys = [];
 		db.collection('elementdepency', function(err, collection) {
 			if (err) {
+				console.log("#2");
 				mongodb.close();
 				return callback(err);
 			}
@@ -157,6 +302,7 @@ ElementDepency.replaceDependKeyName = function replaceDependKeyName(user,oldname
 			collection.find(query).toArray(function(err, docs) {
 
 				if (err) {
+					console.log("#3");
 					callback(err, null);
 				}
 
@@ -222,9 +368,27 @@ ElementDepency.replaceDependKeyName = function replaceDependKeyName(user,oldname
 				
 				
 			});
-			mongodb.close();
+			query={"user":user};
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var elementdepencys = [];
+				
+				docs.forEach(function(doc, index) {
+					var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.todepen,doc.todepenNum,doc.type,doc._id);
+					elementdepencys.push(elementdepency);
+
+				});
+		
+				callback(null, elementdepencys);
+			});
+			
 		});
-		callback();
+		
 	});
 };
 
@@ -252,7 +416,7 @@ ElementDepency.saveDependee = function saveDependee(user,elementname,dependee,ty
 				return callback(err);
 			}
 			collection.ensureIndex('user');
-			
+
 			collection.insert(elementdepency, {safe: true},function(err){
 					if(err) console.warn(err.message);
 					else console.log("insert element between success");
@@ -265,7 +429,7 @@ ElementDepency.saveDependee = function saveDependee(user,elementname,dependee,ty
 			}
 			collection.ensureIndex('user');
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {

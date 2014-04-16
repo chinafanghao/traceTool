@@ -9,9 +9,9 @@
       }
 
     div.c{padding-left:1%}
-    div.left{float:left;width:18%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.left{float:left;width:18%;margin:6px;}
     div.center{float:left;width:15%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
-    div.right{float:left;width:62%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.right{float:left;width:62%;margin:6px;}
     div.titles{
       text-align: center;
       font-size: 125%;
@@ -109,6 +109,57 @@
             $(this).removeClass("FontColor");
           })
         })
+      var $configurationname;
+       $( "#newConfigurationName" ).dialog({
+          autoOpen: false,
+          width: 450,
+          modal: true,
+          buttons: {
+
+            "Confirm": function() {
+              $configurationname=$("#configurationname").val();
+              if($configurationname!=""){
+                 window.location.href="/newConfiguration/"+$configurationname;
+              }
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+              
+      }
+    });
+
+      $(".btn.btn-small.btn-primary.newstyle").click(function(){
+        $( "#newConfigurationName" ).dialog( "open" );
+      })
+
+       $( "#confirmDeleteCon" ).dialog({
+          autoOpen: false,
+          width: 450,
+          modal: true,
+          buttons: {
+
+            "Confirm": function() {
+              var $ConId=$(".selector1").val(); 
+
+              if($ConId!=null){
+                window.location.href="/deleteConfiguration/"+$ConId;
+              }else{
+                alert("no configuration!")
+              }
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+        
+      }
+    });
+
+      $(".btn.btn-small.btn-primary.Delete").click(function(){
+          $( "#confirmDeleteCon" ).dialog( "open" );
+      })
   })
 
 </script>
@@ -139,15 +190,20 @@
         <h4 align="center" class="myFont"> Feature Tree 
         </h4>
         <div class="myInside" style="border-top:1px solid #c3c3c3;overflow:auto;">
-          <select class="selector0">
-            <option>Login</option>
-            <option>Message</option>
-            <option>Information Submition</option>
-            <option>--------------------</option>
-            <option>Add New Configuration</option>
-          </select>
-          <button class="btn btn-small" type="button" style="margin-top:-10px">Generate</button>
-          <script src="/javascripts/treeC.js"></script>
+          
+         <div style="margin-left:4px;margin-top:-4px">
+          <%- partial('ConfigurationShow', {configurations:configurations,current_configuration_id:current_configuration_id}) %>
+          <button class="btn btn-small btn-primary newstyle" type="button" style="margin-top:5px;margin-left:2px">New</button>
+          <button class="btn btn-small btn-primary Delete" type="button" style="margin-top:5px">Delete</button>
+         </div>
+
+         <button class="btn btn-small" type="button" style="margin-top:0px;margin-left:4px">Generate</button>
+          
+          <script src="/javascripts/fmtreeForConfiguration.js"></script>
+          <link type="text/css" rel="stylesheet" href="/stylesheets/xtree.css">
+          <form>
+            <script src="/javascripts/loadFMTreeForConfiguration.js"></script>
+          </form>
         </div>
       </div>
     </div>
@@ -346,5 +402,27 @@
         </div>
       </div>
     </div>
+
+</div>
+
+<div id="newConfigurationName" title="Edit Configuration Name">
+  
+  <form>
+    <fieldset id="dialog-exchange">
+       <label class="control-label" for="configurationname">Configuration Name：</label>
+        <input type="text" class="input-xlarge" id="configurationname" name="configurationname">
+    </fieldset>
+  </form>
+
+</div>
+
+<div id="confirmDeleteCon" title="Confirm Delete">
+  
+  <form>
+    <fieldset id="dialog-exchange">
+       <label class="control-label" > Confirm Delete? </label>
+        
+    </fieldset>
+  </form>
 
 </div>

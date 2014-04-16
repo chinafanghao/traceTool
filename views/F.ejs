@@ -1,24 +1,12 @@
 <!DOCTYPE html>
 <script src="/javascripts/fmtree.js"></script>
 <link type="text/css" rel="stylesheet" href="/stylesheets/xtree.css">
-<link rel='stylesheet' href='/stylesheets/david-bootstrap.css' />
-<style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
 
-    div.c{padding-left:1%}
-    div.left{float:left;width:25%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
-    div.center{float:left;width:40%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
-    div.right{float:left;width:30%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
-    div.titles{
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-      margin-top: 12px;
-      font-family: "David";
-    }
+<style type="text/css">
+  div.c{padding-left:1%}
+    div.left{float:left;width:20%;margin:6px;}
+    div.center{float:left;width:50%;margin:6px;}
+    div.right{float:left;width:25%;margin:6px;}
 </style>
 
 
@@ -27,7 +15,7 @@
     <div  class="span12">
       <div class="tabbable">
         <ul class="nav nav-tabs" id="tabs">
-          <li class="active">
+          <li  class="active">
             <a data-toggle="tab" style="cursor:pointer">Feature Model</a>
           </li>
           <li>
@@ -47,7 +35,7 @@
       <div class="myBorderRadius">
         <h4 align="center" class="myFont"> Feature Model </h4>
         <div class="myInside" style="border-top:1px solid #c3c3c3;overflow:auto;">
-          <script src="/javascripts/tree.js"></script>
+          <script src="/javascripts/loadFMTree.js"></script>
         </div>
       </div>
     </div>
@@ -55,7 +43,7 @@
     <div class="center">
       <div class="myBorderRadius">
         <h4 align="center" class="myFont"> Information </h4>
-        <div class="myInside" style="padding:0 20px;border-top:1px solid #c3c3c3;overflow:auto;">
+        <div class="myInside" style="padding:0 20px;">
             <h4 class="myh4">Attributes</h4>
             <div class="myInside">
               <table class="table myTableMiddle">
@@ -99,7 +87,7 @@
                   </td>
                 </tr>
                 <tr id="infoLine5" onmouseover="infoLineButton5.className=''" onmouseout="infoLineButton5.className='invisible'">
-                  <th style="width:80px;">VP-Variant:</th>
+                  <th>VP-Variant:</th>
                   <td class="myMiddleMiddle" id="info-VP"></td>
                   <td>
                     <div class="invisible" style:"padding:0;" id="infoLineButton5">
@@ -115,7 +103,234 @@
     <div class="right">
       <div class="myBorderRadius">
         <h4 align="center" class="myFont"> Constraints </h4>
-        <div style="border-top: 1px solid #c3c3c3; overflow:auto;">
+        <div class ="myInside" style="height:40px;">
+          <table align="center" valign="middle">
+            <tr>
+              <td style="height:38.5px;">
+                <img src="images/allGrey.png" id="all" style="height:26px;" onclick="yyy.toAll();"/><img src="images/currentWhite.png" id="current" style="height:26px;" onclick="yyy.toCurrent();"/>
+              </td>
+            </tr>
+          </table> 
+        </div>
+        <div class="myInside">
+          <div id="Constraints_0" style="border-bottom: 1px solid #c3c3c3;">
+            <table>
+              <tr id="Constraints_0">
+                <td id="Constraints_0_l" style="width:130px; padding:10px;">
+                  <table style="width:130px; text-align:right; padding:10px;">
+                    <tr id="Constraints_0_l_0">
+                      <td id="Constraints_0_l_0_text" style="align:right;">
+                        ~ Random
+                      </td>
+                    </tr>
+                    <tr id="Constraints_0_l_1">
+                      <td id="Constraints_0_l_1_text">
+                        ~ Input
+                      </td>
+                    </tr>
+                    <tr id="Constraints_0_l_2">
+                      <td id="Constraints_0_l_2_text">
+                        Graph Display
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
+                <td id="Constraints_0_m" style="width:70px; padding:10px; text-align:center;">
+                  <img src="images/VrequireV.png" style="height:12px;" />
+                </td>
+
+                <td id="Constraints_0_r" style="width:130px; padding:10px;">
+                  <table>
+                    <tr id="Constraints_0_r_0">
+                      <td id="Constraints_0_r_0_text">
+                        MST
+                      </td>
+                    </tr>
+                    <tr id="Constraints_0_r_1">
+                      <td id="Constraints_0_r_1_text">
+                        PST
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="Constraints_1" style="border-bottom: 1px solid #c3c3c3;">
+            <table>
+              <tr id="Constraints_1">
+                <td id="Constraints_1_l" style="width:130px; padding:10px;">
+                  <table style="width:130px; text-align:right; padding:10px;">
+                    <tr id="Constraints_1_l_0">
+                      <td id="Constraints_1_l_0_text" style="align:right;">
+                        <font color="#0080FF"><strong>true </strong></font>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
+                <td id="Constraints_1_m" style="width:70px; padding:10px; text-align:center;">
+                  <img src="images/excludeV.png" style="height:12px;" />
+                </td>
+
+                <td id="Constraints_1_r" style="width:130px; padding:10px;">
+                  <table>
+                    <tr id="Constraints_1_r_0">
+                      <td id="Constraints_1_r_0_text">
+                        Directed
+                      </td>
+                    </tr>
+                    <tr id="Constraints_1_r_1">
+                      <td id="Constraints_1_r_1_text">
+                        Weighted
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="Constraints_2" style="border-bottom: 1px solid #c3c3c3;">
+            <table>
+              <tr id="Constraints_2">
+                <td id="Constraints_2_l" style="width:130px; padding:10px;">
+                  <table style="width:130px; text-align:right; padding:10px;">
+                    <tr id="Constraints_2_l_0">
+                      <td id="Constraints_2_l_0_text" style="align:right;">
+                        BFS
+                      </td>
+                    </tr>
+                    <tr id="Constraints_2_l_1">
+                      <td id="Constraints_2_l_1_text" style="align:right;">
+                        DFS
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
+                <td id="Constraints_2_m" style="width:70px; padding:10px; text-align:center;">
+                  <img src="images/Arequire.png" style="height:12px;" />
+                </td>
+
+                <td id="Constraints_2_r" style="width:130px; padding:10px;">
+                  <table>
+                    <tr id="Constraints_2_r_0">
+                      <td id="Constraints_2_r_0_text">
+                        Simple
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="Constraints_3" style="border-bottom: 1px solid #c3c3c3;">
+            <table>
+              <tr id="Constraints_3">
+                <td id="Constraints_3_l" style="width:130px; padding:10px;">
+                  <table style="width:130px; text-align:right; padding:10px;">
+                    <tr id="Constraints_3_l_0">
+                      <td id="Constraints_3_l_0_text" style="align:right;">
+                        Algorithm
+                      </td>
+                    </tr>
+                    <tr id="Constraints_3_l_1">
+                      <td id="Constraints_3_l_1_text" style="align:right;">
+                        Simple
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
+                <td id="Constraints_3_m" style="width:70px; padding:10px; text-align:center;">
+                  <img src="images/ArequireV.png" style="height:12px;" />
+                </td>
+
+                <td id="Constraints_3_r" style="width:130px; padding:10px;">
+                  <table>
+                    <tr id="Constraints_3_r_0">
+                      <td id="Constraints_3_r_0_text">
+                        Directed
+                      </td>
+                    </tr>
+                    <tr id="Constraints_3_r_1">
+                      <td id="Constraints_3_r_1_text">
+                        Weighted
+                      </td>
+                    </tr>
+                    <tr id="Constraints_3_r_2">
+                      <td id="Constraints_3_r_2_text">
+                        Input
+                      </td>
+                    </tr>
+                    <tr id="Constraints_3_r_3">
+                      <td id="Constraints_3_r_3_text">
+                        Graph Display
+                      </td>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="Constraints_4" style="border-bottom: 1px solid #c3c3c3;">
+            <table>
+              <tr id="Constraints_4">
+                <td id="Constraints_2_l" style="width:130px; padding:10px;">
+                  <table style="width:130px; text-align:right; padding:10px;">
+                    <tr id="Constraints_2_l_0">
+                      <td id="Constraints_2_l_0_text" style="align:right;">
+                        Search
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
+                <td id="Constraints_4_m" style="width:70px; padding:10px; text-align:center;">
+                  <img src="images/require.png" style="height:12px;" />
+                </td>
+
+                <td id="Constraints_4_r" style="width:130px; padding:10px;">
+                  <table>
+                    <tr id="Constraints_4_r_0">
+                      <td id="Constraints_4_r_0_text">
+                        <font color="#0080FF"><strong>false</strong></font>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="Constraints_5" style="border-bottom: 1px solid #c3c3c3;">
+            <table>
+              <tr id="Constraints_5">
+                <td id="Constraints_2_l" style="width:130px; padding:10px;">
+                  <table style="width:130px; text-align:right; padding:10px;">
+                    <tr id="Constraints_2_l_0">
+                      <td id="Constraints_2_l_0_text" style="align:right;">
+                        GraphIO
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
+                <td id="Constraints_5_m" style="width:70px; padding:10px; text-align:center;">
+                  <img src="images/exclude.png" style="height:12px;" />
+                </td>
+
+                <td id="Constraints_5_r" style="width:130px; padding:10px;">
+                  <table>
+                    <tr id="Constraints_5_r_0">
+                      <td id="Constraints_5_r_0_text">
+                        Simple
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
       </div>
     </div>
