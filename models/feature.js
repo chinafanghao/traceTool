@@ -9,6 +9,7 @@ function Feature(feature) {
   this.VP          = feature.VP          ;
   this.level       = feature.level       ;
   this._id         = feature._id         ;
+  this.projectID   = feature.projectID   ;
 };
 module.exports = Feature;
 //
@@ -23,6 +24,7 @@ Feature.prototype.save = function save(callback){
 		optionality : this.optionality ,
 		VP          : this.VP          ,
 		level       : this.level       ,
+		projectID   : this.projectID   ,
   };
   console.log('HELLO');
   mongodb.collection('fmtree', function(err, collection) {
@@ -105,6 +107,32 @@ Feature.getAll = function getAll(callback) {
 		});
 	});
 };
+
+
+Feature.getByProject = function getByProject(projectID,callback) {
+	console.log("getByProject");
+  mongodb.collection('fmtree', function (err, collection) {
+		if (err) {
+			mongodb.close();
+			return callback(err);
+		}
+		var query = {"projectID":projectID};
+		collection.find(query).sort({level: 1, text:1}).toArray(function(err, docs) {
+			//mongodb.close();
+			if (err) {
+				callback(err, null);
+			}
+
+			var features = [];
+			docs.forEach(function(doc, index) {
+				var feature = new Feature(doc);
+				features.push(feature);
+			});
+			callback(null, features);
+		});
+	});
+};
+
 
 Feature.remove = function remove(feature_id, callback) {
 	mongodb.collection('fmtree', function (err, collection) {

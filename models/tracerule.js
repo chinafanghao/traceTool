@@ -74,33 +74,32 @@ Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname
 			collection.ensureIndex('user');
 			collection.insert(newTraceRule, {safe: true},function(err){
 					if(err) console.warn(err.message);
-					else console.log("insert new tracerule success");
-				});
-
-					var query = {};
-			if (username) {
+					else {
+						console.log("insert new tracerule success");
+						var query = {};
+						if (username) {
 				
-				query={"user":username};
-			}
-			collection.ensureIndex('user');
+							query={"user":username};
+						}
+							collection.ensureIndex('user');
+							collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
+								mongodb.close();
 
-			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+								if (err) {
+									callback(err, null);
+								}
 
-				if (err) {
-					callback(err, null);
-				}
-
-				var tracerules = [];
+								var tracerules = [];
 				
-				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
-					tracerules.push(tracerule);
+								docs.forEach(function(doc, index) {
+									var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+									tracerules.push(tracerule);
+								});
+
+								callback(null, tracerules);
+							});
+					}
 				});
-
-				callback(null, tracerules);
-			});
-
 		  });
 		
 	});
@@ -109,6 +108,7 @@ Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname
 
 
 Tracerule.get = function get(username, guard_id,callback) {
+	console.log("guard_id:"+guard_id);
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -130,7 +130,7 @@ Tracerule.get = function get(username, guard_id,callback) {
 				query={"user":username};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -307,7 +307,7 @@ Tracerule.del = function del(username, operation_name,callback) {
 				query.user = username;
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -359,7 +359,7 @@ Tracerule.updateSelfname = function updateSelfname(selfname, user,name,id,callba
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -522,7 +522,7 @@ Tracerule.createActivity = function createActivity(user,id,activityname,activity
 											query={"user":user};
 										}
 
-										collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+										collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 											mongodb.close();
 
 											if (err) {
@@ -640,7 +640,7 @@ Tracerule.createUseCase = function createUseCase(user,id,usecasename,usecasedesc
 												query={"user":user};
 											}
 
-											collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+											collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 												mongodb.close();
 
 												if (err) {
@@ -669,6 +669,7 @@ Tracerule.createUseCase = function createUseCase(user,id,usecasename,usecasedesc
 
 Tracerule.createDecision = function createActivity(user,id,decisionname,decisiondescription,decisionexecutor,positions,callback){
 	// 存入 Mongodb 的文檔
+	console.log("create Decision");
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -743,7 +744,7 @@ Tracerule.createDecision = function createActivity(user,id,decisionname,decision
 											query={"user":user};
 										}
 
-										collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+										collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 											mongodb.close();
 
 											if (err) {
@@ -859,7 +860,7 @@ Tracerule.createCondition = function createCondition(user,id,conditionname,condi
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -950,7 +951,7 @@ Tracerule.saveInsertBetween = function saveInsertBetween(user,id,TarAct,PreAct,P
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -1038,7 +1039,7 @@ Tracerule.saveInsertActAfterPre = function saveInsertActAfterPre(user,id,TarAct,
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -1126,7 +1127,7 @@ Tracerule.saveInsertActBeforePost = function saveInsertActBeforePost(user,id,Tar
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -1217,7 +1218,7 @@ Tracerule.saveInsertActAfterDecCon = function saveInsertActAfterDecCon(user,id,T
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -1308,7 +1309,7 @@ Tracerule.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(user,id
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -1415,7 +1416,7 @@ Tracerule.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,id,T
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -1519,7 +1520,7 @@ Tracerule.saveInsertDecAfterDecCon = function saveInsertDecAfterDecCon(user,id,T
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -1621,7 +1622,7 @@ Tracerule.saveInsertDecBeforeAct = function saveInsertDecBeforeAct(user,id,TarDe
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -1728,7 +1729,7 @@ Tracerule.saveInsertDecBeforeActWith = function saveInsertDecBeforeActWith(user,
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -1832,7 +1833,7 @@ Tracerule.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(user,id
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -1896,7 +1897,7 @@ Tracerule.deleteActivity = function deleteActivity(user,id,operation_name,positi
 					if(err) console.warn(err.message);
 					else console.log("delete Activity success");
 				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
 				console.log("OK");
 				docs.forEach(function(doc, index) {
 					console.log(doc.name);
@@ -1912,7 +1913,7 @@ Tracerule.deleteActivity = function deleteActivity(user,id,operation_name,positi
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -1976,7 +1977,7 @@ Tracerule.deleteDecision = function deleteDecision(user,id,operation_name,positi
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
 				console.log("OK");
 				docs.forEach(function(doc, index) {
 					console.log(doc.name);
@@ -1992,7 +1993,7 @@ Tracerule.deleteDecision = function deleteDecision(user,id,operation_name,positi
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -2056,7 +2057,7 @@ Tracerule.deleteCondition = function deleteCondition(user,id,operation_name,posi
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
 				console.log("OK");
 				docs.forEach(function(doc, index) {
 					console.log(doc.name);
@@ -2072,7 +2073,7 @@ Tracerule.deleteCondition = function deleteCondition(user,id,operation_name,posi
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -2136,7 +2137,7 @@ Tracerule.deleteUseCase = function deleteUseCase(user,id,operation_name,position
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
 				console.log("OK");
 				docs.forEach(function(doc, index) {
 					console.log(doc.name);
@@ -2152,7 +2153,7 @@ Tracerule.deleteUseCase = function deleteUseCase(user,id,operation_name,position
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -2205,7 +2206,7 @@ Tracerule.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,id,ope
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
 				console.log("OK");
 				docs.forEach(function(doc, index) {
 					console.log(doc.name);
@@ -2221,7 +2222,7 @@ Tracerule.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,id,ope
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -2274,7 +2275,7 @@ Tracerule.deleteInsertActBeforePost = function deleteInsertActBeforePost(user,id
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
 				console.log("OK");
 				docs.forEach(function(doc, index) {
 					console.log(doc.name);
@@ -2290,7 +2291,7 @@ Tracerule.deleteInsertActBeforePost = function deleteInsertActBeforePost(user,id
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -2343,7 +2344,7 @@ Tracerule.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(user,
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
 				console.log("OK");
 				docs.forEach(function(doc, index) {
 					console.log(doc.name);
@@ -2359,7 +2360,7 @@ Tracerule.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(user,
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -2412,7 +2413,7 @@ Tracerule.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCon(use
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
 				console.log("OK");
 				docs.forEach(function(doc, index) {
 					console.log(doc.name);
@@ -2428,7 +2429,7 @@ Tracerule.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCon(use
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -2482,7 +2483,7 @@ Tracerule.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,id,ope
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
 				console.log("OK");
 				docs.forEach(function(doc, index) {
 					console.log(doc.name);
@@ -2498,7 +2499,7 @@ Tracerule.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,id,ope
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -2551,7 +2552,7 @@ Tracerule.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(user,
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
 				console.log("OK");
 				docs.forEach(function(doc, index) {
 					console.log(doc.name);
@@ -2567,7 +2568,7 @@ Tracerule.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(user,
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -2620,7 +2621,7 @@ Tracerule.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user,id,o
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
 				console.log("OK");
 				docs.forEach(function(doc, index) {
 					console.log(doc.name);
@@ -2636,7 +2637,7 @@ Tracerule.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user,id,o
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -2690,7 +2691,7 @@ Tracerule.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActWith(u
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
 				console.log("OK");
 				docs.forEach(function(doc, index) {
 					console.log(doc.name);
@@ -2706,7 +2707,7 @@ Tracerule.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActWith(u
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -2760,7 +2761,7 @@ Tracerule.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCon(use
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
 				console.log("OK");
 				docs.forEach(function(doc, index) {
 					console.log(doc.name);
@@ -2776,7 +2777,7 @@ Tracerule.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCon(use
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -2949,7 +2950,7 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -3129,7 +3130,7 @@ Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -3309,7 +3310,7 @@ Tracerule.editDecision = function editDecision(user,id,nameMark,oldname,newname,
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -3486,7 +3487,7 @@ Tracerule.editCondition = function editCondition(user,id,nameMark,oldname,newnam
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -3565,7 +3566,7 @@ Tracerule.editTraceRuleGuardSelfname=function editTraceRuleGuardSelfname(user,id
 			collection.update(query1,query2,{safe:true},function(err){
 					if(err) console.warn(err.message);
 					else {
-						collection.find(query1, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+						collection.find(query1).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {

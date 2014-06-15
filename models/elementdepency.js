@@ -69,7 +69,7 @@ ElementDepency.get = function get(user, callback) {
 			}
 			collection.ensureIndex('user');
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -1030,14 +1030,14 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
 
 			if(traceruleID6[0]!=traceruleID1[0])
 			{
-				var dependerNum="depender."+TargetDec+".refer_num";
+				var dependerNum="depender."+TargetAct+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
 				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
 					
 				});	
 
-				dependerNum="todepen."+TarAct+".refer_num";
+				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
 				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":depender},true,function(){	

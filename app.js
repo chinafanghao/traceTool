@@ -41,7 +41,7 @@ app.configure(function(){
 	app.use(express.session({
 		secret : settings.cookie_secret,
 		cookie : {
-			maxAge : 60000 * 20	//20 minutes
+			maxAge : 60000 * 200	//20 minutes
 		},
 		store : sessionStore
 	}));
@@ -55,6 +55,7 @@ app.configure('development', function(){
 });
 
 app.get('/', routes.index);
+
 app.get('/u/:user', routes.user);
 app.post('/post', routes.post);
 app.post('/del', routes.del);
@@ -75,12 +76,16 @@ app.get('/configuration',routes.configuration);
 app.get('/configuratemodeltree',routes.configuratemodeltree);
 app.get('/editfeaturetree',routes.editfeaturetree);
 app.get('/F',routes.F);
+app.get('/F/:content',routes.F);
 app.get('/T',routes.T);
+app.get('/T/:content',routes.T);
 //app.post('/doT',routes.doT);
 
-app.get('/T/:current_guard',routes.T);
+//app.get('/T/:current_guard',routes.T);
+
 app.get('/doT/:content',routes.doT);
 app.get('/C',routes.C);
+app.get('/C/:current_guard',routes.C);
 app.get('/createActivity/:content',routes.createActivity);
 app.get('/createUseCase/:content',routes.createUseCase);
 app.get('/createDecision/:content',routes.createDecision);
@@ -142,7 +147,17 @@ app.post('/updateVP', routes.updateVP);
 app.post('/removeSubtree', routes.removeSubtree);
 
 app.get('/newConfiguration/:content',routes.newConfiguration);
-app.get('/deleteConfiguration/:content',routes.deleteConfiguration);
+app.get('/DeleteConfiguration/:content',routes.deleteConfiguration);
+
+app.post('/EditConfigName',routes.EditConfigName);
+app.post('/EditConfig',routes.EditConfig);
+app.post('/GenerateUseCase',routes.GenerateUseCase);
+
+app.get('/newProject/:content',routes.newProject);
+app.get('/DeleteProject/:content',routes.DeleteProject);
+app.post('/updateProjectName',routes.updateProjectName);
+app.post('/showInformation',routes.showInformation);
+app.post('/EditProject',routes.editProject);
 
 http.createServer(app).listen(app.get('port'), function(){
 	console.log("Express server listening on port " + app.get('port'));

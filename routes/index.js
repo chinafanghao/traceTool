@@ -12,19 +12,41 @@ var ElementDepency = require('../models/elementdepency.js');
 var Configuration=require('../models/configuration.js');
 var async = require('async'); 
 var Feature = require('../models/feature.js');
+var Project = require('../models/project.js')
 
 exports.index = function(req, res){
+	console.log("user:"+req.session.user);
 	Post.get(null, function(err, posts) {
 		if (err) {
 			posts = [];
 		}
-		res.render('index', {
-			title: '首页',
-			posts : posts,
-			user : req.session.user,
-			success : req.flash('success').toString(),
-			error : req.flash('error').toString()
-		});
+
+		if(req.session.user != null)
+		{	console.log("11111");
+			Project.get(req.session.user.name,function(err,projects){
+					if(err){
+						projects=[];
+					}
+						res.render('index', {
+							title: '首页',
+							posts : posts,
+							projects : projects,
+							current_id: "",
+							user : req.session.user,
+							success : req.flash('success').toString(),
+							error : req.flash('error').toString()
+						});
+			});
+		}else{console.log("222222");
+			res.render('index', {
+							title: '首页',
+							posts : posts,
+							current_id: "",
+							user : null,
+							success : req.flash('success').toString(),
+							error : req.flash('error').toString()
+						});
+		}
 	});
 };
 
@@ -138,9 +160,12 @@ exports.login = function(req, res) {
 };
 
 exports.F = function(req, res) {
+	 console.log(req.params.content);
+
 	res.render('F', {
 		title: 'Feature Model',
 		user : req.session.user,
+		projectID : req.params.content,
 		success : req.flash('success').toString(),
 		error : req.flash('error').toString()
     });
@@ -163,6 +188,7 @@ exports.T = function(req, res) {console.log(req.params.current_guard);
 	});
 };
 */
+/*
 exports.T = function(req, res) {console.log(req.params.current_guard);
 	Post.get(null, function(err, posts) {
 		if (err) {
@@ -235,6 +261,83 @@ exports.T = function(req, res) {console.log(req.params.current_guard);
 	});
   });	  
 };
+*/
+
+exports.T = function(req, res) {
+	console.log("project_id:"+req.params.content);
+	var $projectID=req.params.content;
+	Post.get(null, function(err, posts) {
+		if (err) {
+			posts = [];
+		}
+	  ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  		if(err){
+	  			console.log("elementdepencys is null!");
+	  			elementdepencys=[];
+	  		}
+	  		else{
+	  		//	var aaa=JSON.stringify(elementdepencys);
+	  		//	console.log(aaa);
+	  		}
+		Guardlist.get(req.session.user.name,function(err, guardlists) {
+			if (err) {
+				guradlists = [];
+			}
+
+			Tracerule.get(req.session.user.name,req.params.current_guard, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				//var aaa=JSON.stringify(tracerules[0].operations);
+				//console.log(req.session.user.name+"+"+req.params.current_guard+"+"+aaa+"+"+tracerules[0].position);
+				if(guardlists.length>0){
+					console.log("there");
+				   if(req.params.current_guard!=undefined){
+
+					res.render('T', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : req.params.current_guard,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+						});	
+				}else{
+					res.render('TTT', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : req.params.current_guard,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+						});	
+				}
+			  }else{
+			  	console.log("here");
+			  		res.render('TT', {
+						title : 'Traceability',
+						posts : posts,
+						guardlists : guardlists,
+						tracerules : tracerules,
+						elementdepencys : elementdepencys,
+						user : req.session.user,
+						current_guard : req.params.current_guard,
+						success : req.flash('success').toString(),
+						error : req.flash('error').toString()
+				});
+			  }
+			});
+		});
+	});
+  });	  
+};
+
 
 exports.doT = function(req, res) {
  /*	console.log("selfname:"+req.body.selfname);
@@ -2473,6 +2576,7 @@ exports.insertDecBeforeActConDialog = function(req, res) {
 
 exports.addNewFeature = function(req,res){
   console.log("\n" + req.body.text + "在index.js中的 \"addNewFeature\"开始了！");
+  console.log("req.body.projectID:"+req.body.projectID);
   var newFeature = new Feature({
 		text        : req.body.text        ,
 		parent_id   : req.body.parent_id   ,
@@ -2481,6 +2585,7 @@ exports.addNewFeature = function(req,res){
 		optionality : req.body.optionality ,
 		VP          : req.body.VP          ,
 		level       : parseInt(req.body.level),
+		projectID   : req.body.projectID,
   });
 
   Feature.getByTextAndRoot(newFeature.text, newFeature.root, function(err, feature) {
@@ -2515,11 +2620,12 @@ exports.addNewFeature = function(req,res){
 
 exports.loadFeatureModel = function(req,res){
 	console.log("START \"loadFeatureModel\"");
-	Feature.getAll(function(err, features) {
+	//console.log(req.body.projectID);
+	Feature.getByProject(req.body.projectID,function(err, features) {
 		if (err) {
 			console.log("LOAD FEATURE MODLE: FAIL");
 			req.flash('error', err);
-			return res.redirect('/F');
+			return res.redirect('/F/'+req.body.projectID);
 		}
 		res.send({'features': features});
 		
@@ -2837,7 +2943,7 @@ exports.C = function(req, res) {
 		title: 'Configuration',
 		user : req.session.user,
 		configurations:configurations,
-		current_configuration_id:"",
+		current_configuration_id:req.params.current_guard,
 		success : req.flash('success').toString(),
 		error : req.flash('error').toString()
     });
@@ -2864,27 +2970,103 @@ exports.newConfiguration=function(req,res){
 };
 
 exports.deleteConfiguration=function(req,res){
-	var $deleteId=req.params.content;
+	var param=req.params.content.split("分");
+	var $deleteId=param[0];
+	var $current_configuration_id=param[1];
 
 	Configuration.removeConfiguration(req.session.user.name,$deleteId,function(err,configurations){
-		if(configurations.length>0){
-		res.render('C', {
-				title : 'Configuration',
-				user: req.session.user,
-				configurations:configurations,
-				current_configuration_id:configurations[0]._id,
-				success : req.flash('success').toString(),
-				error : req.flash('error').toString()
-			});
+		if($current_configuration_id!=$deleteId){
+			return res.redirect('/C/'+$current_configuration_id);
 		}else{
-			res.render('C', {
-				title : 'Configuration',
-				user: req.session.user,
-				configurations:configurations,
-				current_configuration_id:"",
-				success : req.flash('success').toString(),
-				error : req.flash('error').toString()
-			});
+			if(configurations.length>0){
+				return res.redirect('/C/'+configurations[0]._id);
+			}else{
+				return res.redirect('/C');
+			}
 		}
 	});
 };
+
+exports.EditConfigName=function(req,res){
+	
+	Configuration.editConfigName(req.session.user.name,req.body.configname,req.body.editID,function(err) {
+		console.log("edit configuration name success!");
+		});
+}
+
+exports.EditConfig=function(req,res){
+	
+	Configuration.editConfig(req.session.user.name,req.body.current_configuration_id,req.body.selectedElement,function(err) {
+		console.log("edit configuration name success!");
+		});
+}
+
+exports.GenerateUseCase=function(req,res){
+	console.log(req.body.current_configuration_id);
+	Tracerule.get(req.session.user.name,null, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+			ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+	  			if(err){
+	  				elementdepencys=[];
+	  			}
+	  			Feature.getAll(function(err, features) {
+					if (err) {
+						return res.redirect('/C');
+						}
+					Configuration.get(req.session.user.name,req.body.current_configuration_id,function(err,configurations){
+						Configuration.generateUseCase(req.session.user.name,req.body.current_guard_id,tracerules,elementdepencys,features,configurations,function(err,result){
+						console.log("Generate Use Case");
+						var results=new Array();
+						for(key in result)
+							results[key]=result[key];
+			
+
+						res.send(results);
+					});
+				});
+			});	
+	  	})
+	})
+}
+
+exports.newProject=function(req,res){
+		console.log(req.params.content);
+		var param=req.params.content.split("分");
+		var $projectname=param[0];
+		var $projectinfo=param[1];
+		Project.addNewProject(req.session.user.name,$projectname,$projectinfo,function(err,projects,current_id){
+			res.redirect('/');
+		});
+}
+
+exports.DeleteProject=function(req,res){
+		var $deleteID=req.params.content;
+		Project.deleteProject(req.session.user.name,$deleteID,function(err,projects){
+			res.redirect('/');
+		})
+}
+
+exports.updateProjectName=function(req,res){
+	
+	
+	Project.updateProjectname(req.session.user.name,req.body.editID,req.body.selfname,function(err,projects,current_id){
+		res.redirect('/'); 
+	})
+}
+
+
+exports.showInformation=function(req,res){
+	
+	Project.getByID(req.session.user.name,req.body.showID,function(err,theproject) {
+		res.send(theproject);
+		});
+}
+
+exports.editProject=function(req,res){
+	console.log("current_id:"+req.body.current_id+" name:"+req.body.newName+" description:"+req.body.newDescription);
+	Project.editProject(req.session.user.name,req.body.current_id,req.body.newName,req.body.newDescription,function(err,theproject,id){
+		res.send(theproject);
+	})
+}

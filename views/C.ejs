@@ -2,6 +2,7 @@
 <script src="/javascripts/fmtreeC.js"></script>
 <link type="text/css" rel="stylesheet" href="/stylesheets/xtree.css">
 <link rel='stylesheet' href='/stylesheets/david-bootstrap.css' />
+
 <style type="text/css">
       body {
         padding-top: 60px;
@@ -9,9 +10,9 @@
       }
 
     div.c{padding-left:1%}
-    div.left{float:left;width:18%;margin:6px;}
-    div.center{float:left;width:15%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
-    div.right{float:left;width:62%;margin:6px;}
+    div.left{float:left;width:15%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
+    div.center{float:left;width:17%;margin:6px;}
+    div.right{float:left;width:65%;margin:6px;}
     div.titles{
       text-align: center;
       font-size: 125%;
@@ -29,6 +30,22 @@
       color: #000000;
       height: 32px; 
     }
+
+    .myInsidePlus {
+      border-top:1px solid #c3c3c3;
+      overflow:auto;
+      color: #000000;
+      height: 32px; 
+
+    }
+
+    .myInsideA {
+      border-top:1px solid #c3c3c3;
+      overflow:auto;
+      color: #000000;
+      height: 32px; 
+    }
+
     .focusBgColor{
       background-color: #c3c3c3;
     }
@@ -56,18 +73,391 @@
     .FontColor{
       color: blue;
     }
+
+    .focusBgColor{
+      background-color: #c3c3c3;
+    }
+
+
+    .GuardListStyle{float:right;margin-right:6px;margin-top:10px;display:none;}
+    .GuardListStyleShow{float:right;margin-right:6px;margin-top:10px;display:block;}
 </style>
 
 <script type="text/javascript">
   var $seq_no=0;
-
+  var $current_configuration_id;
   $(function(){
+
+      
+
       $(".myInsides").mouseover(function(){
           $(this).children().show();
       })
       $(".myInsides").mouseout(function(){
           $(this).children().hide();
       })
+
+       $(".icon-remove").mouseover(function(){
+        $(this).addClass("getFocus");
+      })
+
+      $(".icon-remove").mouseout(function(){
+        $(this).removeClass("getFocus");
+      })
+
+      var $deleteID;
+      $(".icon-remove").click(function(){
+        
+        $deleteID=$(this).parent().attr('name');
+        $current_configuration_id=$(".myInsideA.focusBgColor").attr("name");
+
+        $( "#confirmDelete" ).dialog( "open" );
+        event.stopPropagation();
+      })
+
+       $( "#confirmDelete" ).dialog({
+          autoOpen: false,
+          width: 450,
+          modal: true,
+          buttons: {
+
+            "Confirm": function() {
+             
+              window.location.href="/DeleteConfiguration/"+$deleteID+"分"+$current_configuration_id;
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+        
+      }
+    });
+
+
+
+      $(".myInsideA").mouseover(function(){
+          $(this).children().show();
+          $(this).find(".icon-chevron-right").hide();
+      })
+      $(".myInsideA").mouseout(function(){
+          $(this).children().hide();
+          $(this).find(".icon-chevron-right").show();
+        
+      })
+
+      $(".myInsideA").click(function(){
+        if($(this).attr('name')!=null){
+          window.location.href="/C/"+$(this).attr('name');
+        }
+      })
+
+      $(".icon-pencil").mouseover(function(){
+        $(this).addClass("getFocus");
+      })
+
+      $(".icon-pencil").mouseout(function(){
+        $(this).removeClass("getFocus");
+      })
+      var $edit_id;
+      $(".icon-pencil.GuardListStyle").click(function(event){
+        $edit_id=$(this).parent().attr('name');
+        
+        $( "#editConfigName" ).dialog( "open" );
+        event.stopPropagation(); 
+      })
+      var $configname;
+
+      $( "#editConfigName" ).dialog({
+          autoOpen: false,
+          width: 450,
+          modal: true,
+          buttons: {
+
+            "Confirm": function() {
+              $configname=$("#configname").val();
+
+              $( this ).dialog( "close" );
+
+          
+        },
+      },
+      close: function() {
+        if($configname!="")
+        {
+         
+           var aname=document.getElementsByName($edit_id);
+           
+          var $markblank;
+          var $content=aname[0].innerHTML;
+          
+          for($markblank=1;$content[$markblank].charCodeAt(0)==32;$markblank++)
+                 ;
+          
+          var $subContent=$content.substr($markblank,$content.indexOf("<i")-$markblank);
+          aname[0].innerHTML=aname[0].innerHTML.replace($subContent,$configname);
+
+          $.ajax({
+            type: "POST",
+            url: "/EditConfigName",
+            data: {
+              configname:$configname,
+              editID:$edit_id
+           },
+            dataType:'json',
+            success:function(Object){
+             
+
+            },
+            error:function(){
+
+            }
+          }); 
+
+        }
+      }
+    });
+
+    $( ".icon-plus-sign" ).click(function() {
+      
+        $("#newConfigurationName").dialog("open");
+
+      });
+
+
+    
+      $(".icon-edit").mouseover(function(){
+        $(this).addClass("getFocus");
+      })
+
+      $(".icon-edit").mouseout(function(){
+        $(this).removeClass("getFocus");
+      })
+
+      $(".icon-edit").click(function(){
+        var $current_configuration_ids="<%=current_configuration_id%>";
+        
+        if($current_configuration_ids.length<10){
+              alert("Please choose one configuration");
+        }else{
+          var boxs=document.getElementsByName("box");
+                
+                  for(var $i=0;$i<boxs.length;$i++){
+                    boxs[$i].disabled=false;
+                  }
+          $(this).css("display","none");
+         $(this).siblings().show();
+        }
+        
+      })
+
+
+      $(".icon-play").mouseover(function(){
+        $(this).addClass("getFocus");
+      })
+
+      $(".icon-play").mouseout(function(){
+        $(this).removeClass("getFocus");
+      })
+
+      $(".icon-repeat").mouseover(function(){
+        $(this).addClass("getFocus");
+      })
+
+      $(".icon-repeat").mouseout(function(){
+        $(this).removeClass("getFocus");
+      })
+
+       $(".icon-repeat").click(function(){
+        $current_configuration_id="<%=current_configuration_id%>";
+            if($current_configuration_id.length>9){
+              var $contents=$("#hidden_elementSelect").val();
+
+              var boxs=document.getElementsByName("box");
+                for(var $i=0;$i<boxs.length;$i++){
+                    boxs[$i].checked=false;
+                  }
+
+              if($contents!="")
+              {
+                var selectIDs=$contents.split("$");
+                for(keys in selectIDs){
+                    selectIDs[keys]="FM_tree_object_"+selectIDs[keys]+"_id";
+                                
+                    document.getElementById(selectIDs[keys]).checked=true;
+                }
+              }
+                
+              }
+      })
+
+
+
+      $(".icon-play").click(function(){
+          var boxs=document.getElementsByName("box");
+          if(boxs[0].disabled==false){
+            alert("Please save the configuration before generating use case");
+          }else{
+            $current_configuration_id=$(".myInsideA.focusBgColor").attr("name");
+            
+            $.ajax({
+            type: "POST",
+            url: "/GenerateUseCase",
+            data: {
+              current_configuration_id:$current_configuration_id
+           },
+            dataType:'json',
+            success:function(Object){
+             //console.log(Object);
+             for(key in Object)
+              console.log(typeof(Object[key]));
+             var showResults=document.getElementById("showResult");
+             var $str="";
+
+             for(key in Object)
+                { 
+                  $str+=Object[key];
+                }
+                //console.log($str);
+                var $printStr="";
+                var process;
+                var temp;
+                var map = {};
+                if($str.length>0)
+                 {
+                  process=$str.split("<br>");
+                  temp=$str.split("<br>");
+                  for(keyss in temp){
+                    if(temp[keyss].indexOf("Use case:")==-1){
+                      if(temp[keyss].indexOf("User:")>-1)
+                        temp[keyss]=temp[keyss].replace("User:","");
+                      if(temp[keyss].indexOf("System:")>-1)
+                        temp[keyss]=temp[keyss].replace("System:","");
+                      var indexofmaohao=temp[keyss].indexOf(":");
+                      map[temp[keyss].substring(0,indexofmaohao)]=temp[keyss].substring(indexofmaohao+1,temp[keyss].length);
+                    }
+                  }
+                  //console.log(map);
+                }
+                var $usecasenums=0;
+                 for(keys in process){
+                  
+                    if(process[keys].indexOf("Use case:")>-1){
+
+                      if($usecasenums>0)
+                      {
+                        $printStr+="</table></div>";
+                      }
+                         $usecasenums++;
+                    //$printStr+=process[keys]+"<br>";
+                    $printStr+="<h4 align=\"center\" class=\"myFont\"></h4><div style=\"overflow:auto;text-align:center\"><table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr style=\"border-left:0;border-bottom: black;\"><td colspan=\"4\" style=\"border-right: black;\"><p style=\"text-align:center\">USER</p></td><td colspan=\"4\"><p style=\"text-align:center\">SYSTEM</p></td></tr><tr style=\"border-left:0;\"><td style=\"width:6%;\"><p align=\"center\">ID</p></td><td style=\"width:33%;\"><p align=\"center\">Description</p></td><td style=\"width:5%;\"><p align=\"center\">Value</p></td><td style=\"width:6%;border-right:black;\"><p align=\"center\">Target</p></td><td style=\"width:6%;\"><p align=\"center\">ID</p></td><td style=\"width:33%;\"><p align=\"center\">Description</p></td><td style=\"width:5%;\"><p align=\"center\">Value</p></td><td style=\"width:6%;\"><p align=\"center\">Target</p></td></tr>";
+                    }else{
+                      $printStr+="<tr style=\"border-left:0;\">";
+                      console.log(process[keys]);
+                      console.log(process[keys].indexOf("User:"));
+                      if(process[keys].indexOf("User:")>-1&&process[keys].length>0){
+                        
+                        process[keys]=process[keys].replace("User:","");
+                        console.log(process[keys]);
+                        var theID=process[keys].substring(0,process[keys].indexOf(":"));
+                        console.log("theID:"+theID);
+                        process[keys]=process[keys].substring(process[keys].indexOf(":")+1,process[keys].length);
+                        var tempOp=process[keys].split("$");
+                        console.log("length:"+tempOp.length);
+                        if(tempOp.length>2){
+                          var con1,con2,tar1,tar2;
+                          if(map[tempOp[1]].indexOf("yes")>-1){
+                            con1="Yes";
+                            con2="No";
+                           
+                          }else{
+                            con1="No";
+                            con2="Yes";
+                          }
+                           tar1=map[tempOp[1]].split("$")[1];
+                           tar2=map[tempOp[2]].split("$")[1];
+                          if(tar1=="undefined"){
+                            tar1="End";
+                          }
+                          if(tar2=="undefined")
+                            tar2="End";
+                          $printStr+="<td rowspan=\"2\" style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td rowspan=\"2\" style=\"width:33%;\"><p style=\"text-align:left\">"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>"+con1+"</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tar1+"\">"+tar1+"</p></td><td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:33%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:5%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td></tr><tr><td style=\"width:5%;\"><p>"+con2+"</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tar2+"\">"+tar2+"</p></td>"
+
+                        }else{
+                          
+                          if(tempOp[0]!="yes"&&tempOp[0]!="no"){
+                            if(tempOp[1]==undefined)
+                              tempOp[1]="End";
+                            $printStr+=" <td style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td style=\"width:33%;\"><p>"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tempOp[1]+"\" style=\"cursor: pointer;\">"+tempOp[1]+"</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td><td style=\"width:33%;\"><p>&nbsp;</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td>";
+                          }
+                        }
+                        
+                       
+                      }else{
+
+                      if(process[keys].indexOf("System:")>-1&&process[keys].length>0){
+
+                        
+                        process[keys]=process[keys].replace("System:","");
+                   
+                        //console.log(process[keys]);
+                        var theID=process[keys].substring(0,process[keys].indexOf(":"));
+                        //console.log("theID:"+theID);
+                        process[keys]=process[keys].substring(process[keys].indexOf(":")+1,process[keys].length);
+                        var tempOp=process[keys].split("$");
+                        //console.log("length:"+tempOp.length);
+                        if(tempOp.length>2){
+                           $printStr+=" <td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:33%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:5%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:6%;border-right: black;\"><p>&nbsp;</p></td>";
+                          var con1,con2,tar1,tar2;
+                          if(map[tempOp[1]].indexOf("yes")>-1){
+                            con1="Yes";
+                            con2="No";
+                            
+                          }else{
+                            con1="No";
+                            con2="Yes";
+                            
+                          }
+                           tar1=map[tempOp[1]].split("$")[1];
+                          tar2=map[tempOp[2]].split("$")[1];
+                          if(tar1=="undefined"){
+                            tar1="End";
+                          }
+                          if(tar2=="undefined")
+                            tar2="End";
+                          $printStr+="<td rowspan=\"2\" style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td rowspan=\"2\" style=\"width:33%;\"><p style=\"text-align:left\">"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>"+con1+"</p></td><td style=\"width:6%;\"><p class=\"clickfindnext\" value=\""+tar1+"\">"+tar1+"</p></td></tr><tr><td style=\"width:5%;\"><p>"+con2+"</p></td><td style=\"width:6%;\"><p class=\"clickfindnext\" value=\""+tar2+"\">"+tar2+"</p></td>"
+
+                        }else{
+                          
+                          if(tempOp[0]!="yes"&&tempOp[0]!="no"){
+                            if(tempOp[1]==undefined)
+                              tempOp[1]="End";
+                             $printStr+=" <td style=\"width:6%;\"><p>&nbsp;</p></td><td style=\"width:33%;\"><p>&nbsp;</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;border-right:black\"><p>&nbsp;</p></td>";
+                            $printStr+=" <td style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td style=\"width:33%;\"><p>"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;\"><p class=\"clickfindnext\" value=\""+tempOp[1]+"\" style=\"cursor: pointer;\">"+tempOp[1]+"</p></td>";
+                          }
+                        }
+                        
+                       
+                      }
+                    }
+                      $printStr+="</tr>";
+                  }  
+                }
+                 if("usecasenum>0")
+                $printStr+=" </table></div>";
+                            //console.log($printStr);
+              showResults.innerHTML=$printStr;
+              $("#clickfindnext").on("click",function(){
+                  alert("hi");
+                })
+
+            },
+            error:function(){
+              console.log("errrrrrrrrrrr");
+            }
+          });
+          }
+      })
+
     
       $(".myInsides").each(function(index){
           $(this).click(function(){
@@ -84,6 +474,45 @@
         $(this).removeClass("getFocus");
       })
 
+       $(".icon-ok").click(function(){
+           var boxs=document.getElementsByName("box");
+           var $selectedElement="";
+           var $first=false;     
+            for(var $i=0;$i<boxs.length;$i++){
+                    boxs[$i].disabled=true;
+                    if(boxs[$i].checked){
+                        if($first){
+                          $selectedElement+="$";
+                        }else{
+                          $first=true;
+                        }
+                        var selectedID=boxs[$i].id.split("_");
+                        $selectedElement+=selectedID[3];
+                    }
+                }
+            $current_configuration_id=$(".myInsideA.focusBgColor").attr("name");
+           $.ajax({
+            type: "POST",
+            url: "/EditConfig",
+            data: {
+              current_configuration_id:$current_configuration_id,
+              selectedElement:$selectedElement
+           },
+            dataType:'json',
+            success:function(Object){
+             
+
+            },
+            error:function(){
+
+            }
+          }); 
+
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+      })
+
       $(".icon-minus").mouseover(function(){
         $(this).addClass("getFocus");
       })
@@ -98,12 +527,13 @@
 
       $( "#radio" ).buttonset();
 
-      $("p.click").hover(function(){
+      $("#clickfindnext").hover(function(){
           $(this).css("cursor","pointer");
       })
 
-      $("p.click").each(function(index){
+      $("#clickfindnext").each(function(index){
           $(this).click(function(){
+            alert("hello");
             $("p.FontColor").removeClass("FontColor");
             $("p[value="+$(this).html()+"]").addClass("FontColor");
             $(this).removeClass("FontColor");
@@ -163,6 +593,22 @@
   })
 
 </script>
+      <%
+  configurations.forEach(function(configuration, index) {
+
+    if(configuration._id==current_configuration_id){
+      
+%>
+          
+      <input type="hidden" id="hidden_elementSelect" value="<%= configuration.configuration%>">
+
+<%
+         
+    }
+
+  })
+%>
+
 
 <div class="container-fluid">
   <div class="row-fluid">
@@ -186,50 +632,89 @@
 
 <div class="c">
     <div class="left">
-      <div class="myBorderRadius">
+      <div class="myBorderRadiusPlus">
+        <h4 align="center" class="myFont"> Configuration List 
+        </h4>
+        <div class="myh4" style="margin-top:8px">
+      
+          <ul class="nav nav-list" id="configlist">
+            <%- partial('configurationlist',{configurations:configurations,current_configuration_id:current_configuration_id}) %>
+          
+            <li class="nav-list-1"><a href="javascript:;" class="myInsidePlus" style="text-align:center;margin-bottom:0px;vertical-align:middle;"><i class="icon-plus-sign"></i></a></li>
+          </ul>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="center">
+       <div class="myBorderRadius">
         <h4 align="center" class="myFont"> Feature Tree 
         </h4>
-        <div class="myInside" style="border-top:1px solid #c3c3c3;overflow:auto;">
-          
-         <div style="margin-left:4px;margin-top:-4px">
-          <%- partial('ConfigurationShow', {configurations:configurations,current_configuration_id:current_configuration_id}) %>
-          <button class="btn btn-small btn-primary newstyle" type="button" style="margin-top:5px;margin-left:2px">New</button>
-          <button class="btn btn-small btn-primary Delete" type="button" style="margin-top:5px">Delete</button>
-         </div>
-
-         <button class="btn btn-small" type="button" style="margin-top:0px;margin-left:4px">Generate</button>
+        <div class="myInside" style="border-top:1px solid #c3c3c3;overflow:auto;"> 
+          <i class="icon-play" style="float:right;margin-right:7px;margin-top:10px;cursor:pointer"></i>  
+          <i class="icon-edit" style="float:right;margin-right:7px;margin-top:10px;cursor:pointer"></i>
+          <i class="icon-ok" style="float:right;margin-right:7px;margin-top:10px;cursor:pointer;display:none"></i>
+          <i class="icon-repeat" style="float:right;margin-right:7px;margin-top:10px;cursor:pointer"></i>  
           
           <script src="/javascripts/fmtreeForConfiguration.js"></script>
           <link type="text/css" rel="stylesheet" href="/stylesheets/xtree.css">
           <form>
-            <script src="/javascripts/loadFMTreeForConfiguration.js"></script>
+            <script src="/javascripts/loadFMTreeForConfiguration.js">
+
+            </script>
           </form>
+
         </div>
       </div>
     </div>
-
-    <div class="center">
-      <div class="myBorderRadiusPlus">
-    <h4 align="center" class="myFont"> 
-      Use Case Name
-    </h4>
-    <div class="myh4" style="margin-top:8px">
-      
-      <ul class="nav nav-list" id="guardlist">
-    
-        <li class="nav-list-1"><a href="javascript:;" class="myInsides focusBgColor">Login</a></li>
-        <li class="nav-list-1"><a href="javascript:;" class="myInsides">Message</a></li>
-        <li class="nav-list-1"><a href="javascript:;" class="myInsides">Information Submition</a></li>
-      </ul>
-
-
-    </div>
-   </div>
-    </div>
-
+    <script type="text/javascript">
+       setTimeout('load()',100);
+       function load(){
+               
+              $current_configuration_id="<%=current_configuration_id%>";
+            if($current_configuration_id.length>9){
+              var $contents=$("#hidden_elementSelect").val();
+              if($contents!="")
+              {
+                var selectIDs=$contents.split("$");
+                for(keys in selectIDs){
+                    selectIDs[keys]="FM_tree_object_"+selectIDs[keys]+"_id";
+                                
+                    document.getElementById(selectIDs[keys]).checked=true;
+                }
+              }
+                var boxs=document.getElementsByName("box");
+                for(var $i=0;$i<boxs.length;$i++){
+                    boxs[$i].disabled=true;
+                  }
+              }
+            }
+    </script>
     <div class="right">
-      <div class="myBorderRadius">
-        <h4 align="center" class="myFont"> Use Case </h4>
+      
+        <div class="BorderGuard">
+          <h4 align="center" class="myFont"> Use Case
+          </h4>
+    
+        <div style="margin-top:8px">
+          <ul class="nav" id="guardlist" style="margin-bottom:0px">
+            <li class="myInsidePlus" style="text-align:left;margin-bottom:0px;vertical-align:middle;font-size:120%"><font style="margin-left:20px">Use Case Name: </font>
+                <select style="width:50%;margin-left:20px;height:25px;margin-top:5px">
+                  <option>UC1</option>
+              <!--    <option>Editor</option>
+                  <option>Show Picture</option>-->
+                  
+                </select>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+
+      <!--
+        <h4 align="center" class="myFont"></h4>
         <div style="overflow:auto;text-align:center">
           <table border="1" cellpadding="0" cellspacing="0" width="100%">
               <tr style="border-left:0">
@@ -266,6 +751,7 @@
                   <p align="center">Tgt.</p>
                 </td>
               </tr>
+              
               <tr>
                 <td rowspan="2" style="width:6%;">
                   <p class="FontColor" value="A1">A1</p>
@@ -399,8 +885,12 @@
                 </td>
               </tr>
           </table>
+        </div>-->
+        
+        <div id="showResult">
+
         </div>
-      </div>
+
     </div>
 
 </div>
@@ -417,6 +907,30 @@
 </div>
 
 <div id="confirmDeleteCon" title="Confirm Delete">
+  
+  <form>
+    <fieldset id="dialog-exchange">
+       <label class="control-label" > Confirm Delete? </label>
+        
+    </fieldset>
+  </form>
+
+</div>
+
+ <!-- 编辑configuration名字 --> 
+<div id="editConfigName" title="Edit Name">
+  
+  <form>
+    <fieldset id="dialog-exchange">
+       <label class="control-label" for="selfname">Configuration Name：</label>
+        <input type="text" class="input-xlarge" id="configname" name="configname">
+    </fieldset>
+  </form>
+
+</div>
+
+ <!-- 确定是否删除 --> 
+<div id="confirmDelete" title="Confirm Delete">
   
   <form>
     <fieldset id="dialog-exchange">

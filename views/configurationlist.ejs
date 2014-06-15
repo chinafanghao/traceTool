@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+           
+             <% configurations.forEach(function(configuration, index) {
+                  if(configuration._id!=current_configuration_id){
+                %>
+                  <li class="nav-list-1">
+                    <a href="javascript:;" class="myInsideA" name="<%= configuration._id%>">
+                    <%= configuration.name%><i class="icon-remove GuardListStyle" style="display: none;"></i><i class="icon-pencil GuardListStyle" style="display: none;"></i><i class="icon-chevron-right GuardListStyleShow" style="display: block;"></i>
+                    </a>
+                  </li>
+              <%}else{%>
+                 
+                  <li class="nav-list-1">
+                    <a href="javascript:;" class="myInsideA focusBgColor" name="<%= configuration._id%>">
+                    <%= configuration.name%><i class="icon-remove GuardListStyle" style="display: none;"></i><i class="icon-pencil GuardListStyle" style="display: none;"></i><i class="icon-chevron-right GuardListStyleShow" style="display: block;"></i>
+                    </a>
+                  </li>
+             <% }
+          }) %>

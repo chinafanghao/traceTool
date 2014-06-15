@@ -1,25 +1,7 @@
   <!DOCTYPE html>
- 
-  <select class="selector1" style="margin-top:13px;margin-left:0px;width:54%">
-            
-     <% configurations.forEach(function(configuration, index) {
-     	if(current_configuration_id==""){
-              	%>
-        <option value="<%=configuration._id%>"><%=configuration.name%></option>
-     <%
- 		}else{
- 	
- 		  if(configuration._id!=current_configuration_id){
- 	 %>
- 	 		<option value="<%=configuration._id%>"><%=configuration.name%></option>
- 	 		
- 	 <%
- 		  	}else{
- 	 %>
- 	 		<option value="<%=configuration._id%>" selected="selected"><%=configuration.name%></option>
- 	 <%
- 		  	}
- 		}
-    })
- 	 %>
-  </select>
+ 		<script src="/javascripts/fmtreeForConfiguration.js"></script>
+          <link type="text/css" rel="stylesheet" href="/stylesheets/xtree.css">
+          <form>
+            <script src="/javascripts/loadFMTreeForConfiguration.js">
+            </script>
+          </form>

@@ -119,7 +119,7 @@ Guardlist.get = function get(user, callback) {
 				query={"user":user};
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -166,7 +166,7 @@ Guardlist.del = function del(username, guard,callback) {
 				query.user = username;
 			}
 
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -215,7 +215,7 @@ Guardlist.updateSelfname = function updateSelfname(user,id,selfname, callback) {
 				
 					query={"user":user};
 				}
-				collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+				collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 				mongodb.close();
 
 				if (err) {
@@ -272,7 +272,7 @@ Guardlist.removeTraceRule = function removeTraceRule(user,deleteID, callback) {
 				
 											query={"user":user};
 										}
-										collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
+										collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
 											mongodb.close();
 
 											if (err) {

@@ -10,6 +10,5 @@
     </p>
   </div>
 <% } else { %>
-   <%- partial('say') %> 
+   <%- partial('showProject',{projects:projects,current_id:current_id}) %> 
 <% } %>
-<%- partial('posts', {posts:posts}) %> 

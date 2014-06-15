@@ -328,6 +328,7 @@ FMTreeItem.prototype.getPreviousSibling = function(b) {
 } }
 
 FMTreeItem.prototype.toString = function (nItem, nItemCount) {
+  console.log("configuration part");
   var foo = this.parentNode;
   var indent = '';
   if (nItem + 1 == nItemCount) { this.parentNode._last = true; }
@@ -345,31 +346,12 @@ FMTreeItem.prototype.toString = function (nItem, nItemCount) {
   var str = "<div id=\"" + this.id + "\" class=\"FM-tree-item\">" +
     indent +
     "<img id=\"" + this.id + "-plus\" src=\"" + ((this.folder)?((this.open)?((this.parentNode._last)?FMTreeConfig.lMinusIcon:FMTreeConfig.tMinusIcon):((this.parentNode._last)?FMTreeConfig.lPlusIcon:FMTreeConfig.tPlusIcon)):((this.parentNode._last)?FMTreeConfig.lIcon:FMTreeConfig.tIcon)) + "\" onclick=\"FMTreeHandler.toggle(this);\">"
-     + "<input type=\"checkbox\" id=\"" + this.text + "\" class=\"SetTraceRuleGuard\" onclick=\"addGuard(\'"+this.text+"\')\">"
-     + "<img id=\"" + this.id + "-optVPIcon\" class=\"myOptVP\" src=\"";
+     ;
   if (this.optionality == "Optional") {
-    if (this.VP == "OR") {
-      str += FMTreeConfig.optOORIcon;
-    }
-    else if (this.VP == "XOR") {
-      str += FMTreeConfig.optXORIcon;
-    }
-    else {
-      str += FMTreeConfig.optNonVPIcon;
-    }
+    str+="<input type=\"checkbox\" id=\"" + this.id + "_id\" style=\"margin-bottom:5px\" class=\"SetTraceRuleGuard\" onclick=\"addGuard(\'"+this.text+"\')\" name=\"box\">&nbsp;";
   }
-  else if (this.optionality == "Mandatory") {
-    if (this.VP == "OR") {
-      str += FMTreeConfig.manOORIcon;
-    }
-    else if (this.VP == "XOR") {
-      str += FMTreeConfig.manXORIcon;
-    }
-    else {
-      str += FMTreeConfig.manNonVPIcon;
-    }
-  }  
-  str += "\" />" +
+ 
+  str +=
   /*  "<a href=\"" + this.action + "\" id=\"" + this.id + "-anchor\" onclick=\"FMTreeHandler.click(this);\"" +
     (this.target ? " target=\"" + this.target + "\"" : "") +
     ">" + */

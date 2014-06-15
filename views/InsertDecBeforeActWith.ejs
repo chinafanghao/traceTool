@@ -24,7 +24,7 @@
             <select style="width:50%;margin-left:110px" id="InsertDecBeforeActWithPost">
                 <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
-                    if(elementdepencys[key].type=="activity"){
+                    if(elementdepencys[key].type=="activity"||elementdepencys[key].type=="decision"){
                       var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
                       %>
                 <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
@@ -81,7 +81,7 @@
             <select style="width:50%;margin-left:88px" id="InsertDecBeforeActWithTarDec">
                 <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
-                    if(elementdepencys[key].type=="decision"){
+                    if(elementdepencys[key].type=="decision"||elementdepencys[key].type=="activity"){
                       var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
                       %>
                 <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>

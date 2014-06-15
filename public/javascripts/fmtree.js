@@ -468,12 +468,16 @@ FMTreeAbstractNode.prototype.add = function (node, bNoIdent) {
 
 
 FMTreeAbstractNode.prototype.addChild = function() {
+
   var child_text = window.prompt("Type the name of the feature:", "New Feature");
+  var project_id=$("#hidden_project_id").val();
+
   if (child_text) {
     var root = this;
     while (root.parentNode) { root = root.parentNode; }
     var temp = this;
     //window.alert(typeof(this.level + 1));
+    console.log("addChild project_id:"+project_id);
     $.ajax({
       type: "POST",
       url: "/addNewFeature",
@@ -484,6 +488,7 @@ FMTreeAbstractNode.prototype.addChild = function() {
         optionality : 'Optional',
         VP          : 'Non-VP',
         level       : this.level + 1,
+        projectID   : project_id,
       },
       dataType:'json', 
       success: function(data) {
@@ -505,6 +510,7 @@ FMTreeAbstractNode.prototype.addChild = function() {
 
 FMTreeAbstractNode.prototype.addSibling = function() {
   var sibling_text = (window.prompt("Type the name of the feature", "New Feature"));
+  var project_id=$("#hidden_project_id").val();
   if (sibling_text) {
   	//var sibling = new FMTreeItem(sibling_text);
     var root = this;
@@ -520,6 +526,7 @@ FMTreeAbstractNode.prototype.addSibling = function() {
         optionality : 'Optional',
         VP          : 'Non-VP',
         level       : this.level,
+        projectID   : project_id,
       },
       dataType:'json',
       success: function(data) {

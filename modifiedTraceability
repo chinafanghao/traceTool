@@ -1,0 +1,1852 @@
+//两种before with 中的condition也要加入到依赖关系当中！！！ 
+var Traceability = [];
+var tr, op;   //两个临时变量，创建每一个TraceRule。
+
+//F0: Login
+tr=
+{
+    id : 0,
+    guard : [0],   //直接存储的是feature.id  或者 -feature.id
+    operations : [] 
+}
+
+op=
+{
+	type : "c1",
+	usecase_id : 0   //id是元素的索引
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 1   //id是元素的索引
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 23   //id是元素的索引
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "i1",
+	seq : [1,23],   //id是元素的索引
+	pre : -1,       //"start"  
+	post :　-2,     //"end"  
+	usecase_id : 0   
+}
+tr.operations.push(op);
+
+Traceability.push(tr);
+////////////////////////////////////////////////////////////////////////
+
+//F1: Advanced Security  null
+//F2: SMS Alert 
+tr=
+{
+    id : 1,
+    guard : [2],   //直接存储的是feature.id  或者 -feature.id
+    operations : [] 
+}
+
+op=
+{
+	type : "c2",
+	id : 24   //id是元素的索引
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "i2",
+	seq : [24],   //id是元素的索引
+	pre : 23,
+	usecase_id : 0   //id是元素的索引
+}
+tr.operations.push(op);
+
+Traceability.push(tr);
+/////////////////////////////////////////////////////////////////////////////////////////
+//F3: Punishment for consecutively failed login
+tr=
+{
+	id : 2,
+	guard : [3],
+	operations : []
+}
+
+op=
+{
+	type : "c3",
+	id : 17
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 18
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c4",
+	id : 5+24
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c4",
+	id : 6+24
+}
+tr.operations.push(op);
+//未完成
+op=
+{
+	type : "i6",
+	decision_id : 17,
+	pre : 16,
+	branches : [],
+	usecase_id : 0   //id是元素的索引  
+}
+
+bran =
+{
+	condition_id : 5+24,
+	seq : [],
+	post : null
+}
+op.branches.push(bran);
+
+bran =
+{
+	condition_id : 6+24,
+	seq : [18],
+	post : 4
+}
+op.branches.push(bran);
+
+tr.operations.push(op);
+
+Traceability.push(tr);
+/////////////////////////////////////////////////////////////////////////
+//F4: Automatic login
+tr=
+{
+	id : 3,
+	guard : [4],
+	operations : []
+}
+
+op=
+{
+	type : "c3",
+	id : 2
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 3
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c4",
+	id : 1+24
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c4",
+	id : 2+24
+}
+tr.operations.push(op);
+//未完成
+op=
+{
+	type : "i6",
+	decision_id : 2,
+	pre : 1,
+	branches : [],
+	usecase_id : 0   //id是元素的索引  
+}
+
+bran =
+{
+	condition_id : 1+24,
+	seq : [],
+	post : null
+}
+op.branches.push(bran);
+
+bran =
+{
+	condition_id : 2+24,
+	seq : [3],
+	post : 16.2
+}
+op.branches.push(bran);
+
+tr.operations.push(op);
+
+Traceability.push(tr);
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//F5:Change image
+tr=
+{
+	id : 4,
+	guard : [5],
+	operations : []
+}
+
+op=
+{
+	type : "c3",
+	id : 11
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 13
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 14
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c4",
+	id : 3+24
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c4",
+	id : 4+24
+}
+tr.operations.push(op);
+//未完成
+op=
+{
+	type : "i6",
+	decision_id : 11,
+	pre : 10,
+	branches : [],
+	usecase_id : 0   //id是元素的索引  
+}
+
+bran =
+{
+	condition_id : 3+24,
+	seq : [],
+	post : null
+}
+op.branches.push(bran);
+
+bran =
+{
+	condition_id : 4+24,
+	seq : [13, 14],
+	post : 11
+}
+op.branches.push(bran);
+
+tr.operations.push(op);
+
+Traceability.push(tr);
+///////////////////////////////////////////////////////////////////////////////////
+//F6: Verification info    null
+//F7: Characters in image
+tr=
+{
+	id : 5,
+	guard : [7],
+	operations : []
+}
+
+op=
+{
+	type : "c3",
+	id : 19
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 5
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 12
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 15
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 20
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c4",
+	id : 7+24
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c4",
+	id : 8+24
+}
+tr.operations.push(op);
+//未wa
+op=
+{
+	type :　"i1",
+	seq :　[5],
+	pre : 4,
+	post : 6,
+	usecase_id : 0   //id是元素的索引
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "i4",
+	seq : [12,15],
+	post : 16,
+	usecase_id : 0   //id是元素的索引
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "i7",
+	decision_id : 19,
+	pre : 17,
+	condition_id : 29,
+	branches: [],
+	usecase_id : 0   //id是元素的索引
+}
+
+bran=
+{
+	condition_id : 7+24,
+	seq : [],
+	post : null
+}
+op.branches.push(bran);
+
+bran=
+{
+	condition_id : 8+24,
+	seq : [20],
+	post : 4
+}
+op.branches.push(bran);
+
+tr.operations.push(op);
+
+Traceability.push(tr);
+//////////////////////////////////////////////////////////////////////////////
+//F8:Password
+tr=
+{
+	id : 6,
+	guard : [8],
+	operations : []
+}
+
+op=
+{
+	type : "c2",
+	id : 7
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "i2",
+	seq : [7],
+	pre : 6,
+	usecase_id : 0   //id是元素的索引
+}
+tr.operations.push(op);
+
+Traceability.push(tr);
+/////////////////////////////////////////////////////////////////////////////////
+//F9:Keyboard
+tr=
+{
+	id : 7,
+	guard : [9],
+	operations : []
+}
+
+op=
+{
+	type : "c2",
+	id : 8
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "f1",
+	virtual : [7],
+	actual : [8],
+	usecase_id : 0   //id是元素的索引
+}
+tr.operations.push(op);
+
+Traceability.push(tr);
+///////////////////////////////////////////////////////////////////////////////////////
+//F10:Soft keyboard
+tr=
+{
+	id : 8,
+	guard : [10],
+	operations : []
+}
+
+op=
+{
+	type : "c2",
+	id : 9
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "f1",
+	virtual : [7],
+	actual : [9],
+	usecase_id : 0   //id是元素的索引
+}
+tr.operations.push(op);
+
+Traceability.push(tr);
+//////////////////////////////////////////////////////////////////////////////////////
+//F11: Username
+tr=
+{
+	id : 9,
+	guard : [11],
+	operations : []
+}
+
+op=
+{
+	type : "c3",
+	id : 21
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 4
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 6
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 16
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c2",
+	id : 22
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c4",
+	id : 33
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "c4",
+	id : 34
+}
+tr.operations.push(op);
+
+op=
+{
+	type :　"i1",
+	seq :　[4,6,16],
+	pre : 1,
+	post : 23,
+	usecase_id : 0   //id是元素的索引
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "i6",
+	decision_id : 21,
+	pre : 16,
+	branches: [],
+	usecase_id : 0   //id是元素的索引
+}
+
+bran=
+{
+	condition_id : 33,
+	seq : [],
+	post : null
+}
+op.branches.push(bran);
+
+bran=
+{
+	condition_id : 34,
+	seq : [22],
+	post : 4
+}
+op.branches.push(bran);
+
+tr.operations.push(op);
+
+Traceability.push(tr);
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//F12: Replace password with *
+tr=
+{
+	id : 10,
+	guard : [12],
+	operations : []
+}
+
+op=
+{
+	type : "c2",
+	id : 10
+}
+tr.operations.push(op);
+
+op=
+{
+	type : "i2",
+	seq : [10],
+	pre : 7,
+	usecase_id : 0   //id是元素的索引
+}
+tr.operations.push(op);
+
+Traceability.push(tr);
+
+////////////////////////////////////////element
+
+var ElementList = [];
+var ele=
+{
+	id : 0,
+	type : "usecase",
+	name : "Login",
+	description : ""
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 1,
+	type : "activity",
+	name : "",
+	description : "Press the 'sign in' button",
+	executor : "user",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 2,
+	type : "decision",
+	name : "",
+	description : "Has the user set on automatic login?",
+	executor : "system"
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 3,
+	type : "activity",
+	name : "",
+	description : "Fill in username & password automatically",
+	executor : "system",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 4,
+	type : "activity",
+	name : "",
+	description : "Display the login page. Ask the user to input username & password.",
+	executor : "system",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 5,
+	type : "activity",
+	name : "",
+	description : "Display an image showing characters.Ask the user to input the characters.",
+	executor : "system",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 6,
+	type : "activity",
+	name : "",
+	description : "Input username.",
+	executor : "user",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 7,
+	type : "activity",
+	name : "",
+	description : "Input password.",
+	executor : "user",
+	virtual : true
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 8,
+	type : "activity",
+	name : "",
+	description : "Input password with keyborad.",
+	executor : "user",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 9,
+	type : "activity",
+	name : "",
+	description : "Input password with soft keyborad.",
+	executor : "user",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 10,
+	type : "activity",
+	name : "",
+	description : "Display the input username, display the input password with asterisks.",
+	executor : "system",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 11,
+	type : "decision",
+	name : "",
+	description : "Is the image clear?",
+	executor : "user",
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 12,
+	type : "activity",
+	name : "",
+	description : "Input the characters shown in the image.",
+	executor : "user",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 13,
+	type : "activity",
+	name : "",
+	description : "Ask for a new image.",
+	executor : "user",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 14,
+	type : "activity",
+	name : "",
+	description : "Display a new image showing characters in it.",
+	executor : "system",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 15,
+	type : "activity",
+	name : "",
+	description : "Display the input characters.",
+	executor : "system",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 16,
+	type : "activity",
+	name : "",
+	description : "Submit information.",
+	executor : "user",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 17,
+	type : "decision",
+	name : "",
+	description : "Has the user consecutively failed to sign in?",
+	executor : "system",
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 18,
+	type : "activity",
+	name : "",
+	description : "Display 'login is forbidden due to consecutively failed login'.",
+	executor : "system",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 19,
+	type : "decision",
+	name : "",
+	description : "Are the input characters correct?",
+	executor : "system",
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 20,
+	type : "activity",
+	name : "",
+	description : "Display 'wrong image characters'.",
+	executor : "system",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 21,
+	type : "decision",
+	name : "",
+	description : "Does the username & password match?",
+	executor : "system",
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 22,
+	type : "activity",
+	name : "",
+	description : "Display 'wrong username or password'.",
+	executor : "system",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 23,
+	type : "activity",
+	name : "",
+	description : "Display 'sign in successfully'.",
+	executor : "system",
+	virtual : false
+}
+ElementList.push(ele);
+
+var ele=
+{
+	id : 24,
+	type : "activity",
+	name : "",
+	description : "Send a short message to user to inform the login",
+	executor : "system",
+	virtual : false
+}
+ElementList.push(ele);
+
+////////////////////////////Condition
+
+var ConditionList = [];
+var con;
+
+con = 
+{
+	id : 25,
+	name : "",
+	description : "no"
+}
+ConditionList.push(con);
+ElementList.push(con);
+
+
+con = 
+{
+	id : 26,
+	name : "",
+	description : "yes"
+}
+ConditionList.push(con);
+ElementList.push(con);
+
+con = 
+{
+	id : 27,
+	name : "",
+	description : "yes"
+}
+ConditionList.push(con);
+ElementList.push(con);
+
+con = 
+{
+	id : 28,
+	name : "",
+	description : "no"
+}
+ConditionList.push(con);
+ElementList.push(con);
+
+con = 
+{
+	id : 29,
+	name : "",
+	description : "no"
+}
+ConditionList.push(con);
+ElementList.push(con);
+
+con = 
+{
+	id : 30,
+	name : "",
+	description : "yes"
+}
+ConditionList.push(con);
+ElementList.push(con);
+
+con = 
+{
+	id : 31,
+	name : "",
+	description : "yes"
+}
+ConditionList.push(con);
+ElementList.push(con);
+
+con = 
+{
+	id : 32,
+	name : "",
+	description : "no"
+}
+ConditionList.push(con);
+ElementList.push(con);
+
+con = 
+{
+	id : 33,
+	name : "",
+	description : "yes"
+}
+ConditionList.push(con);
+ElementList.push(con);
+
+con = 
+{
+	id : 34,
+	name : "",
+	description : "no"
+}
+ConditionList.push(con);
+ElementList.push(con);
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+var DependencyList = [];
+var dependency;
+var i,j,k;
+var ele_id;
+var op,type;
+for(i=0; i<Traceability.length; i++)             //对于每一条TraceRule
+{
+	size=Traceability[i].operations.length;      //size是operation的个数  i就是tracerule的编号
+	//tr_id=i;
+	for(j=0;j<size;j++)                     //对于每一个operation
+	{		
+		op=Traceability[i].operations[j];
+		type=op.type;
+		switch (type)
+		{
+			case "c1": 
+				ele_id=op.usecase_id;       //createDependee
+				createDependee();
+				break;
+			case "c2": 
+				ele_id=op.id;       //createDependee
+				createDependee();
+				break;
+			case "c3": 
+				ele_id=op.id;       //createDependee
+				createDependee();
+				break;
+			case "c4": 
+				ele_id=op.id;       //createDependee
+				createDependee();
+				break;
+			
+			case "i1":     //insert seq betw
+				createDepender(getDependee(op.pre));
+				createDepender(getDependee(op.post));
+				createDepender(op.usecase_id);       //即便是分开的list，这个usecase_id也是不会出现小数的。
+				break;
+		
+			case "i2": //insert seq after
+			case "i3": //insert seq after with
+				createDepender(getDependee(op.pre));
+				createDepender(op.usecase_id);
+				break;
+
+			case "i6": //insert dec after
+			case "i7": //insert dec after with   还需要加上branch的post
+				createDepender(getDependee(op.pre));
+				createDepender(op.usecase_id);
+
+				branchsize=op.branches.length;
+				for(k=1;k<branchsize;k++)   //因为第一个branch的post总为null，所以从第二个branch开始
+					createDepender(getDependee(op.branches[k].post));
+				break;
+		
+			case "i4": //insert seq before
+				createDepender(getDependee(op.post));
+				createDepender(op.usecase_id);
+				break;
+			case "i8": //insert dec before
+				createDepender(getDependee(op.post));
+				createDepender(op.usecase_id);
+				branchsize=op.branches.length;
+				for(k=1;k<branchsize;k++)   //因为第一个branch的post总为null，所以从第二个branch开始
+					createDepender(getDependee(op.branches[k].post));
+				break;
+				
+
+			case "i5": //insert seq before with!!
+				createDepender(getDependee(op.post));
+				createDepender(op.usecase_id);
+				createDepender(op.condition_id);
+				break;
+			case "i9": //insert dec before with!!
+				createDepender(getDependee(op.post));
+				createDepender(op.usecase_id);
+				createDepender(op.condition_id);
+				branchsize=op.branches.length;
+				for(k=1;k<branchsize;k++)   //因为第一个branch的post总为null，所以从第二个branch开始
+					createDepender(getDependee(op.branches[k].post));
+				break;
+			
+			case "f1": 
+                		vasize = op.virtual.length;
+                		for(k=0;k<vasize;k++)
+                		createDepender(getDependee(op.virtual[k]));
+				createDepender(op.usecase_id);
+				break;
+
+			default: console.log("wrong input\n");
+
+		}
+
+	}
+
+}
+
+function createDependee()
+{
+	if(DependencyList[ele_id]==undefined)    //如果依赖关系还不存在，就创建一个新的
+	{	
+		dependency =
+		{
+			dependee : i,
+			depender : []
+		}
+		DependencyList[ele_id]=dependency;
+	}
+	else
+		DependencyList[ele_id].dependee=i;   //否则就补全信息
+}
+
+
+
+
+function getDependee(outer)  // 得到坐标element的编号
+{
+	var index;
+	if(outer == parseInt(outer))
+		index = outer;
+	else 
+		index = parseInt(outer);  //16.2 的返回16
+	return index;
+} 
+
+function createDepender(outer_id)
+{
+	plus = true;
+	if(DependencyList[outer_id]==undefined)
+	{
+		dependency =
+		{
+		dependee : -1 ,
+		depender : [i]
+		}
+		DependencyList[outer_id]=dependency;
+	}
+	else if( DependencyList[outer_id].dependee != i )//非本条tr创建，也就是不建立自己依赖自己的dependency
+	{
+		var sizedepender = DependencyList[outer_id].depender.length;
+		//console.log("目前的dependersize是： "+sizedepender+"\n");
+		for(m=0;m<sizedepender;m++)
+		{
+			if( DependencyList[outer_id].depender[m]==i )
+			return;
+	    }			
+		
+		DependencyList[outer_id].depender.push(i);
+	}
+		
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//Feature Model Configuration
+var fmc=[];
+fmc[0]=true;    //Login
+fmc[1]=true;    //Advanced Security
+fmc[2]=true;    //SMS Alert
+fmc[3]=true;    //Punishment
+fmc[4]=true;    //Automatic login
+fmc[5]=true;    //change image
+fmc[6]=true;    //verification info
+fmc[7]=true;    //characters in image
+fmc[8]=true;    //pw
+fmc[9]=true;    //keyborad
+fmc[10]=true;   //soft keyboard
+fmc[11]=true;   //username
+fmc[12]=true;   //replace pw with *
+//fmc[13]=true;
+
+var filtered_Traceability = [];     //true : tr被保留；false：tr removed。
+for(i=0;i<Traceability.length;i++)  
+{
+	var g = Traceability[i].guard;
+	var guardvalue = true;
+	for(j=0;j<g.length;j++)
+	{
+		if( g[j]<0 )
+			guardvalue = guardvalue && !fmc[ -g[j] ];
+		else
+			guardvalue = guardvalue && fmc[ g[j] ];
+	}
+	if(guardvalue)
+		filtered_Traceability[i] = true;
+	else
+		filtered_Traceability[i] = false;
+}
+
+var filtered_DList = [];
+for(i=0;i<DependencyList.length;i++)  
+{
+	var tr_index = DependencyList[i].dependee;
+	if ( filtered_Traceability[tr_index] )     //要是dependendee没有保留，后面的depender也不用改
+	{
+		dependency = 
+		{
+			dependee : tr_index,
+			depender : []
+		}
+
+		for (j=0; j<DependencyList[i].depender.length; j++ )
+		{
+			if( filtered_Traceability[ DependencyList[i].depender[j] ] )
+				dependency.depender.push( DependencyList[i].depender[j] );
+		};
+
+		filtered_DList.push( dependency );
+
+	}	
+		
+
+}
+
+//生成排除需要排除的trace rule后形成的trace rule之间的以来关系————————hao
+
+//console.log(filtered_DList.length);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var Graph = [];    //Graph[tr_id]不一定，因为可能是filtered dlist
+
+
+dList_to_graph( filtered_DList );
+
+var size = Graph.length;
+//console.log(size);
+
+
+/*for(var i=0; i<size; i++)
+{
+	console.log(Graph[i].tr_id);
+}*/
+
+
+function dList_to_graph( dList )
+{
+	
+	for(var i=0; i<dList.length; i++)
+	{	
+			var sizegraph = Graph.length;
+			for(var j=0; j<sizegraph; j++)
+			{
+				if( Graph[j].tr_id == dList[i].dependee )
+					break;				
+			}
+			
+			if( j!=sizegraph )  //Graph中已经有tr_id=dependee的node了
+			{
+				var sizeoutput = Graph[j].output.length;
+				var sizedepender = dList[i].depender.length;
+				for(var k=sizeoutput; k < sizeoutput+sizedepender; k++)
+					Graph[j].output[k] = dList[i].depender[k-sizeoutput]; //没有去重，直接填上的			
+
+			}
+			else 
+			{
+				node = 
+				{
+					tr_id : dList[i].dependee,
+					output : dList[i].depender    //post order的，依赖此tr的tr
+				}				
+				Graph.push(node);
+			}
+	}
+
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//拓扑排序
+var temporder = [];  //最后需要倒置
+var resultorder = [];
+var size = Graph.length;
+console.log("this is test Graph");
+for(i=0;i<size;i++)
+{
+	//console.log("this is"+Graph[i].tr_id);
+	for(var k=0; k<Graph[i].output.length; k++)
+			{
+				console.log("Graph["+i+"].output["+k+"]:"+Graph[i].output[k]);
+			}	
+	console.log("\n\n");
+}
+console.log("this is test Graph OVer");
+order();
+
+console.log(temporder);
+resultorder = temporder.reverse();
+console.log("resultorder:"+resultorder+"\n");
+
+
+function order()
+{
+	var size = Graph.length;	
+	while( temporder.length != size )
+	{
+		for(var i=0; i<Graph.length; i++)
+		{
+			if( Graph[i].output.length==0 )
+			{			
+				temporder.push(Graph[i].tr_id);//Graph[i] has changed
+				for(var j=0; j<Graph.length; j++)  //删除tr_id作为depender
+				{
+					for(var k=0; k<Graph[j].output.length; k++)
+					{
+						if( Graph[j].output[k] == Graph[i].tr_id )
+						{
+							for(var n=k; n<Graph[j].output.length; n++)
+								Graph[j].output[n] = Graph[j].output[n+1];
+							Graph[j].output.pop(); 
+							k--;
+						}
+					}
+
+				}
+				//	去掉所有tr已经排好序的graph[i].
+				for(var m=i; m<Graph.length; m++)
+					Graph[m]=Graph[m+1];
+                Graph.pop();  //remove last element
+				i--;
+			}
+		}
+	}
+	
+
+}
+
+var ucList = [];  
+var content = []; //用一个公用的elementlist content来存放element排序结果
+execute();
+var num=0;
+console.log("__________ucList.length:"+ucList.length);
+for(var i=0; i<ucList.length; i++)
+{
+	var uc = ucList[i];
+	var ele = uc.start.next;
+	var print = [];
+	for(var j=0; j<content.length; j++)
+		print[j] = false;
+
+	console.log("\n\n\n\nUse case: "+ uc.name);
+	printusecase(ele);
+}
+
+function printusecase(ele)
+{
+	num++;
+	if(ele != -2)
+	{
+		if( print[ele]==false )
+		{
+			if( ElementList[ele].type == "activity" || ElementList[ele].type == "decision")
+			{
+				if(ElementList[ele].type == "decision")
+				{
+					if( ElementList[ele].executor =="user" )						
+						console.log( " 【decision "+num+" 】");
+					else
+						//console.log( "                            "+ElementList[ele].description+"\n");
+						console.log( "                            【decision "+num+" 】");
+				}
+					
+				if( ElementList[ele].executor =="user" )
+					console.log( ElementList[ele].description+"\n");
+				else
+					console.log( "                            "+ElementList[ele].description+"\n");
+			}
+			else
+			{
+				if( ElementList[content[ele].before[0]].executor == "user")				
+					console.log( ElementList[ele].description+"\n");
+				else
+					console.log( "                            "+ElementList[ele].description+"\n");
+
+			}
+			print[ele] = true;
+
+			for(var k=0; k<content[ele].nextsize; k++)
+			{	
+				if (content[ele].nextsize>1 && k>0)
+				{
+					if( ElementList[content[ele].next[k]].executor == "user")				
+					console.log( "【decision "+num+"'s other branches】");
+					else
+					console.log( "                            "+"【decision "+num+"'s other branches】");
+				}
+								
+				printusecase(content[ele].next[k]);
+			}
+				
+		}
+	}
+	num--;
+	
+		
+}
+
+function execute()      //所有的tracerule都是放在一起的。所以不一定一个uc的tr放在一起
+{
+	var sizeorder = resultorder.length;
+   
+	for(var i=0; i<sizeorder; i++)                         //i
+	{
+
+		var tr = Traceability[ resultorder[i] ];
+		var ops = tr.operations;
+		var sizeops = ops.length;
+
+		for(var j=0; j<sizeops; j++)                       //j
+		{
+			var op = ops[j];
+			var type = op.type;
+			console.log("type:   "+type);
+			switch (type)
+			{
+				case "c1":
+				    var uc = 
+				    {
+				    	name : ElementList[op.usecase_id].name,
+				    	usecase_id : op.usecase_id,
+				    }
+				    uc.start = 
+				    {
+				    	next : -2
+				    }
+				    uc.end = 
+				    {
+				    	before : [-1],
+				    	beforesize : 1
+				    }
+				
+				    ucList.push(uc);  
+				    //console.log("create uc" + uc.usecase_id);   
+					break;
+				
+
+				case "i2":     //insert op after   pre
+					var uc_index = 0;
+					while( ucList[uc_index].usecase_id != op.usecase_id )     //先确定是哪个uc当中的
+						uc_index++;                
+					
+					var pre = op.pre;
+
+					var post;
+					
+					post = content[pre].next[0];
+
+					singlepre(pre, op, uc_index);
+					multipost(post, op, pre, uc_index);														
+							
+				    break;
+
+				case "i3":     //insert op before
+					var uc_index = 0;
+					while( ucList[uc_index].usecase_id != op.usecase_id )     //先确定是哪个uc当中的
+						uc_index++;                
+					
+					var post = op.post;
+
+					var pre;
+					if (post == -2)
+						pre = ucList[uc_index].end.before[0];
+					else
+						pre = content[post].before[0];						
+                               
+					multipre(post, op, uc_index);	
+							
+					singlepost(post, op, uc_index);	
+						
+				    break;
+
+				case "i4":   //insert op after with
+					var uc_index = 0;
+					while( ucList[uc_index].usecase_id != op.usecase_id )     //先确定是哪个uc当中的
+						uc_index++;                
+					
+					var pre = op.condition_id;
+					var post = content[pre].next[0];	//从condition的方向读next只有一个元素next[0]					
+
+					var head = op;
+					var tail = op;
+
+					singlepre(pre, head, uc_index);
+					multipost(post, tail, pre, uc_index);		
+
+				    break;
+
+				case "i5":  //insert seq before post with
+					var uc_index = 0;
+					while( ucList[uc_index].usecase_id != op.usecase_id )     //先确定是哪个uc当中的
+						uc_index++;                
+					
+					var post = op.post;
+					
+					var pre;
+					
+					for(keys in content)
+					{
+						if(content[keys].next[0]==post)
+						{
+							pre=content[keys].id;
+							break;
+						}
+					}
+					
+					var head = op;
+					var tail = op;
+
+
+					singlepre(pre, head, uc_index);
+					multipost(post, tail, pre, uc_index);	
+				    break;
+
+				case "i6":  //insert dec after  只是：post可能有多条入边
+					var uc_index = 0;
+					while( ucList[uc_index].usecase_id != op.usecase_id )     //先确定是哪个uc当中的
+						uc_index++;   
+
+					var pre = op.pre;
+
+					var post;
+					if( pre ==-1)					
+						post = ucList[uc_index].start.next;
+					else
+						post = content[pre].next[0];   
+				
+					var last;
+
+					content[decision.id].beforesize=0;
+					content[decision.id].nextsize=0;
+					content[decision.id].before=[];
+					content[decision.id].next=[];
+
+					//console.log("dec" + dec.id); 
+
+					singlepre(pre, dec.id, uc_index);    // dec的连接都放在branches的前边
+
+					content[op.maincondition]
+
+					各个condition:
+						content[condition].before=op.decision_id;
+						content[condition].next=[];
+						content[condition].beforesize=1;
+						content[condition].nextsize=0;
+
+						content[dec.id].next[m]=condition
+						content[dec.id].nextsize++;
+
+						content[插入活动.id].beforesize=1;
+						content[插入活动.id].nextsize=0;
+						content[插入活动.id].before[0]=condition;
+
+						content[condition].next[0]=插入活动.id;
+						content[condition].nextsize++;
+
+						if(第一个condition)    //post肯定为空
+						{
+							
+							multipost(post, 插入活动.id, pre, uc_index);
+						}
+						else 其它的condition
+						{
+							var bpost;
+							if(branches[m].post != null)
+								bpost = branches[m].post;
+							else bpost = post;
+
+							postdec(bpost, 插入活动.id, uc_index);
+						}
+					//singlepre(pre, dec.id, uc_index);				
+				    break;
+				
+				case "i7":  //insert dec after with
+					var uc_index = 0;
+					while( ucList[uc_index].usecase_id != op.usecase_id )     //先确定是哪个uc当中的
+						uc_index++;                
+					
+					var pre = op.condition_id;
+					var post = content[pre].next[0];	//从condition的方向读next只有一个元素next[0]					
+
+					var last;
+
+					content[decision.id].beforesize=0;
+					content[decision.id].nextsize=0;
+					content[decision.id].before=[];
+					content[decision.id].next=[];
+
+					
+					//console.log("dec" + dec.id); 
+
+					singlepre(pre, dec.id, uc_index);    // dec的连接都放在branches的前边
+
+					各个condition:
+						content[condition].beforesize=1;
+						content[condition].nextsize=0;
+						content[condition].before=decision.id;
+						content[condition].next=[];
+
+						content[dec.id].next[m]=condition.id;
+						content[dec.id].nextsize++;
+						
+
+
+						content[插入活动.id].beforesize=1;
+						content[插入活动.id].nextsize=0;
+						content[插入活动.id].before[0]=condition;
+						condition[插入活动.id].next=[];
+
+						content[condition].next[0]=插入活动.id;
+						content[condition].nextsize++;
+
+						
+						if(第一个condition)    //post肯定为空
+						{
+							
+							multipost(post, 插入活动.id, pre, uc_index);
+						}
+						else 其它的condition
+						{
+							var bpost;
+							if(branches[m].post != null)
+								bpost = branches[m].post;
+							else bpost = post;
+
+							postdec(bpost, 插入活动.id, uc_index);
+						}
+					
+										
+						
+
+					
+ 
+
+				    break;
+
+				case "i8":  //insert dec before
+					var uc_index = 0;
+					while( ucList[uc_index].usecase_id != op.usecase_id )     //先确定是哪个uc当中的
+						uc_index++;   
+
+					var post = op.post;
+					
+					var pre;
+					if( post ==-2)					
+						pre = ucList[uc_index].end.before[0];
+					else
+						pre = content[post].before[0];     
+					
+
+					var last;
+
+					content[decision.id].beforesize=0;
+					content[decision.id].nextsize=0;
+					content[decision.id].before=[];
+					content[decision.id].next=[];
+
+					multipre(post, decision.id, uc_index);  // 在post被branch改变其pre之前，就把dec连上pre
+
+					各个condition:
+						content[condition].beforesize=1;
+						content[condition].nextsize=0;
+						content[condition].before=decision.id;
+						content[condition].next=[];
+
+						content[dec.id].next[m]=condition.id;
+						content[dec.id].nextsize++;
+						
+
+
+						content[插入活动.id].beforesize=1;
+						content[插入活动.id].nextsize=0;
+						content[插入活动.id].before[0]=condition;
+						condition[插入活动.id].next=[];
+
+						content[condition].next[0]=插入活动.id;
+						content[condition].nextsize++;
+
+						
+						if(第一个condition)    //post肯定为空
+						{
+							singlepost(post, 插入活动.id, uc_index);
+							
+						}
+						else 其它的condition
+						{
+							var bpost;
+							if(branches[m].post != null)
+								bpost = branches[m].post;
+							else bpost = post;
+
+							postdec(bpost, 插入活动.id, uc_index);
+						}					
+						
+				    break;
+
+				case "i9":  //insert dec before with
+					var uc_index = 0;
+					while( ucList[uc_index].usecase_id != op.usecase_id )     //先确定是哪个uc当中的
+						uc_index++;                
+					
+					var post = op.post;
+					
+					var pre;
+						for(keys in content)
+					{
+						if(content[keys].next[0]==0)
+						{
+							pre=content[keys].id;
+							break;
+						}
+					}
+
+					content[decision.id].beforesize=0;
+					content[decision.id].nextsize=0;
+					content[decision.id].before=[];
+					content[decision.id].next=[];
+
+
+					var last;					
+
+				
+
+					singlepre(pre, dec.id, uc_index);  // 在post被branch改变其pre之前，就把dec连上pre
+
+					各个condition:
+						content[condition].beforesize=1;
+						content[condition].nextsize=0;
+						content[condition].before=decision.id;
+						content[condition].next=[];
+
+						content[dec.id].next[m]=condition.id;
+						content[dec.id].nextsize++;
+						
+
+
+						content[插入活动.id].beforesize=1;
+						content[插入活动.id].nextsize=0;
+						content[插入活动.id].before[0]=condition;
+						condition[插入活动.id].next=[];
+
+						content[condition].next[0]=插入活动.id;
+						content[condition].nextsize++;
+
+						
+						if(第一个condition)    //post肯定为空
+						{
+							
+							multipost(post, 插入活动.id, pre, uc_index);
+						}
+						else 其它的condition
+						{
+							var bpost;
+							if(branches[m].post != null)
+								bpost = branches[m].post;
+							else bpost = post;
+
+							postdec(bpost, 插入活动.id, uc_index);
+						}					
+
+				    break;
+
+				default:
+			}
+		}
+	}	
+
+}
+
+//pre post要一进来就马上确定，因为一旦开始操作，原始的pre post就改变了
+
+function singlepre(pre, head, uc_index)            // pre直接给出 
+{
+	if(pre == -1)
+		ucList[uc_index].start.next = head;      //pre.next[0] = head 
+	else
+		content[pre].next[0] = head;            //pre.next[0] = head 	
+	              
+	content[head].before[0] = pre;              // head.before[0] = pre		
+	content[head].beforesize++;
+}
+
+function multipre(post, head, uc_index)            // pre是通过post给出，这样pre有可能是多个  multi使用反方向检索
+{
+	var beforesize;
+	if(post == -2)
+		beforesize = ucList[uc_index].end.beforesize;
+	else 
+		beforesize = content[post].beforesize;
+
+	for(var k=0; k<beforesize;k++)  //对于每一个由post推倒出来的可能的前驱
+	{
+		var pre = content[post].before[k];
+		if(pre == -1)
+			ucList[uc_index].start.next = head;      //pre.next[0] = head 
+		else
+			content[pre].next[0] = head;             //pre.next[0] = head 
+		
+		content[head].before[k] = pre;	
+		content[head].beforesize++;	
+	}
+}
+
+function singlepost(post, tail, uc_index)       // post.before[0] = tail   tail.next[0] = post
+{
+	var beforesize;
+	if(post == -2)
+		beforesize = ucList[uc_index].end.beforesize;
+	else 
+		beforesize = content[post].beforesize;
+
+	for(var k=0; k<beforesize; k++) //可能之前有多个前驱，全部删掉
+	{
+		if(post == -2)
+		{
+			ucList[uc_index].end.before.pop();
+			ucList[uc_index].end.beforesize--;
+		}
+		else
+		{
+			content[post].before.pop();
+			content[post].beforesize--;
+		}
+		
+	}		
+	
+	if(post == -2)
+		ucList[uc_index].end.before[0] = tail;
+	else 
+		content[post].before[0] = tail;
+
+	content[post].beforesize++;
+	content[tail].next[0] = post;
+	content[tail].nextsize++;
+ }
+
+function multipost(post, tail, pre, uc_index)  
+{
+	var beforesize;
+	if(post == -2)
+		beforesize = ucList[uc_index].end.beforesize;
+	else 
+		beforesize = content[post].beforesize;
+
+	var k;
+	for(k=0; k<beforesize; k++)            //找到post的前=pre的那一个分支
+	{
+		if( post == -2 )
+		{
+			if(ucList[uc_index].end.before[k] == pre)
+			break;
+		}
+		else
+		{
+			if(content[post].before[k] == pre)
+			break;
+		}
+		
+	}
+
+	if(post == -2)
+		ucList[uc_index].end.before[k] = tail;
+	else
+		content[post].before[k] = tail;
+
+	content[tail].next[0] = post;
+	content[tail].nextsize++;
+}
+
+
+
+//////////////这个用于作为第二个branch及之后的post处理，第一branch使用得是之前那个post处理,之后的不用区别多或单入，只要增加就可以了
+function postdec(post, tail, uc_index)       // tail 是dec的branch seq的最后一个元素  post.before[0] = tail   tail.next[0] = post
+{	
+	var beforesize;  
+	//console.log("post is" + post);
+	if(post == -2)
+		beforesize = ucList[uc_index].end.beforesize;
+	else 
+		beforesize = content[post].beforesize;
+
+	if(post == -2)
+	{
+		ucList[uc_index].end.before[beforesize] = tail;
+		ucList[uc_index].end.beforesize++;
+
+	}
+	else
+	{
+		content[post].before[beforesize] = tail;
+		content[post].beforesize++;
+
+	} 		
+
+	content[tail].next[0] = post;
+	content[tail].nextsize++;
+ }
+
