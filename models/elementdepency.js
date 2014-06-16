@@ -1,7 +1,7 @@
 var mongodb = require('./db');
 var async = require('async');  
 
-function ElementDepency(username, element,dependee,depender,todepen,todepenNum,type,_id) { //post means refinements list
+function ElementDepency(username, element,dependee,depender,todepen,todepenNum,type,projectID,_id) { //post means refinements list
 	this.user = username;
 	this.element = element;
 	this.dependee=dependee;
@@ -9,6 +9,7 @@ function ElementDepency(username, element,dependee,depender,todepen,todepenNum,t
 	this.todepen=todepen;
 	this.todepenNum=todepenNum;
 	this.type=type;
+	this.projectID=projectID;
 	this._id=_id;
 };
 module.exports = ElementDepency;
@@ -22,7 +23,8 @@ ElementDepency.prototype.save = function save(callback) {
 		depender:this.depender,
 		todepen:this.todepen,
 		todepenNum:this.todepenNum,
-		type:this.type
+		type:this.type,
+		projectID:this.projectID
 	};
 
 	mongodb.open(function(err, db) {
@@ -46,8 +48,8 @@ ElementDepency.prototype.save = function save(callback) {
 };
 
 
-ElementDepency.get = function get(user, callback) {
-	console.log(user+"#");
+ElementDepency.get = function get(user, projectID,callback) {
+	console.log(user+"#"+projectID);
 	mongodb.open(function(err, db) {
 		if (err) {
 
@@ -65,7 +67,7 @@ ElementDepency.get = function get(user, callback) {
 			var query = {};
 			if (user) {
 				
-				query={"user":user};
+				query={"user":user,"projectID":projectID};
 			}
 			collection.ensureIndex('user');
 
@@ -79,9 +81,9 @@ ElementDepency.get = function get(user, callback) {
 				var elementdepencys = [];
 				
 				docs.forEach(function(doc, index) {
-					var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.todepen,doc.todepenNum,doc.type,doc._id);
+					var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.todepen,doc.todepenNum,doc.type,doc.projectID,doc._id);
 					elementdepencys.push(elementdepency);
-
+					console.log("#####"+doc.element);
 				});
 
 				callback(null, elementdepencys);
@@ -233,8 +235,8 @@ ElementDepency.removeTraceRule = function removeTraceRule(user,deleteID,callback
 
 
 
-ElementDepency.getToDepenNum = function getToDepenNum(user, element,callback) {
-	
+ElementDepency.getToDepenNum = function getToDepenNum(user,element,callback) {
+	//console.log("user:"+user+" projectID:"+projectID+" element:"+element);
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -393,7 +395,7 @@ ElementDepency.replaceDependKeyName = function replaceDependKeyName(user,oldname
 };
 
 
-ElementDepency.saveDependee = function saveDependee(user,elementname,dependee,type,callback){
+ElementDepency.saveDependee = function saveDependee(user,elementname,dependee,type,projectID,callback){
 	// 存入 Mongodb 的文檔
 	var elementdepency = {
 				user: user,
@@ -402,7 +404,8 @@ ElementDepency.saveDependee = function saveDependee(user,elementname,dependee,ty
 				depender:{},
 				todepen:{},
 				todepenNum:0,
-				type:type
+				type:type,
+				projectID:projectID
 			};
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -425,7 +428,7 @@ ElementDepency.saveDependee = function saveDependee(user,elementname,dependee,ty
 					var query = {};
 			if (user) {
 				
-				query={"user":user};
+				query={"user":user,"projectID":projectID};
 			}
 			collection.ensureIndex('user');
 
@@ -439,7 +442,7 @@ ElementDepency.saveDependee = function saveDependee(user,elementname,dependee,ty
 				var elementdepencys = [];
 				
 				docs.forEach(function(doc, index) {
-					var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.todepen,doc.todepenNum,doc.type,doc._id);
+					var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.todepen,doc.todepenNum,doc.type,doc.projectID,doc._id);
 					elementdepencys.push(elementdepency);
 				});
 

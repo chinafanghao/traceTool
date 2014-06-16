@@ -406,34 +406,110 @@
 
 
       $(".icon-pencil.GuardListStyle").click(function(event){
-        $current_guard_id=$(this).parent().attr('name');
+        $edit_guard_id=$(this).parent().attr('name');
         $( "#editSelfName" ).dialog( "open" );
         event.stopPropagation(); 
       })
 
+      $( "#editSelfName" ).dialog({
+          autoOpen: false,
+          width: 450,
+          modal: true,
+          buttons: {
+
+            "Confirm": function() {
+              $selfname=$("#selfname").val();
+              $( this ).dialog( "close" );
+          
+        },
+      },
+      close: function() {
+        if($selfname!="")
+        {
+          //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
+          
+
+          $.ajax({
+            type: "POST",
+            url: "/doTZero",
+            data: {
+             selfname:$selfname,
+             edit_guard_id:$edit_guard_id,
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val();
+            
+            },
+            error:function(){
+
+            }
+          });
+        }
+      }
+    });
+
+
       $(".myInsideA").click(function(){
         if($(this).attr('name')!=null){
-          window.location.href="/T/"+$(this).attr('name');
+           var $subroute=$("#hidden_project_id").val()+"_"+$(this).attr('name');
+          console.log("subroute:"+$subroute);
+          window.location.href="/T/"+$subroute;
         }
       })
 
+       var $deleteID;
       $(".icon-remove").click(function(){
-        //alert($(this).parent().get(0).text);
-        alert($(this).parent().attr('name'));
-
-        $.ajax({
-            type: "POST",
-            url: "/del",
-            data: {
-              
-              featurename:$(this).parent().attr('name'), 
-
-              types:1
-           },
-            dataType:'json',
-          });
-        $(this).parent().remove();
+        
+        $deleteID=$(this).parent().attr('name');
+        
+        $( "#confirmDelete" ).dialog( "open" );
+        event.stopPropagation();
       })
+
+       $( "#confirmDelete" ).dialog({
+          autoOpen: false,
+          width: 450,
+          modal: true,
+          buttons: {
+
+            "Confirm": function() {
+              $operation_position="";
+              $(".section_accordion").each(function(){
+                        if($operation_position!="")
+                            $operation_position=$operation_position+"$";
+
+                            $operation_position=$operation_position+$(this).attr("id");
+
+                        })
+             // window.location.href="/DeleteTraceRule/"+"<%=tracerules[0].user%>分"+$deleteID+"分"+$operation_position+"分"+$current_guard_id;
+               $.ajax({
+                type: "POST",
+                url: "/DeleteTraceRuleZero",
+                data: {
+                  deleteID:$deleteID,
+                  projectID:$("#hidden_project_id").val()
+                },
+                dataType:'json',
+                success:function(Object){
+                  console.log("success!!!!");
+                    window.location.href="/T/"+$("#hidden_project_id").val();
+                },
+                error:function(){
+                  console.log("err");
+                }
+              });
+
+            
+             $( this ).dialog( "close" );   
+        },
+      },
+      close: function() {
+        
+      }
+    });
+
     
 
       $(".myInsideA").each(function(index){
@@ -637,7 +713,25 @@ var $operation_position;
       close: function() {
         //alert($addTraceRule_selfname+" "+$addTraceRule_guardname);
         if($addTraceRule_selfname!="" && $addTraceRule_guardname!=""){
-          window.location.href="/addTraceRuleZero/"+$addTraceRule_selfname+"分"+$addTraceRule_guardname;
+          //window.location.href="/addTraceRuleZero/"+$addTraceRule_selfname+"分"+$addTraceRule_guardname;
+          $.ajax({
+                        type: "POST",
+                        url: "/addTraceRuleZero",
+                        data: {
+                          selfname:$addTraceRule_selfname,
+                          guardname:$addTraceRule_guardname,
+                          projectID:$("#hidden_project_id").val()
+                        },
+                        dataType:'json',
+                        success:function(Object){
+                          console.log(Object);
+                          window.location.href="/T/"+$("#hidden_project_id").val();
+                        
+                      },
+                        error:function(){
+                            console.log("error_TT");
+                      }
+                      });
         }
       }
     });
@@ -657,6 +751,7 @@ var $operation_position;
 <input type="hidden" id="hidden_elementdepencys" value="<%= elementdepencys%>">
 
 <div class="c">
+  <input type="hidden" id="hidden_project_id" value="<%=projectID%>">
   <div class="left">
    <div class="myBorderRadiusPlus">
     <div class="titles">
@@ -836,6 +931,30 @@ var $operation_position;
 </div>
 
 <div class="us" id="us">Click to change the state of this feature</div>
+
+ <!-- 确定是否删除 --> 
+<div id="confirmDelete" title="Confirm Delete">
+  
+  <form>
+    <fieldset id="dialog-exchange">
+       <label class="control-label" > Confirm Delete? </label>
+        
+    </fieldset>
+  </form>
+
+</div>
+
+<!-- 编辑guard自定义名字 --> 
+<div id="editSelfName" title="Edit Name">
+  
+  <form>
+    <fieldset id="dialog-exchange">
+       <label class="control-label" for="selfname">Guard Name：</label>
+        <input type="text" class="input-xlarge" id="selfname" name="selfname">
+    </fieldset>
+  </form>
+
+</div>
 
 
 

@@ -1,6 +1,6 @@
 var mongodb = require('./db');
 
-function Guardlist(username, selfname,trace_rule_id,time,_id) { //post means refinements list
+function Guardlist(username, selfname,trace_rule_id,time,projectID,_id) { //post means refinements list
 	this.user = username;
 	this.selfname = selfname;
 	this.trace_rule_id=trace_rule_id;
@@ -9,6 +9,7 @@ function Guardlist(username, selfname,trace_rule_id,time,_id) { //post means ref
 	} else {
 		this.time = new Date();
 	}
+	this.projectID=projectID;
 	this._id=_id;
 };
 module.exports = Guardlist;
@@ -20,6 +21,7 @@ Guardlist.prototype.save = function save(callback) {
 		selfname:this.selfname,
 		trace_rule_id:this.trace_rule_id,
 		time: this.time,
+		projectID: this.projectID,
 	};
 
 	mongodb.open(function(err, db) {
@@ -42,14 +44,15 @@ Guardlist.prototype.save = function save(callback) {
 	});
 };
 
-Guardlist.addNewGuardList = function addNewGuardList(username,selfname,trace_rule_id,callback) {
+Guardlist.addNewGuardList = function addNewGuardList(username,selfname,trace_rule_id,projectID,callback) {
 	// 存入 Mongodb 的文檔
 // 存入 Mongodb 的文檔
 	console.log("addNewGuarList########");
 	var newGuardList = {
 				user: username,
 				selfname:selfname,
-				trace_rule_id:trace_rule_id
+				trace_rule_id:trace_rule_id,
+				projectID:projectID
 			};
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -72,7 +75,7 @@ Guardlist.addNewGuardList = function addNewGuardList(username,selfname,trace_rul
 					var query = {};
 			if (username) {
 				
-				query={"user":username};
+				query={"user":username,"projectID":projectID};
 			}
 			collection.ensureIndex('user');
 
@@ -86,7 +89,7 @@ Guardlist.addNewGuardList = function addNewGuardList(username,selfname,trace_rul
 				var guardlists = [];
 				
 				docs.forEach(function(doc, index) {
-					var guardlist = new Guardlist(doc.user, doc.selfname,doc.trace_rule_id,doc.time,doc._id);
+					var guardlist = new Guardlist(doc.user, doc.selfname,doc.trace_rule_id,doc.time,doc.projectID,doc._id);
 					guardlists.push(guardlist);
 				});
 
@@ -98,7 +101,7 @@ Guardlist.addNewGuardList = function addNewGuardList(username,selfname,trace_rul
 	});
 };
 
-Guardlist.get = function get(user, callback) {
+Guardlist.get = function get(user, projectID,callback) {
 	console.log(user+"#");
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -116,7 +119,7 @@ Guardlist.get = function get(user, callback) {
 			var query = {};
 			if (user) {
 				
-				query={"user":user};
+				query={"user":user,"projectID":projectID};
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
@@ -129,7 +132,7 @@ Guardlist.get = function get(user, callback) {
 				var guardlists = [];
 				
 				docs.forEach(function(doc, index) {
-					var guardlist = new Guardlist(doc.user, doc.selfname,doc.trace_rule_id,doc.time,doc._id);
+					var guardlist = new Guardlist(doc.user, doc.selfname,doc.trace_rule_id,doc.time,doc.projectID,doc._id);
 					guardlists.push(guardlist);
 				});
 

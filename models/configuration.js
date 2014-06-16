@@ -1,6 +1,6 @@
 var mongodb = require('./db');
 
-function Configuration(username,name,time,configuration,usecase,_id) { //post means refinements list
+function Configuration(username,name,time,configuration,usecase,projectID,_id) { //post means refinements list
 	this.user = username;
 	this.name=name;
 	if (time) {
@@ -10,6 +10,7 @@ function Configuration(username,name,time,configuration,usecase,_id) { //post me
 	}
 	this.configuration=configuration;
 	this.usecase=usecase;
+	this.projectID=projectID;
 	this._id=_id;
 };
 module.exports = Configuration;
@@ -21,7 +22,8 @@ Configuration.prototype.save = function save(callback) {
 		name:this.name,
 		time: this.time,
 		configuration:this.configuration,
-		usecase:this.usecase
+		usecase:this.usecase,
+		projectID:this.projectID
 	};
 
 	mongodb.open(function(err, db) {
@@ -43,14 +45,15 @@ Configuration.prototype.save = function save(callback) {
 	});
 };
 
-Configuration.addNewConfiguration = function addNewConfiguration(username,name,callback) {
+Configuration.addNewConfiguration = function addNewConfiguration(username,projectID,name,callback) {
 	// 存入 Mongodb 的文檔
 // 存入 Mongodb 的文檔
 	var newConfiguration = {
 				user: username,
 				name:name,
 				configuration:"",
-				usecase:{}
+				usecase:{},
+				projectID:projectID
 			};
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -76,7 +79,7 @@ Configuration.addNewConfiguration = function addNewConfiguration(username,name,c
 						var query = {};
 						if (username) {
 				
-							query={"user":username};
+							query={"user":username,"projectID":projectID};
 						}
 						collection.ensureIndex('user');
 						collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
@@ -89,7 +92,7 @@ Configuration.addNewConfiguration = function addNewConfiguration(username,name,c
 							var configurations = [];
 							var $newConfigurationID;
 							docs.forEach(function(doc, index) {
-								var configuration = new Configuration(doc.user, doc.name,doc.time,doc.configuration,doc.usecase,doc._id);
+								var configuration = new Configuration(doc.user, doc.name,doc.time,doc.configuration,doc.usecase,doc.projectID,doc._id);
 								configurations.push(configuration);
 								if(doc.name==name){
 									$newConfigurationID=doc._id;
@@ -111,7 +114,7 @@ Configuration.addNewConfiguration = function addNewConfiguration(username,name,c
 
 
 
-Configuration.get = function get(username,id,callback) {
+Configuration.get = function get(username,projectID,id,callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -127,10 +130,10 @@ Configuration.get = function get(username,id,callback) {
 			var query = {};
 			if (id) {
 				
-				query={"user":username,"_id":ObjectID(id)};
+				query={"user":username,"projectID":projectID,"_id":ObjectID(id)};
 			}
 			else{
-				query={"user":username};
+				query={"user":username,"projectID":projectID};
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
@@ -143,7 +146,7 @@ Configuration.get = function get(username,id,callback) {
 							var configurations = [];
 				
 							docs.forEach(function(doc, index) {
-								var configuration = new Configuration(doc.user, doc.name,doc.time,doc.configuration,doc.usecase,doc._id);
+								var configuration = new Configuration(doc.user, doc.name,doc.time,doc.configuration,doc.usecase,doc.projectID,doc._id);
 								configurations.push(configuration);
 							});
 

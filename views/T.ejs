@@ -832,16 +832,21 @@
          $(this).siblings().show();
       })
 
-
+      var $edit_guard_id;
+      var $current_guard_id;
       $(".icon-pencil.GuardListStyle").click(function(event){
-        $current_guard_id=$(this).parent().attr('name');
+        $edit_guard_id=$(this).parent().attr('name');
+        $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
         $( "#editSelfName" ).dialog( "open" );
         event.stopPropagation(); 
       })
 
       $(".myInsideA").click(function(){
         if($(this).attr('name')!=null){
-          window.location.href="/T/"+$(this).attr('name');
+          var $subroute=$("#hidden_project_id").val()+"_"+$(this).attr('name');
+          console.log("subroute:"+$subroute);
+          window.location.href="/T/"+$subroute;
+
         }
       })
       $( "#confirmDelete" ).dialog({
@@ -859,9 +864,29 @@
                             $operation_position=$operation_position+$(this).attr("id");
 
                         })
-              window.location.href="/DeleteTraceRule/"+"<%=tracerules[0].user%>分"+$deleteID+"分"+$operation_position+"分"+$current_guard_id;
-              $( this ).dialog( "close" );
-          
+             // window.location.href="/DeleteTraceRule/"+"<%=tracerules[0].user%>分"+$deleteID+"分"+$operation_position+"分"+$current_guard_id;
+               $.ajax({
+                type: "POST",
+                url: "/DeleteTraceRule",
+                data: {
+                  showID:$(this).attr('name'),
+                  deleteID:$deleteID,
+                  operation_position:$operation_position,
+                  current_guard_id:$current_guard_id,
+                  projectID:$("#hidden_project_id").val()
+                },
+                dataType:'json',
+                success:function(Object){
+                  console.log("success!!!!");
+                    window.location.href="/T/"+$("#hidden_project_id").val();
+                },
+                error:function(){
+                  console.log("err");
+                }
+              });
+
+            
+             $( this ).dialog( "close" );   
         },
       },
       close: function() {
@@ -953,7 +978,25 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteActivity/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         //window.location.href="/DeleteActivity/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         $.ajax({
+            type: "POST",
+            url: "/DeleteActivity",
+            data: {
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
 
       })
 
@@ -971,7 +1014,26 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteDecision/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         //window.location.href="/DeleteDecision/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         $.ajax({
+            type: "POST",
+            url: "/DeleteDecision",
+            data: {
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
+
 
       })
 
@@ -989,7 +1051,25 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteCondition/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         //window.location.href="/DeleteCondition/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         $.ajax({
+            type: "POST",
+            url: "/DeleteCondition",
+            data: {
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
 
       })
 
@@ -1007,7 +1087,27 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteUseCase/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+         //window.location.href="/DeleteUseCase/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position;
+
+         $.ajax({
+            type: "POST",
+            url: "/DeleteUseCase",
+            data: {
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
+
 
       })
 //I2
@@ -1028,7 +1128,28 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertActAfterPre/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         //window.location.href="/DeleteInsertActAfterPre/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+
+          $.ajax({
+            type: "POST",
+            url: "/DeleteInsertActAfterPre",
+            data: {
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             hidden_fields:$hidden_fields,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
+
 
       })
 //I3
@@ -1047,7 +1168,26 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertActBeforePost/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         //window.location.href="/DeleteInsertActBeforePost/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+           $.ajax({
+            type: "POST",
+            url: "/DeleteInsertActBeforePost",
+            data: {
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             hidden_fields:$hidden_fields,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
 
       })
 
@@ -1068,7 +1208,26 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertActAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         //window.location.href="/DeleteInsertActAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         $.ajax({
+            type: "POST",
+            url: "/DeleteInsertActAfterDecCon",
+            data: {
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             hidden_fields:$hidden_fields,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
 
       })
 //I5      
@@ -1087,7 +1246,26 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertActBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         //window.location.href="/DeleteInsertActBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         $.ajax({
+            type: "POST",
+            url: "/DeleteInsertActBeforeActCon",
+            data: {
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             hidden_fields:$hidden_fields,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
 
       })
 //I6
@@ -1106,7 +1284,26 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertDecAfterAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         //window.location.href="/DeleteInsertDecAfterAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         $.ajax({
+            type: "POST",
+            url: "/DeleteInsertDecAfterAct",
+            data: {
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             hidden_fields:$hidden_fields,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
 
       })
 
@@ -1126,7 +1323,26 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertDecAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         //window.location.href="/DeleteInsertDecAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+          $.ajax({
+            type: "POST",
+            url: "/DeleteInsertDecAfterDecCon",
+            data: {
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             hidden_fields:$hidden_fields,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
 
       })
 //I8
@@ -1145,7 +1361,26 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertDecBeforeAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         //window.location.href="/DeleteInsertDecBeforeAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         $.ajax({
+            type: "POST",
+            url: "/DeleteInsertDecBeforeAct",
+            data: {
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             hidden_fields:$hidden_fields,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
 
       })
 //I9
@@ -1164,7 +1399,26 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertDecBeforeActWith/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         //window.location.href="/DeleteInsertDecBeforeActWith/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         $.ajax({
+            type: "POST",
+            url: "/DeleteInsertDecBeforeActWith",
+            data: {
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             hidden_fields:$hidden_fields,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
 
       })
 //I10
@@ -1183,7 +1437,26 @@
 
        })
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
-         window.location.href="/DeleteInsertDecBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         //window.location.href="/DeleteInsertDecBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$current_accordion+"分"+$operation_position+"分"+$hidden_fields;
+         $.ajax({
+            type: "POST",
+            url: "/DeleteInsertDecBeforeActCon",
+            data: {
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             hidden_fields:$hidden_fields,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
 
       })
 
@@ -1310,7 +1583,35 @@
       close: function() {
         if($selfname!="")
         {
-          window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
+          //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
+          $operation_position="";
+              $(".section_accordion").each(function(){
+                        if($operation_position!="")
+                            $operation_position=$operation_position+"$";
+
+                            $operation_position=$operation_position+$(this).attr("id");
+
+                        })
+
+          $.ajax({
+            type: "POST",
+            url: "/doT",
+            data: {
+             selfname:$selfname,
+             operation_position:$operation_position,
+             edit_guard_id:$edit_guard_id,
+             current_guard_id:$current_guard_id
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            
+            },
+            error:function(){
+
+            }
+          });
         }
       }
     });
@@ -1356,39 +1657,39 @@
             break;
         */
           case "I2":
-            $("#InsertActAfterPre").load("/InsertActAfterPreDialog/"+$current_guard_id);
+            $("#InsertActAfterPre").load("/InsertActAfterPreDialog/"+$("#hidden_project_id").val()+"_"+$current_guard_id);
             $("#InsertActAfterPre").dialog("open");
             break;
           case "I3":
-             $("#InsertActBeforePost").load("/InsertActBeforePostDialog/"+$current_guard_id);
+             $("#InsertActBeforePost").load("/InsertActBeforePostDialog/"+$("#hidden_project_id").val()+"_"+$current_guard_id);
              $("#InsertActBeforePost").dialog("open");
             break;
           case "I4":
-            $("#InsertActAfterDecCon").load("/InsertActAfterDecConDialog/"+$current_guard_id)
+            $("#InsertActAfterDecCon").load("/InsertActAfterDecConDialog/"+$("#hidden_project_id").val()+"_"+$current_guard_id);
             $("#InsertActAfterDecCon").dialog("open");
             break;
           case "I5":
-            $("#InsertActBeforeActCon").load("/InsertActBeforeActConDialog/"+$current_guard_id);
+            $("#InsertActBeforeActCon").load("/InsertActBeforeActConDialog/"+$("#hidden_project_id").val()+"_"+$current_guard_id);
             $("#InsertActBeforeActCon").dialog("open");
             break;
           case "I6":
-            $("#InsertDecAfterAct").load("/InsertDecAfterActDialog/"+$current_guard_id);
+            $("#InsertDecAfterAct").load("/InsertDecAfterActDialog/"+$("#hidden_project_id").val()+"_"+$current_guard_id);
             $("#InsertDecAfterAct").dialog("open");
             break;
           case "I7":
-            $("#InsertDecAfterDecCon").load("/InsertDecAfterDecConDialog/"+$current_guard_id);
+            $("#InsertDecAfterDecCon").load("/InsertDecAfterDecConDialog/"+$("#hidden_project_id").val()+"_"+$current_guard_id);
             $("#InsertDecAfterDecCon").dialog("open");
             break;
           case "I8":
-            $("#InsertDecBeforeAct").load("/InsertDecBeforeActDialog/"+$current_guard_id);
+            $("#InsertDecBeforeAct").load("/InsertDecBeforeActDialog/"+$("#hidden_project_id").val()+"_"+$current_guard_id);
             $("#InsertDecBeforeAct").dialog("open");
             break;
           case "I9":
-            $("#InsertDecBeforeActWith").load("/InsertDecBeforeActWithDialog/"+$current_guard_id);
+            $("#InsertDecBeforeActWith").load("/InsertDecBeforeActWithDialog/"+$("#hidden_project_id").val()+"_"+$current_guard_id);
             $("#InsertDecBeforeActWith").dialog("open");
             break;
           case "I10":
-            $("#InsertDecBeforeActCon").load("/InsertDecBeforeActConDialog/"+$current_guard_id);
+            $("#InsertDecBeforeActCon").load("/InsertDecBeforeActConDialog/"+$("#hidden_project_id").val()+"_"+$current_guard_id);
             $("#InsertDecBeforeActCon").dialog("open");
             break;
           default:
@@ -1445,7 +1746,29 @@
       close: function() {
        if($("#activityname").val()!=""&&$("#activitydescription").val()!=""){
         
-        window.location.href="/createActivity/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$activityname+"分"+$activitydescription+"分"+$activityexecutor+"分"+$current_accordion+"分"+$operation_position+"分"+$current_guard_id;
+        //window.location.href="/createActivity/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$activityname+"分"+$activitydescription+"分"+$activityexecutor+"分"+$current_accordion+"分"+$operation_position+"分"+$current_guard_id;
+        $.ajax({
+            type: "POST",
+            url: "/createActivity",
+            data: {
+             activityname:$activityname,
+             activitydescription:$activitydescription,
+             activityexecutor:$activityexecutor,
+             current_accordion:$current_accordion,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             projectID:$("#hidden_project_id").val()
+            },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
+
        }
       }
     });
@@ -1494,7 +1817,26 @@
         //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
         if($("#usecasename").val()!=""){
 
-        window.location.href="/createUseCase/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$usecasename+"分"+$usecasedescription+"分"+$operation_position+"分"+$current_guard_id;
+        //window.location.href="/createUseCase/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$usecasename+"分"+$usecasedescription+"分"+$operation_position+"分"+$current_guard_id;
+          $.ajax({
+            type: "POST",
+            url: "/createUseCase",
+            data: {
+             usecasename:$usecasename,
+             usecasedescription:$usecasedescription,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
         }
       }
     });
@@ -1541,7 +1883,27 @@
       close: function() {
         //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
         if($("#decisionname").val()!=""&&$("#decisiondescription").val()!=""){
-        window.location.href="/createDecision/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$decisionname+"分"+$decisiondescription+"分"+$decisionexecutor+"分"+$operation_position+"分"+$current_guard_id;
+        //window.location.href="/createDecision/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$decisionname+"分"+$decisiondescription+"分"+$decisionexecutor+"分"+$operation_position+"分"+$current_guard_id;
+          $.ajax({
+            type: "POST",
+            url: "/createDecision",
+            data: {
+             decisionname:$decisionname,
+             decisiondescription:$decisiondescription,
+             decisionexecutor:$decisionexecutor,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
         }
       }
     });
@@ -1585,7 +1947,26 @@
       close: function() {
         //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
          if($("#conditionname").val()!=""&&$("#conditiondescription").val()!=""){
-         window.location.href="/createCondition/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$conditionname+"分"+$conditiondescription+"分"+$operation_position+"分"+$current_guard_id;
+         //window.location.href="/createCondition/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$conditionname+"分"+$conditiondescription+"分"+$operation_position+"分"+$current_guard_id;
+          $.ajax({
+            type: "POST",
+            url: "/createCondition",
+            data: {
+             conditionname:$conditionname,
+             conditiondescription:$conditiondescription,
+             operation_position:$operation_position,
+             current_guard_id:$current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
        }
       }
     });
@@ -1701,7 +2082,28 @@
           $operation_position="Insert "+TargetActivity[1]+" after "+PreActivity[1]+" in "+Usecase[1];
           $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
           if($marks){
-           window.location.href="/InsertActAfterPre/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartAct+"分"+$PreAct+"分"+$UseCase+"分"+$operation_position+"分"+$current_guard_id;
+           //window.location.href="/InsertActAfterPre/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartAct+"分"+$PreAct+"分"+$UseCase+"分"+$operation_position+"分"+$current_guard_id;
+           $.ajax({
+            type: "POST",
+            url: "/InsertActAfterPre",
+            data: {
+             TarAct:$TartAct,
+             PreAct:$PreAct,
+             UseCase:$UseCase,
+             operation_position:$operation_position,
+             current_guard_id: $current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
+
          }
       
       }
@@ -1758,7 +2160,27 @@
          $operation_position="Insert "+TargetActivity[1]+" before "+PostActivity[1]+" in "+Usecase[1];
           $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
           if($marks)
-           window.location.href="/InsertActBeforePost/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartAct+"分"+$PostAct+"分"+$UseCase+"分"+$operation_position+"分"+$current_guard_id;
+           //window.location.href="/InsertActBeforePost/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartAct+"分"+$PostAct+"分"+$UseCase+"分"+$operation_position+"分"+$current_guard_id;
+          $.ajax({
+            type: "POST",
+            url: "/InsertActBeforePost",
+            data: {
+             TarAct:$TartAct,
+             PostAct:$PostAct,
+             UseCase:$UseCase,
+             operation_position:$operation_position,
+             current_guard_id: $current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
       
       }
     });
@@ -1817,7 +2239,29 @@
 
           $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
          if($marks){
-           window.location.href="/InsertActAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartAct+"分"+$Dec+"分"+$Con+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+           //window.location.href="/InsertActAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartAct+"分"+$Dec+"分"+$Con+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+           $.ajax({
+            type: "POST",
+            url: "/InsertActAfterDecCon",
+            data: {
+             TarAct:$TartAct,
+             Dec:$Dec,
+             Con:$Con,
+             UC:$UC,
+             operation_position:$operation_position,
+             current_guard_id: $current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
+
          }
       
       }
@@ -1875,7 +2319,28 @@
         $operation_position="Insert "+TargetActivity[1]+" before "+PostActivity[1]+" , "+Conditon[1]+" in "+UseCase[1];
           $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
          if($marks){
-           window.location.href="/InsertActBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartAct+"分"+$PostAct+"分"+$Con+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+           //window.location.href="/InsertActBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartAct+"分"+$PostAct+"分"+$Con+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+           $.ajax({
+            type: "POST",
+            url: "/InsertActBeforeActCon",
+            data: {
+             TarAct:$TartAct,
+             PostAct:$PostAct,
+             Con:$Con,
+             UC:$UC,
+             operation_position:$operation_position,
+             current_guard_id: $current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
          }
       
       }
@@ -1957,7 +2422,31 @@
           }
           $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
          if($marks){
-           window.location.href="/InsertDecAfterAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$PreAct+"分"+$MainBranchCon+"分"+$SupBranchCon+"分"+$InserAct+"分"+$TargetAct+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+          // window.location.href="/InsertDecAfterAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$PreAct+"分"+$MainBranchCon+"分"+$SupBranchCon+"分"+$InserAct+"分"+$TargetAct+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+          $.ajax({
+            type: "POST",
+            url: "/InsertDecAfterAct",
+            data: {
+             TartDec:$TartDec,
+             PreAct:$PreAct,
+             MainBranchCon:$MainBranchCon,
+             SupBranchCon:$SupBranchCon,
+             InserAct:$InserAct,
+             TargetAct:$TargetAct,
+             UC:$UC,
+             operation_position:$operation_position,
+             current_guard_id: $current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
          }
       
       }
@@ -2027,7 +2516,33 @@
          
 
           if($marks){ 
-           window.location.href="/InsertDecAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$InsertDec+"分"+$InsertCon+"分"+$MainBranchCon+"分"+$SupBranchCon+"分"+$InserAct+"分"+$TargetDec+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+           //window.location.href="/InsertDecAfterDecCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$InsertDec+"分"+$InsertCon+"分"+$MainBranchCon+"分"+$SupBranchCon+"分"+$InserAct+"分"+$TargetDec+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+           $.ajax({
+            type: "POST",
+            url: "/InsertDecAfterDecCon",
+            data: {
+             TartDec:$TartDec,
+             InsertDec:$InsertDec,
+             InsertCon:$InsertCon,
+             MainBranchCon:$MainBranchCon,
+             SupBranchCon:$SupBranchCon,
+             InserAct:$InserAct,
+             TargetDec:$TargetDec,
+             UC:$UC,
+             operation_position:$operation_position,
+             current_guard_id: $current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
+
            }
       
       }
@@ -2095,7 +2610,32 @@
        }
           $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
          if($marks){
-           window.location.href="/InsertDecBeforeAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$PostAct+"分"+$Con1+"分"+$Tar1+"分"+$Con2+"分"+$Tar2+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+          // window.location.href="/InsertDecBeforeAct/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$PostAct+"分"+$Con1+"分"+$Tar1+"分"+$Con2+"分"+$Tar2+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+           $.ajax({
+            type: "POST",
+            url: "/InsertDecBeforeAct",
+            data: {
+             TartDec:$TartDec,
+             PostAct:$PostAct,
+             Con1:$Con1,
+             Tar1:$Tar1,
+             Con2:$Con2,
+             Tar2:$Tar2,
+             UC:$UC,
+             operation_position:$operation_position,
+             current_guard_id: $current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
+
          }
       
       }
@@ -2161,7 +2701,31 @@
           $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
          
          if($marks){ 
-           window.location.href="/InsertDecBeforeActWith/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$PostAct+"分"+$MainBranchCon+"分"+$SupBranchCon+"分"+$InserAct+"分"+$TargetDec+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+           //window.location.href="/InsertDecBeforeActWith/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$PostAct+"分"+$MainBranchCon+"分"+$SupBranchCon+"分"+$InserAct+"分"+$TargetDec+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+            $.ajax({
+            type: "POST",
+            url: "/InsertDecBeforeActWith",
+            data: {
+             TartDec:$TartDec,
+             PostAct:$PostAct,
+             MainBranchCon:$MainBranchCon,
+             SupBranchCon:$SupBranchCon,
+             InserAct:$InserAct,
+             TargetDec:$TargetDec,
+             UC:$UC,
+             operation_position:$operation_position,
+             current_guard_id: $current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
            }
       
       }
@@ -2229,7 +2793,32 @@
           }
           $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
          if($marks){
-           window.location.href="/InsertDecBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$PostAct+"分"+$InsertCon+"分"+$MainBranchCon+"分"+$SupBranchCon+"分"+$InserAct+"分"+$TargetDec+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+           //window.location.href="/InsertDecBeforeActCon/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$TartDec+"分"+$PostAct+"分"+$InsertCon+"分"+$MainBranchCon+"分"+$SupBranchCon+"分"+$InserAct+"分"+$TargetDec+"分"+$UC+"分"+$operation_position+"分"+$current_guard_id;
+           $.ajax({
+            type: "POST",
+            url: "/InsertDecBeforeActCon",
+            data: {
+             TartDec:$TartDec,
+             PostAct:$PostAct,
+             InsertCon:$InsertCon,
+             MainBranchCon:$MainBranchCon,
+             SupBranchCon:$SupBranchCon,
+             InserAct:$InserAct,
+             TargetDec:$TargetDec,
+             UC:$UC,
+             operation_position:$operation_position,
+             current_guard_id: $current_guard_id,
+             projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+             console.log(Object);
+             window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+            },
+            error:function(){
+
+            }
+          });
          }
       
       }
@@ -2266,9 +2855,52 @@ var $isAddOrEdit;
 
                         })
                     if($isAddOrEdit){
-                      window.location.href="/addTraceRule/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$addTraceRule_selfname+"分"+$addTraceRule_guardname+"分"+$operation_position+"分"+$current_guard_id;
+                     // window.location.href="/addTraceRule/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$addTraceRule_selfname+"分"+$addTraceRule_guardname+"分"+$operation_position+"分"+$current_guard_id;
+                      $.ajax({
+                        type: "POST",
+                        url: "/addTraceRule",
+                        data: {
+                          user:"<%=tracerules[0].user%>",
+                          id:"<%=tracerules[0]._id%>",
+                          selfname:$addTraceRule_selfname,
+                          guardname:$addTraceRule_guardname,
+                          operation_position:$operation_position,
+                          current_guard_id:$current_guard_id,
+                          projectID:$("#hidden_project_id").val()
+                        },
+                        dataType:'json',
+                        success:function(Object){
+                          console.log(Object);
+                          window.location.href="/T/"+$("#hidden_project_id").val();
+                      },
+                        error:function(){
+                          console.log("error_T");
+                      }
+                      });
                     }else{
-                      window.location.href="/editTraceRule/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$addTraceRule_selfname+"分"+$addTraceRule_guardname+"分"+$operation_position+"分"+$current_guard_id;
+                     // window.location.href="/editTraceRule/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$addTraceRule_selfname+"分"+$addTraceRule_guardname+"分"+$operation_position+"分"+$current_guard_id;
+                      $.ajax({
+                        type: "POST",
+                        url: "/editTraceRule",
+                        data: {
+                          user:"<%=tracerules[0].user%>",
+                          id:"<%=tracerules[0]._id%>",
+                          selfname:$addTraceRule_selfname,
+                          guardname:$addTraceRule_guardname,
+                          operation_position:$operation_position,
+                          current_guard_id:$current_guard_id,
+                          projectID:$("#hidden_project_id").val()
+                        },
+                        dataType:'json',
+                        success:function(Object){
+                          console.log(Object);
+                          window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
+                      },
+                        error:function(){
+                          console.log("error_T");
+                      }
+                      });
+
                     }
 
                     $( this ).dialog( "close" );

@@ -4,6 +4,9 @@ if (document.getElementById) {
   $.ajax({
     type:"POST",
     url: "/loadFeatureModel",
+    data: {
+          projectID:$("#hidden_project_id").val()
+                },
     success: function(data) {
       data.features.forEach(function(feature, index) {
         var node = new FMTreeItem(feature.text, feature.description, feature.optionality, feature.VP, feature._id);       

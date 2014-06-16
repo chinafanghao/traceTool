@@ -1,7 +1,7 @@
 var mongodb = require('./db');
 var async = require('async');  
 
-function Tracerule(username,name,selfname,time,operations,elements,positions,_id) { //post means refinements list
+function Tracerule(username,name,selfname,time,operations,elements,positions,projectID,_id) { //post means refinements list
 	this.user = username;
 	this.name=name;
 	this.selfname=selfname;
@@ -13,6 +13,7 @@ function Tracerule(username,name,selfname,time,operations,elements,positions,_id
 	this.operations=operations;
 	this.elements=elements;
 	this.positions=positions;
+	this.projectID=projectID;
 	this._id=_id;
 };
 module.exports = Tracerule;
@@ -26,7 +27,8 @@ Tracerule.prototype.save = function save(callback) {
 		time: this.time,
 		operations:this.operations,
 		elements:this.elements,
-		positions:this.positions
+		positions:this.positions,
+		projectID:this.projectID
 	};
 
 	mongodb.open(function(err, db) {
@@ -48,7 +50,7 @@ Tracerule.prototype.save = function save(callback) {
 	});
 };
 
-Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname,callback) {
+Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname,projectID,callback) {
 	// 存入 Mongodb 的文檔
 // 存入 Mongodb 的文檔
 	var newTraceRule = {
@@ -57,7 +59,8 @@ Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname
 				selfname:selfname,
 				positions:"",
 				operations:{},
-				elements:{}
+				elements:{},
+				projectID:projectID
 			};
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -79,7 +82,7 @@ Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname
 						var query = {};
 						if (username) {
 				
-							query={"user":username};
+							query={"user":username,"projectID":projectID};
 						}
 							collection.ensureIndex('user');
 							collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
@@ -92,7 +95,7 @@ Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname
 								var tracerules = [];
 				
 								docs.forEach(function(doc, index) {
-									var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+									var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 									tracerules.push(tracerule);
 								});
 
@@ -107,7 +110,7 @@ Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname
 
 
 
-Tracerule.get = function get(username, guard_id,callback) {
+Tracerule.get = function get(username, projectID,guard_id,callback) {
 	console.log("guard_id:"+guard_id);
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -124,10 +127,10 @@ Tracerule.get = function get(username, guard_id,callback) {
 			var query = {};
 			if (guard_id) {
 				
-				query={"user":username,"_id":ObjectID(guard_id)};
+				query={"user":username,"projectID":projectID,"_id":ObjectID(guard_id)};
 			}
 			else{
-				query={"user":username};
+				query={"user":username,"projectID":projectID};
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
@@ -140,7 +143,7 @@ Tracerule.get = function get(username, guard_id,callback) {
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -150,7 +153,7 @@ Tracerule.get = function get(username, guard_id,callback) {
 	});
 };
 
-Tracerule.getByName = function getByName(usernames, guardnames ,callback) {
+Tracerule.getByName = function getByName(usernames, projectID,guardnames ,callback) {
 	console.log(usernames+"###"+guardnames+"#####");
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -166,7 +169,7 @@ Tracerule.getByName = function getByName(usernames, guardnames ,callback) {
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
 
-				query={"user":usernames,"name":guardnames};
+				query={"user":usernames,"name":guardnames,"projectID":projectID};
 		
 				collection.findOne(query, function(err, doc) {
 				mongodb.close();
@@ -183,7 +186,7 @@ Tracerule.getByName = function getByName(usernames, guardnames ,callback) {
 	});
 };
 
-Tracerule.returnIDByName = function returnIDByName(usernames, guardnames ,callback) {
+Tracerule.returnIDByName = function returnIDByName(usernames, projectID,guardnames ,callback) {
 	console.log(usernames+"###"+guardnames+"#####");
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -199,7 +202,7 @@ Tracerule.returnIDByName = function returnIDByName(usernames, guardnames ,callba
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
 
-				query={"user":usernames,"name":guardnames};
+				query={"user":usernames,"projectID":projectID,"name":guardnames};
 		
 				collection.findOne(query, function(err, doc) {
 				mongodb.close();
@@ -249,7 +252,7 @@ Tracerule.returnElements = function returnElements(username, deleteID ,callback)
 };
 
 
-Tracerule.getBySelfName = function getBySelfName(username, selfname ,callback) {
+Tracerule.getBySelfName = function getBySelfName(username, projectID,selfname ,callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -264,7 +267,7 @@ Tracerule.getBySelfName = function getBySelfName(username, selfname ,callback) {
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
 
-				query={"user":username,"selfname":selfname};
+				query={"user":username,"selfname":selfname,"projectID":projectID};
 		
 
 			collection.findOne(query, function(err, doc) {
@@ -328,7 +331,7 @@ Tracerule.del = function del(username, operation_name,callback) {
 };
 
 
-Tracerule.updateSelfname = function updateSelfname(selfname, user,name,id,callback) {
+Tracerule.updateSelfname = function updateSelfname(selfname, user,id,callback) {
 	// 存入 Mongodb 的文檔
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -345,7 +348,7 @@ Tracerule.updateSelfname = function updateSelfname(selfname, user,name,id,callba
 			var query1 = {};
 			var query2 = {};
 				
-			query1={"user":user,"_id":ObjectID(id),"name":name};
+			query1={"user":user,"_id":ObjectID(id)};
 			query2={$set:{"selfname":selfname}};
 			
 			collection.update(query1,query2);
@@ -369,7 +372,7 @@ Tracerule.updateSelfname = function updateSelfname(selfname, user,name,id,callba
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -378,6 +381,58 @@ Tracerule.updateSelfname = function updateSelfname(selfname, user,name,id,callba
 		});
 	});
 };
+
+Tracerule.SavePositions = function SavePositions(user,id,positions,callback) {
+	// 存入 Mongodb 的文檔
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('tracerule', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+				
+			query1={"_id":ObjectID(id)};
+			query2={$set:{"positions":positions}};
+			
+			collection.update(query1,query2);
+
+			var query = {};
+			if (id) {
+				
+				query={"user":user,"_id":ObjectID(id)};
+			}
+			else{
+				query={"user":user};
+			}
+
+			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
+				mongodb.close();
+
+				if (err) {
+					callback(err, null);
+				}
+
+				var tracerules = [];
+				
+				docs.forEach(function(doc, index) {
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
+					tracerules.push(tracerule);
+				});
+
+				callback(null, tracerules);
+			});
+		});
+	});
+};
+
 
 Tracerule.removeTraceRule = function removeTraceRule(user,deleteID,callback){
 	mongodb.open(function(err, db) {
