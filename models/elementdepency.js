@@ -249,7 +249,7 @@ ElementDepency.getToDepenNum = function getToDepenNum(user,element,callback) {
 			}
 
 			//查找user属性为username的文档，如果username为null则匹配全部
-
+			
 			var query = {};
 			if (user) {
 				

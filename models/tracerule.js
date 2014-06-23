@@ -320,7 +320,7 @@ Tracerule.del = function del(username, operation_name,callback) {
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -468,7 +468,7 @@ Tracerule.removeTraceRule = function removeTraceRule(user,deleteID,callback){
 										var tracerules = [];
 				
 										docs.forEach(function(doc, index) {
-											var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+											var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 											tracerules.push(tracerule);
 										});
 
@@ -587,7 +587,7 @@ Tracerule.createActivity = function createActivity(user,id,activityname,activity
 											var tracerules = [];
 				
 											docs.forEach(function(doc, index) {
-												var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+												var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 												tracerules.push(tracerule);
 											});
 
@@ -705,7 +705,7 @@ Tracerule.createUseCase = function createUseCase(user,id,usecasename,usecasedesc
 												var tracerules = [];
 				
 												docs.forEach(function(doc, index) {
-													var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+													var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 													tracerules.push(tracerule);
 												});
 
@@ -809,7 +809,7 @@ Tracerule.createDecision = function createActivity(user,id,decisionname,decision
 											var tracerules = [];
 				
 											docs.forEach(function(doc, index) {
-												var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+												var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 												tracerules.push(tracerule);
 											});
 
@@ -925,7 +925,7 @@ Tracerule.createCondition = function createCondition(user,id,conditionname,condi
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -1104,7 +1104,7 @@ Tracerule.saveInsertActAfterPre = function saveInsertActAfterPre(user,id,TarAct,
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -1192,7 +1192,7 @@ Tracerule.saveInsertActBeforePost = function saveInsertActBeforePost(user,id,Tar
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -1283,7 +1283,7 @@ Tracerule.saveInsertActAfterDecCon = function saveInsertActAfterDecCon(user,id,T
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -1374,7 +1374,7 @@ Tracerule.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(user,id
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -1481,7 +1481,7 @@ Tracerule.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,id,T
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -1585,7 +1585,7 @@ Tracerule.saveInsertDecAfterDecCon = function saveInsertDecAfterDecCon(user,id,T
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -1687,7 +1687,7 @@ Tracerule.saveInsertDecBeforeAct = function saveInsertDecBeforeAct(user,id,TarDe
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -1794,7 +1794,7 @@ Tracerule.saveInsertDecBeforeActWith = function saveInsertDecBeforeActWith(user,
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -1898,7 +1898,7 @@ Tracerule.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(user,id
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -1978,7 +1978,7 @@ Tracerule.deleteActivity = function deleteActivity(user,id,operation_name,positi
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -2058,7 +2058,7 @@ Tracerule.deleteDecision = function deleteDecision(user,id,operation_name,positi
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -2138,7 +2138,7 @@ Tracerule.deleteCondition = function deleteCondition(user,id,operation_name,posi
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -2150,6 +2150,7 @@ Tracerule.deleteCondition = function deleteCondition(user,id,operation_name,posi
 
 Tracerule.deleteUseCase = function deleteUseCase(user,id,operation_name,positions,callback){
 	// 存入 Mongodb 的文檔
+	console.log("deleteUseCase: "+user+" "+id+" "+operation_name);
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -2174,56 +2175,65 @@ Tracerule.deleteUseCase = function deleteUseCase(user,id,operation_name,position
 			var elements={};
 			     elements[elementName]=name[length];
 			collection.update(query1,{"$unset":elements},function(err){
-					if(err) console.warn(err.message);
-					else console.log("delete element success");
-				});
+					if(err) 
+					{
+						console.warn(err.message);
 
-			var operationName="operations."+operation_name;
-			var operations={};
-					operations[operationName] = operation_name;
-			collection.update(query1,{"$unset":operations},function(err){
-					if(err) console.warn(err.message);
-					else console.log("delete decision success");
-				});
+					}
+					else 
+					{
+						console.log("delete element success");
+						var operationName="operations."+operation_name;
+						var operations={};
+						operations[operationName] = operation_name;
+					
+						collection.update(query1,{"$unset":operations},function(err){
+							if(err) console.warn(err.message);
+							else 
+							{
+								console.log("delete decision success");
 
+								query2={$set:{"positions":positions}};
+							
+								collection.update(query1,query2,{safe:true},function(err){
+									if(err) console.warn(err.message);
+									else {
+										console.log("delete Decision success");
 
-			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("delete Decision success");
-				});
-			collection.find({"user":user,"_id":ObjectID(id),"operations":operation_name}).sort({_id: 1}).toArray(function(err, docs) {
-				console.log("OK");
-				docs.forEach(function(doc, index) {
-					console.log(doc.name);
-				});
-			});
-
-			var query = {};
-			if (id) {
+										var query = {};
+										if (id) {
 				
-				query={"user":user,"_id":ObjectID(id)};
-			}
-			else{
-				query={"user":user};
-			}
+											query={"user":user,"_id":ObjectID(id)};
+										}
+										else{
+											query={"user":user};
+										}
 
-			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+										collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
+											mongodb.close();
 
-				if (err) {
-					callback(err, null);
-				}
+											if (err) {
+												callback(err, null);
+											}
 
-				var tracerules = [];
+											var tracerules = [];
 				
-				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
-					tracerules.push(tracerule);
+											docs.forEach(function(doc, index) {
+												var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
+													tracerules.push(tracerule);
+											});
+
+											callback(null, tracerules);
+										});
+									}
+								});
+			
+							}
+						});
+					}
 				});
 
-				callback(null, tracerules);
-			});
+			
 		});
 	});
 }
@@ -2287,7 +2297,7 @@ Tracerule.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,id,ope
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -2356,7 +2366,7 @@ Tracerule.deleteInsertActBeforePost = function deleteInsertActBeforePost(user,id
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -2425,7 +2435,7 @@ Tracerule.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(user,
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -2494,7 +2504,7 @@ Tracerule.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCon(use
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -2564,7 +2574,7 @@ Tracerule.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,id,ope
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -2633,7 +2643,7 @@ Tracerule.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(user,
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -2702,7 +2712,7 @@ Tracerule.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user,id,o
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -2772,7 +2782,7 @@ Tracerule.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActWith(u
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -2842,7 +2852,7 @@ Tracerule.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCon(use
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -2852,7 +2862,7 @@ Tracerule.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCon(use
 	});
 }
 
-Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,descriptionMark,oldusecasedescription,usecasedescription,positions,hidden_field,callback)
+Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,descriptionMark,oldusecasedescription,usecasedescription,positions,hidden_field,projectID,callback)
 {
 	var Oldname=hidden_field+".element."+oldname;
 	var Newname=hidden_field+".element."+newname;
@@ -2878,7 +2888,7 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 			var ObjectID = require("mongodb").ObjectID;
 			if (user) {
 				
-				query={"user":user};
+				query={"user":user,"projectID":projectID};
 			}
 			collection.find(query).toArray(function(err, docs) {
 
@@ -2890,7 +2900,7 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 			
 				
 				  docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 				    var ObjectID = require("mongodb").ObjectID;
 				  
 					if(doc._id==id)
@@ -3015,7 +3025,7 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -3029,19 +3039,20 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 	});
 }
 
-Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,descriptionMark,oldactivitydescription,activitydescription,executorMark,oldactivityexecutor,activityexecutor,positions,hidden_field,callback)
+Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,descriptionMark,oldactivitydescription,activitydescription,executorMark,oldactivityexecutor,activityexecutor,positions,hidden_field,projectID,callback)
 {
 	var Oldname=hidden_field+".element."+oldname;
 	var Newname=hidden_field+".element."+newname;
 	var oldnames=oldname;
 	var newnames=newname;
 	var refer_num;
+	console.log("hallo");
 	mongodb.open(function(err, db) {
 		if (err) {
 			
 			return callback(err);
 		}
-	
+	    console.log("edit1");
 		db.collection('tracerule', function(err, collection) {
 			if (err) {
 				
@@ -3050,76 +3061,79 @@ Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,
 			}
 
 			//查找user属性为username的文档，如果username为null则匹配全部
-
+			console.log("edit2");
 			var query = {};
 			var ObjectID = require("mongodb").ObjectID;
-			if (user) {
-				
-				query={"user":user};
-			}
-			collection.find(query).toArray(function(err, docs) {
+			console.log(projectID);
+			query={"user":user};
 
-				if (err) {
+			collection.find(query).toArray(function(err, docs) {
+				 console.log("edit3");
+				  if (err) {
 					
 					callback(err, null);
-				}
+				  }
 
-			
-				
 				  docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 				    var ObjectID = require("mongodb").ObjectID;
-				  
+				    
 					if(doc._id==id)
-				{
+					{
+						console.log("edit4");
 						query2={$set:{"positions":positions}};
-							collection.update({"user":user,"_id":ObjectID(id)},query2,{safe:true},function(err){
+						console.log("positions: "+positions);
+						collection.update({"user":user,"_id":ObjectID(id)},query2,{safe:true},function(err){
+							console.log("edit the elements");
 							if(err) console.warn(err.message);
-							else console.log("yes");
+							else 
+							{
+								console.log("yes!!!");
+
+								for(key in doc.elements)
+								{
+									console.log("this! name: "+doc.elements[key].name+" "+"oldnames: "+oldnames);
+									if(doc.elements[key].name==oldnames)
+									{
+							
+										var elementName="elements."+doc.elements[key].name;
+										var element={};
+			     						element[elementName]=doc.elements[key].name;
+			     						var ObjectID = require("mongodb").ObjectID;
+			     						console.log("element edit: "+newnames+" "+oldnames);
+										collection.update({"user":doc.user,"_id":doc._id},{"$unset":element},function(err){
+							
+										});
+
+											elementName="elements."+newnames+".name";
+											elementDescription="elements."+newnames+".description";
+											elementExecutor="elements."+newnames+".executor";
+											elementType="elements."+newnames+".type";
+											elementTime="elements."+newnames+".time";
+											element={};
+			     							element[elementName]=newnames;
+			     							element[elementDescription]=activitydescription;
+			     							element[elementExecutor]=activityexecutor;
+			     							element[elementType]="activity";
+			     							element[elementTime]=new Date();
+											collection.update({"user":doc.user,"_id":doc._id},{"$set":element},function(err){
+							
+											});
+					  				}
+								}
+							}
 						});
 
-					for(key in doc.elements)
-					{
-						
-						if(doc.elements[key].name==oldnames)
-						{
-							
-							
-							
-							var elementName="elements."+doc.elements[key].name;
-							var element={};
-			     			element[elementName]=doc.elements[key].name;
-			     			var ObjectID = require("mongodb").ObjectID;
-			     			
-							collection.update({"user":doc.user,"_id":doc._id},{"$unset":element},function(err){
-							
-								elementName="elements."+newnames+".name";
-								elementDescription="elements."+newnames+".description";
-								elementExecutor="elements."+newnames+".executor";
-								elementType="elements."+newnames+".type";
-								elementTime="elements."+newnames+".time";
-								element={};
-			     				element[elementName]=newnames;
-			     				element[elementDescription]=activitydescription;
-			     				element[elementExecutor]=activityexecutor;
-			     				element[elementType]="activity";
-			     				element[elementTime]=new Date();
-								collection.update({"user":doc.user,"_id":doc._id},{"$set":element},function(err){
-							
-								});
-						});
-					  }
-					}
-				}else{
+					}else{
 					//bug 4
 
-					var newpositions=doc.positions.replace(new RegExp(oldname,"gm"),newname);
+						var newpositions=doc.positions.replace(new RegExp(oldname,"gm"),newname);
 
 						collection.update({"user":user,"_id":doc._id},{"$set":{"positions":newpositions}},{safe:true},function(err){
 							if(err) console.warn(err.message);
 							else console.log("yes");
 						});
-				}
+					}
 				
 					for(key in doc.operations)
 					{
@@ -3161,17 +3175,18 @@ Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,
 								
 								var ObjectID = require("mongodb").ObjectID;
 								collection.update({"user":doc.user,"_id":doc._id},{"$set":newOpe},function(err){
+								
+								});
 									var oldOpe={};
 									var oldstring="operations."+doc.operations[key].name;
 									oldOpe[oldstring]=doc.operations[key].name;
 									
 									collection.update({"user":doc.user,"_id":doc._id},{"$unset":oldOpe},function(err){
 									})
-								});
 							}
 					}
 				
-				});
+				 });
 				
 				
 			});
@@ -3195,7 +3210,7 @@ Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 
@@ -3273,6 +3288,7 @@ Tracerule.editDecision = function editDecision(user,id,nameMark,oldname,newname,
 			     			
 							collection.update({"user":doc.user,"_id":doc._id},{"$unset":element},function(err){
 							
+							});
 								elementName="elements."+newnames+".name";
 								elementDescription="elements."+newnames+".description";
 								elementExecutor="elements."+newnames+".executor";
@@ -3287,7 +3303,6 @@ Tracerule.editDecision = function editDecision(user,id,nameMark,oldname,newname,
 								collection.update({"user":doc.user,"_id":doc._id},{"$set":element},function(err){
 							
 								});
-						});
 					  }
 					}
 				}else{
@@ -3341,13 +3356,14 @@ Tracerule.editDecision = function editDecision(user,id,nameMark,oldname,newname,
 								
 								var ObjectID = require("mongodb").ObjectID;
 								collection.update({"user":doc.user,"_id":doc._id},{"$set":newOpe},function(err){
+									
+								});
 									var oldOpe={};
 									var oldstring="operations."+doc.operations[key].name;
 									oldOpe[oldstring]=doc.operations[key].name;
 									
 									collection.update({"user":doc.user,"_id":doc._id},{"$unset":oldOpe},function(err){
 									})
-								});
 							}
 					}
 				
@@ -3427,11 +3443,11 @@ Tracerule.editCondition = function editCondition(user,id,nameMark,oldname,newnam
 			
 				
 				  docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 				    var ObjectID = require("mongodb").ObjectID;
 				  
 					if(doc._id==id)
-				{
+					{
 						query2={$set:{"positions":positions}};
 							collection.update({"user":user,"_id":ObjectID(id)},query2,{safe:true},function(err){
 							if(err) console.warn(err.message);
@@ -3451,8 +3467,7 @@ Tracerule.editCondition = function editCondition(user,id,nameMark,oldname,newnam
 			     			element[elementName]=doc.elements[key].name;
 			     			var ObjectID = require("mongodb").ObjectID;
 			     			
-							collection.update({"user":doc.user,"_id":doc._id},{"$unset":element},function(err){
-							
+							collection.update({"user":doc.user,"_id":doc._id},{"$unset":element});
 								elementName="elements."+newnames+".name";
 								elementDescription="elements."+newnames+".description";
 								elementType="elements."+newnames+".type";
@@ -3462,10 +3477,7 @@ Tracerule.editCondition = function editCondition(user,id,nameMark,oldname,newnam
 			     				element[elementDescription]=conditiondescription;
 			     				element[elementType]="condition";
 			     				element[elementTime]=new Date();
-								collection.update({"user":doc.user,"_id":doc._id},{"$set":element},function(err){
-							
-								});
-						});
+								collection.update({"user":doc.user,"_id":doc._id},{"$set":element});
 					  }
 					}
 				}else{
@@ -3517,14 +3529,12 @@ Tracerule.editCondition = function editCondition(user,id,nameMark,oldname,newnam
 								}
 								
 								var ObjectID = require("mongodb").ObjectID;
-								collection.update({"user":doc.user,"_id":doc._id},{"$set":newOpe},function(err){
+								collection.update({"user":doc.user,"_id":doc._id},{"$set":newOpe});
 									var oldOpe={};
 									var oldstring="operations."+doc.operations[key].name;
 									oldOpe[oldstring]=doc.operations[key].name;
 									
-									collection.update({"user":doc.user,"_id":doc._id},{"$unset":oldOpe},function(err){
-									})
-								});
+									collection.update({"user":doc.user,"_id":doc._id},{"$unset":oldOpe});
 							}
 					}
 				
@@ -3552,7 +3562,7 @@ Tracerule.editCondition = function editCondition(user,id,nameMark,oldname,newnam
 				var tracerules = [];
 				
 				docs.forEach(function(doc, index) {
-					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc._id);
+					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 					tracerules.push(tracerule);
 				});
 

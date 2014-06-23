@@ -426,7 +426,7 @@
       close: function() {
         if($selfname!="")
         {
-          //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
+          
           
 
           $.ajax({
@@ -483,7 +483,7 @@
                             $operation_position=$operation_position+$(this).attr("id");
 
                         })
-             // window.location.href="/DeleteTraceRule/"+"<%=tracerules[0].user%>分"+$deleteID+"分"+$operation_position+"分"+$current_guard_id;
+             
                $.ajax({
                 type: "POST",
                 url: "/DeleteTraceRuleZero",
@@ -684,6 +684,7 @@
 var $addTraceRule_selfname;
 var $addTraceRule_guardname;
 var $operation_position;
+
  $( "#AddTraceRule" ).dialog({
           autoOpen: false,
           width: 500,
@@ -692,7 +693,7 @@ var $operation_position;
           buttons: {
             
             "Confirm": function() {
-              
+              $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
               $addTraceRule_selfname=$("#guardselfname").val();
               $addTraceRule_guardname=$("#hidden_guardselfname").val();
               
@@ -703,6 +704,38 @@ var $operation_position;
                   if($addTraceRule_selfname==""){
                     alert("Please enter selfname");
                   }else{
+                     $operation_position="";
+                    $(".section_accordion").each(function(){
+                        if($operation_position!="")
+                            $operation_position=$operation_position+"$";
+
+                            $operation_position=$operation_position+$(this).attr("id");
+
+                        })
+                    
+                      $.ajax({
+                        type: "POST",
+                        url: "/addTraceRule",
+                        data: {
+                          user:"<%=tracerules[0].user%>",
+                          id:"<%=tracerules[0]._id%>",
+                          selfname:$addTraceRule_selfname,
+                          guardname:$addTraceRule_guardname,
+                          operation_position:$operation_position,
+                          current_guard_id:$current_guard_id,
+                          projectID:$("#hidden_project_id").val()
+                        },
+                        dataType:'json',
+                        success:function(Object){
+                          console.log(Object);
+                          window.location.href="/T/"+$("#hidden_project_id").val();
+                      },
+                        error:function(){
+                          console.log("error_T");
+                      }
+                      });
+                   
+
                     $( this ).dialog( "close" );
                   }
                 }
@@ -712,27 +745,7 @@ var $operation_position;
       },
       close: function() {
         //alert($addTraceRule_selfname+" "+$addTraceRule_guardname);
-        if($addTraceRule_selfname!="" && $addTraceRule_guardname!=""){
-          //window.location.href="/addTraceRuleZero/"+$addTraceRule_selfname+"分"+$addTraceRule_guardname;
-          $.ajax({
-                        type: "POST",
-                        url: "/addTraceRuleZero",
-                        data: {
-                          selfname:$addTraceRule_selfname,
-                          guardname:$addTraceRule_guardname,
-                          projectID:$("#hidden_project_id").val()
-                        },
-                        dataType:'json',
-                        success:function(Object){
-                          console.log(Object);
-                          window.location.href="/T/"+$("#hidden_project_id").val();
-                        
-                      },
-                        error:function(){
-                            console.log("error_TT");
-                      }
-                      });
-        }
+ 
       }
     });
 

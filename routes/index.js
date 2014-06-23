@@ -1431,7 +1431,8 @@ exports.deleteUseCase = function(req, res){
  	 var positions=req.body.operation_position;
  	 var current_guard_id=id;
  	 var projectID=req.body.projectID;
- 	 console.log(user+" "+id+" "+operation_name+" "+positions);
+
+ 	 console.log("deleteUseCase: "+user+" "+id+" "+operation_name+" "+positions+" "+current_guard_id+" "+projectID);
  	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,dependencyElement){
  	 	
  	 	if(dependencyElement[0].todepenNum>0){
@@ -1754,22 +1755,19 @@ exports.editUseCase=function(req,res){
 	 var current_guard_id=req.body.current_guard_id;
 	 var type="UseCase";
 	 var hidden_fields=req.body.hidden_fields;
+	 var projectID=req.body.projectID;
 	 console.log(oldusecasename+" "+usecasename+" "+hidden_fields);
 	 if(nameMark || descriptionMark){
 
-	 Post.get(null, function(err, posts) {
-		if (err) {
-			posts = [];
-		}
 	  ElementDepency.replaceDependKeyName(req.session.user.name,oldusecasename,usecasename,hidden_fields,function(err,elementdepencys){
 	  		if(err){
 	  			elementdepencys=[];
 	  		}
-		Guardlist.get(req.session.user.name, function(err, guardlists) {
+		Guardlist.get(req.session.user.name,projectID, function(err, guardlists) {
 			if (err) {
 				guradlists = [];
 			}		
-	  		Tracerule.editUseCase(req.session.user.name,id,nameMark,oldusecasename,usecasename,descriptionMark,oldusecasedescription,usecasedescription,positions,hidden_fields,function(err,tracerules){
+	  		Tracerule.editUseCase(req.session.user.name,id,nameMark,oldusecasename,usecasename,descriptionMark,oldusecasedescription,usecasedescription,positions,hidden_fields,projectID,function(err,tracerules){
 				res.send(
 						
 						{elementdepencys:elementdepencys}
@@ -1779,7 +1777,6 @@ exports.editUseCase=function(req,res){
 	  	  });
 
 		});
-	});
   }  
 }
 
@@ -1800,6 +1797,7 @@ exports.editActivity=function(req,res){
 	 var current_guard_id=req.body.current_guard_id;
 	 var type="activity";
 	 var hidden_fields=req.body.hidden_fields;
+	 var projectID=req.body.projectID;
 	 console.log(oldactivityname+" "+activityname+" "+hidden_fields);
 	 if(nameMark || descriptionMark){
 
@@ -1808,7 +1806,7 @@ exports.editActivity=function(req,res){
 	  		if(err){
 	  			elementdepencys=[];
 	  		}		
-	  		Tracerule.editActivity(req.session.user.name,id,nameMark,oldactivityname,activityname,descriptionMark,oldactivitydescription,activitydescription,executorMark,oldactivityexecutor,activityexecutor,positions,hidden_fields,function(err,tracerules){
+	  		Tracerule.editActivity(req.session.user.name,id,nameMark,oldactivityname,activityname,descriptionMark,oldactivitydescription,activitydescription,executorMark,oldactivityexecutor,activityexecutor,positions,hidden_fields,projectID,function(err,tracerules){
 				res.send(
 						
 						{elementdepencys:elementdepencys}
@@ -1838,6 +1836,7 @@ exports.editDecision=function(req,res){
 	 var current_guard_id=req.body.current_guard_id;
 	 var type="decision";
 	 var hidden_fields=req.body.hidden_fields;
+	 var projectID=req.body.projectID;
 	 console.log(olddecisionname+" "+decisionname+" "+hidden_fields);
 	 if(nameMark || descriptionMark){
 
@@ -1873,6 +1872,7 @@ exports.editCondition=function(req,res){
 	 var current_guard_id=req.body.current_guard_id;
 	 var type="condition";
 	 var hidden_fields=req.body.hidden_fields;
+	 var projectID=req.body.projectID;
 	 console.log(oldconditionname+" "+conditionname+" "+hidden_fields);
 	 if(nameMark || descriptionMark){
 

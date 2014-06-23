@@ -308,7 +308,8 @@
               oldactivityexecutor:$OldActivityExecutor,
               positions:$operation_position,
               current_guard_id:$current_guard_id,
-              hidden_fields:$hidden_fields
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
            },
             dataType:'json',
             success:function(Object){
@@ -429,7 +430,8 @@
               oldusecasedescription:$OldUseCaseDescription,
               positions:$operation_position,
               current_guard_id:$current_guard_id,
-              hidden_fields:$hidden_fields
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
            },
             dataType:'json',
             success:function(Object){
@@ -562,7 +564,8 @@
               olddecisionexecutor:$OldDecisionExecutor,
               positions:$operation_position,
               current_guard_id:$current_guard_id,
-              hidden_fields:$hidden_fields
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
            },
             dataType:'json',
             success:function(Object){
@@ -680,7 +683,8 @@
               oldconditiondescription:$OldConditionDescription,
               positions:$operation_position,
               current_guard_id:$current_guard_id,
-              hidden_fields:$hidden_fields
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
            },
             dataType:'json',
             success:function(Object){
@@ -716,6 +720,26 @@
          $(this).css("display","none");
          $(this).siblings().show();
       })
+
+        $(".icon-pencil.editOperation.insertactafterpre").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-ok.editOperation.insertactafterpre").click(function(){
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
 
        $(".icon-pencil.editOperation.InsertAfterDecCon").click(function(){
         jQuery.each($(this).parent().parent().parent(),function(){
