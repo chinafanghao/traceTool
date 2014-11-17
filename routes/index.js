@@ -22,7 +22,8 @@ exports.index = function(req, res){
 		}
 
 		if(req.session.user != null)
-		{	console.log("11111");
+		{	
+			console.log("11111");
 			Project.get(req.session.user.name,function(err,projects){
 					if(err){
 						projects=[];
@@ -37,7 +38,8 @@ exports.index = function(req, res){
 							error : req.flash('error').toString()
 						});
 			});
-		}else{console.log("222222");
+		}else{
+			console.log("222222");
 			res.render('index', {
 							title: '首页',
 							posts : posts,
@@ -160,8 +162,8 @@ exports.login = function(req, res) {
 };
 
 exports.F = function(req, res) {
-	 console.log(req.params.content);
-
+	 console.log("exports.F:"+req.params.content);
+	 
 	res.render('F', {
 		title: 'Feature Model',
 		user : req.session.user,
@@ -356,6 +358,7 @@ exports.T = function(req, res) {
 	});
   });	  
 };
+
 
 
 exports.doT = function(req, res) {
@@ -927,7 +930,7 @@ exports.insertDecAfterDecCon = function(req, res){
 	 var UseCase=req.body.UC;
 	 var positions=req.body.operation_position;
 	 var current_guard_id=id;
- 	
+ 	console.log("insertDecAfterDecCon!!!!");
 	  ElementDepency.saveInsertDecAfterDecCon(req.session.user.name,TarDec,InserDec,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,current_guard_id,function(err,elementdepencys){
 	  		if(err){
 	  			elementdepencys=[];
@@ -1085,6 +1088,8 @@ exports.insertDecBeforeActCon = function(req, res){
 			});
 	});
 }
+
+
 
 
 exports.doLogin = function(req, res) {
@@ -1895,6 +1900,469 @@ exports.editCondition=function(req,res){
   }  
 }
 
+exports.editInsertActAfterPre=function(req,res){
+
+	 
+ 	 var user=req.body.user;
+ 	 var id=req.body.id;
+ 	 var editTartAct=req.body.editTartAct;
+ 	 var editPreAct=req.body.editPreAct;
+ 	 var editUseCase=req.body.editUseCase;
+ 	 var oldTarAct=req.body.oldTarAct;
+ 	 var oldPreAct=req.body.oldPreAct;
+ 	 var oldUseCase=req.body.oldUseCase;
+ 	 var positions=req.body.positions;
+	 var current_guard_id=req.body.current_guard_id;
+	 var hidden_fields=req.body.hidden_fields;
+	 var projectID=req.body.projectID;
+
+	  operation_name="Insert "+oldTarAct.split(".")[1]+" after "+oldPreAct.split(".")[1]+" in "+oldUseCase.split(".")[1];
+	  //console.log("user:"+user+" id:"+id+" editTartAct:"+editTartAct+" editPreAct:"+editPreAct+" editUseCase:"+editUseCase+" positions:"+positions+" current_guard_id:"+current_guard_id+" hidden_fields:"+hidden_fields+" projectID:"+projectID+" operation_name:"+operation_name);
+	  ElementDepency.deleteInsertActAfterPre(req.session.user.name,id,operation_name,hidden_fields,function(err,elementdepencys){	  		
+	  	if(err){
+	  		elementdepencys=[];
+	  	}
+
+		Tracerule.deleteInsertActAfterPre(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+
+			ElementDepency.saveInsertActAfterPre(req.session.user.name,editTartAct,editPreAct,editUseCase,current_guard_id,function(err,elementdepencys){
+	  			if(err){
+	  				elementdepencys=[];
+	  			}
+
+				Tracerule.saveInsertActAfterPre(req.session.user.name,id,editTartAct,editPreAct,editUseCase,positions, function(err, tracerules) {
+					if (err) {
+						tracerules = [];
+					}
+				
+					res.send({"saveInsertActAfterPre":1});
+				});
+			});
+		});
+
+   });
+
+}
+
+exports.editInsertActBeforePost=function(req,res){
+
+	 var user=req.body.user;
+ 	 var id=req.body.id;
+ 	 var editTartAct=req.body.editTartAct;
+ 	 var editPostAct=req.body.editPostAct;
+ 	 var editUseCase=req.body.editUseCase;
+ 	 var oldTarAct=req.body.oldTarAct;
+ 	 var oldPostAct=req.body.oldPostAct;
+ 	 var oldUseCase=req.body.oldUseCase;
+ 	 var positions=req.body.positions;
+	 var current_guard_id=req.body.current_guard_id;
+	 var hidden_fields=req.body.hidden_fields;
+	 var projectID=req.body.projectID;
+
+	  operation_name="Insert "+oldTarAct.split(".")[1]+" before "+oldPostAct.split(".")[1]+" in "+oldUseCase.split(".")[1];
+	  //console.log("user:"+user+" id:"+id+" editTartAct:"+editTartAct+" editPreAct:"+editPreAct+" editUseCase:"+editUseCase+" positions:"+positions+" current_guard_id:"+current_guard_id+" hidden_fields:"+hidden_fields+" projectID:"+projectID+" operation_name:"+operation_name);
+	  ElementDepency.deleteInsertActBeforePost(req.session.user.name,id,operation_name,hidden_fields,function(err,elementdepencys){	  		
+	  	if(err){
+	  		elementdepencys=[];
+	  	}
+
+		Tracerule.deleteInsertActBeforePost(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+
+			ElementDepency.saveInsertActBeforePost(req.session.user.name,editTartAct,editPostAct,editUseCase,current_guard_id,function(err,elementdepencys){
+	  			if(err){
+	  				elementdepencys=[];
+	  			}
+
+				Tracerule.saveInsertActBeforePost(req.session.user.name,id,editTartAct,editPostAct,editUseCase,positions, function(err, tracerules) {
+					if (err) {
+						tracerules = [];
+					}
+				
+					res.send({"saveInsertActAfterPre":1});
+				});
+			});
+		});
+
+   });
+}
+
+exports.editInterAfterDecCon=function(req,res){
+
+	 var user=req.body.user;
+ 	 var id=req.body.id;
+ 	 var editTartAct=req.body.editTartAct;
+ 	 var editDec=req.body.editDec;
+ 	 var editCon=req.body.editCon;
+ 	 var editUseCase=req.body.editUseCase;
+ 	 var oldTarAct=req.body.oldTarAct;
+ 	 var oldDec=req.body.oldDec;
+ 	 var oldCon=req.body.oldCon;
+ 	 var oldUseCase=req.body.oldUseCase;
+ 	 var positions=req.body.positions;
+	 var current_guard_id=req.body.current_guard_id;
+	 var hidden_fields=req.body.hidden_fields;
+	 var projectID=req.body.projectID;
+
+	  operation_name="Insert "+oldTarAct.split(".")[1]+" after "+oldDec.split(".")[1]+" , "+oldCon.split(".")[1]+" in "+oldUseCase.split(".")[1];
+	  //console.log("user:"+user+" id:"+id+" editTartAct:"+editTartAct+" editPreAct:"+editPreAct+" editUseCase:"+editUseCase+" positions:"+positions+" current_guard_id:"+current_guard_id+" hidden_fields:"+hidden_fields+" projectID:"+projectID+" operation_name:"+operation_name);
+	  console.log("####################:"+operation_name);
+	  ElementDepency.deleteInsertActAfterDecCon(req.session.user.name,id,operation_name,hidden_fields,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+			Tracerule.deleteInsertActAfterDecCon(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				  ElementDepency.saveInsertActAfterDecCon(req.session.user.name,editTartAct,editDec,editCon,editUseCase,current_guard_id,function(err,elementdepencys){
+	  				if(err){
+	  					elementdepencys=[];
+	  				}
+
+						Tracerule.saveInsertActAfterDecCon(req.session.user.name,id,editTartAct,editDec,editCon,editUseCase,positions, function(err, tracerules) {
+							if (err) {
+								tracerules = [];
+							}
+				
+							res.send({"editInsertActAfterDecCon":1});
+						});
+					});
+			});
+
+   });
+}
+
+exports.editInterBeforeActConCon=function(req,res){
+	 var user=req.body.user;
+ 	 var id=req.body.id;
+ 	 var editTartAct=req.body.editTartAct;
+ 	 var editAct=req.body.editAct;
+ 	 var editCon=req.body.editCon;
+ 	 var editUseCase=req.body.editUseCase;
+ 	 var oldTarAct=req.body.oldTarAct;
+ 	 var oldAct=req.body.oldAct;
+ 	 var oldCon=req.body.oldCon;
+ 	 var oldUseCase=req.body.oldUseCase;
+ 	 var positions=req.body.positions;
+	 var current_guard_id=req.body.current_guard_id;
+	 var hidden_fields=req.body.hidden_fields;
+	 var projectID=req.body.projectID;
+
+	  operation_name="Insert "+oldTarAct.split(".")[1]+" before "+oldAct.split(".")[1]+" , "+oldCon.split(".")[1]+" in "+oldUseCase.split(".")[1];
+	  //console.log("user:"+user+" id:"+id+" editTartAct:"+editTartAct+" editPreAct:"+editPreAct+" editUseCase:"+editUseCase+" positions:"+positions+" current_guard_id:"+current_guard_id+" hidden_fields:"+hidden_fields+" projectID:"+projectID+" operation_name:"+operation_name);
+	  console.log("####################:"+operation_name);
+	  ElementDepency.deleteInsertActBeforeActCon(req.session.user.name,id,operation_name,hidden_fields,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+			Tracerule.deleteInsertActBeforeActCon(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				  ElementDepency.saveInsertActBeforeActCon(req.session.user.name,editTartAct,editAct,editCon,editUseCase,current_guard_id,function(err,elementdepencys){
+	  				if(err){
+	  					elementdepencys=[];
+	  				}
+
+						Tracerule.saveInsertActBeforeActCon(req.session.user.name,id,editTartAct,editAct,editCon,editUseCase,positions, function(err, tracerules) {
+							if (err) {
+								tracerules = [];
+							}
+				
+							res.send({"editInsertActAfterDecCon":1});
+						});
+					});
+			});
+
+   });
+}
+
+exports.editInsertDecAfterAct = function(req,res){
+	console.log("###editInsertDecAfterAct###");
+	 var user=req.body.user;
+ 	 var id=req.body.id;
+ 	 var EditTarDec=req.body.EditTarDec;
+ 	 var EditPreAct=req.body.EditPreAct;
+ 	 var EditMainCon=req.body.EditMainCon;
+ 	 var EditSBCon=req.body.EditSBCon;
+ 	 var EditInsertAct=req.body.EditInsertAct;
+ 	 var EditInsertTarAct=req.body.EditInsertTarAct;
+ 	 var EditUseCase=req.body.EditUseCase;
+ 	 var OldTarDec=req.body.OldTarDec;
+ 	 var OldPreAct=req.body.OldPreAct;
+ 	 var OldMainCon=req.body.OldMainCon;
+ 	 var OldSBCon=req.body.OldSBCon;
+ 	 var OldInsertAct=req.body.OldInsertAct;
+ 	 var OldInsertTarAct=req.body.OldInsertTarAct;
+ 	 var OldUseCase=req.body.OldUseCase;
+ 	 var positions=req.body.positions;
+	 var current_guard_id=req.body.current_guard_id;
+	 var hidden_fields=req.body.hidden_fields;
+	 var projectID=req.body.projectID;
+	 //console.log("EditTarDec:"+EditTarDec+" EditPreAct:"+EditPreAct+" EditMainCon:"+EditMainCon+" EditSBCon:"+EditSBCon+" EditInsertAct:"+EditInsertAct+" EditInsertTarAct:"+EditInsertTarAct+" EditUseCase:"+EditUseCase+" OldTarDec:"+OldTarDec+" OldPreAct:"+OldPreAct+" OldMainCon:"+OldMainCon+" OldSBCon:"+OldSBCon+" OldInsertAct:"+OldInsertAct+" OldInsertTarAct:"+OldInsertTarAct+" OldUseCase:"+OldUseCase);
+	  operation_name="Insert "+OldTarDec.split(".")[1]+" after "+OldPreAct.split(".")[1]+" with ( "+OldMainCon.split(".")[1]+" ),( "+OldSBCon.split(".")[1]+" , "+OldInsertAct.split(".")[1]+" , "+OldInsertTarAct.split(".")[1]+" ) in "+OldUseCase.split(".")[1];
+	  //console.log("user:"+user+" id:"+id+" editTartAct:"+editTartAct+" editPreAct:"+editPreAct+" editUseCase:"+editUseCase+" positions:"+positions+" current_guard_id:"+current_guard_id+" hidden_fields:"+hidden_fields+" projectID:"+projectID+" operation_name:"+operation_name);
+	  console.log("####################:"+operation_name);
+	  ElementDepency.deleteInsertDecAfterAct(req.session.user.name,id,operation_name,hidden_fields,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+			Tracerule.deleteInsertDecAfterAct(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				  ElementDepency.saveInsertDecAfterActCon(req.session.user.name,EditTarDec,EditPreAct,EditMainCon,EditSBCon,EditInsertAct,EditInsertTarAct,EditUseCase,current_guard_id,function(err,elementdepencys){
+	  				if(err){
+	  					elementdepencys=[];
+	  				}
+
+						Tracerule.saveInsertDecAfterActCon(req.session.user.name,id,EditTarDec,EditPreAct,EditMainCon,EditSBCon,EditInsertAct,EditInsertTarAct,EditUseCase,positions, function(err, tracerules) {
+							if (err) {
+								tracerules = [];
+							}
+				
+							res.send({"editInsertDecAfterAct":1});
+						});
+					});
+			});
+
+   });
+}
+
+exports.editInsertDecAfterDecCon = function(req,res){
+
+	console.log("###editInsertDecAfterDecCon###");
+	 var user=req.body.user;
+ 	 var id=req.body.id;
+ 	 var EditTarDec=req.body.EditTarDec;
+ 	 var EditInsertDec=req.body.EditInsertDec;
+ 	 var EditInsertCon=req.body.EditInsertCon;
+ 	 var EditMainCon=req.body.EditMainCon;
+ 	 var EditSBCon=req.body.EditSBCon;
+ 	 var EditInsertAct=req.body.EditInsertAct;
+ 	 var EditInsertTarAct=req.body.EditInsertTarAct;
+ 	 var EditUseCase=req.body.EditUseCase;
+ 	 var OldTarDec=req.body.OldTarDec;
+ 	 var OldInsertDec=req.body.OldInsertDec;
+ 	 var OldInsertCon=req.body.OldInsertCon;
+ 	 var OldMainCon=req.body.OldMainCon;
+ 	 var OldSBCon=req.body.OldSBCon;
+ 	 var OldInsertAct=req.body.OldInsertAct;
+ 	 var OldInsertTarAct=req.body.OldInsertTarAct;
+ 	 var OldUseCase=req.body.OldUseCase;
+ 	 var positions=req.body.positions;
+	 var current_guard_id=req.body.current_guard_id;
+	 var hidden_fields=req.body.hidden_fields;
+	 var projectID=req.body.projectID;
+	 operation_name="Insert "+OldTarDec.split(".")[1]+" after ( "+OldInsertDec.split(".")[1]+" , "+OldInsertCon.split(".")[1]+" ) "+" with ( "+OldMainCon.split(".")[1]+" ),( "+OldSBCon.split(".")[1]+" , "+OldInsertAct.split(".")[1]+" , "+OldInsertTarAct.split(".")[1]+" ) in "+OldUseCase.split(".")[1];
+	  console.log("hidden_fields:"+hidden_fields);
+	  ElementDepency.deleteInsertDecAfterDecCon(req.session.user.name,id,operation_name,hidden_fields,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+			Tracerule.deleteInsertDecAfterDecCon(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				  ElementDepency.saveInsertDecAfterDecCon(req.session.user.name,EditTarDec,EditInsertDec,EditInsertCon,EditMainCon,EditSBCon,EditInsertAct,EditInsertTarAct,EditUseCase,current_guard_id,function(err,elementdepencys){
+	  				if(err){
+	  					elementdepencys=[];
+	  				}
+
+						Tracerule.saveInsertDecAfterDecCon(req.session.user.name,id,EditTarDec,EditInsertDec,EditInsertCon,EditMainCon,EditSBCon,EditInsertAct,EditInsertTarAct,EditUseCase,positions, function(err, tracerules) {
+							if (err) {
+								tracerules = [];
+							}
+				
+							res.send({"editInsertDecAfterAct":1});
+						});
+					});
+			});
+
+   });
+}
+
+exports.editInsertDecBeforeAct = function(req,res){
+	console.log("###editInsertDecAfterDecCon###");
+	 var user=req.body.user;
+ 	 var id=req.body.id;
+ 	 var EditTarDec=req.body.EditTarDec;
+ 	 var EditPostAct=req.body.EditPostAct;
+ 	 var EditCon1=req.body.EditCon1;
+ 	 var EditTart1=req.body.EditTart1;
+ 	 var EditCon2=req.body.EditCon2;
+ 	 var EditTart2=req.body.EditTart2;
+ 	 var EditUseCase=req.body.EditUseCase;
+ 	 var OldTarDec=req.body.OldTarDec;
+ 	 var OldPostAct=req.body.OldPostAct;
+ 	 var OldCon1=req.body.OldCon1;
+ 	 var OldTart1=req.body.OldTart1;
+ 	 var OldCon2=req.body.OldCon2;
+ 	 var OldTart2=req.body.OldTart2;
+ 	 var OldUseCase=req.body.OldUseCase;
+ 	 var positions=req.body.positions;
+	 var current_guard_id=req.body.current_guard_id;
+	 var hidden_fields=req.body.hidden_fields;
+	 var projectID=req.body.projectID;
+	 operation_name="Insert "+OldTarDec.split(".")[1]+" before "+OldPostAct.split(".")[1]+" with ( "+OldCon1.split(".")[1]+" , "+OldTart1.split(".")[1]+" ),( "+OldCon2.split(".")[1]+" , "+OldTart2.split(".")[1]+" ) in "+OldUseCase.split(".")[1];
+	 console.log("Old operation_name:"+operation_name);
+	  ElementDepency.deleteInsertDecBeforeAct(req.session.user.name,id,operation_name,hidden_fields,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+			Tracerule.deleteInsertDecBeforeAct(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				  ElementDepency.saveInsertDecBeforeAct(req.session.user.name,EditTarDec,EditPostAct,EditCon1,EditTart1,EditCon2,EditTart2,EditUseCase,current_guard_id,function(err,elementdepencys){
+	  				if(err){
+	  					elementdepencys=[];
+	  				}
+
+						Tracerule.saveInsertDecBeforeAct(req.session.user.name,id,EditTarDec,EditPostAct,EditCon1,EditTart1,EditCon2,EditTart2,EditUseCase,positions, function(err, tracerules) {
+							if (err) {
+								tracerules = [];
+							}
+				
+							res.send({"editInsertDecAfterAct":1});
+						});
+					});
+			});
+
+   });
+}
+
+exports.editInsertDecBeforeActWith = function(req,res){
+	console.log("###editInsertDecBeforeActWith###");
+	 var user=req.body.user;
+ 	 var id=req.body.id;
+ 	 var EditTarDec=req.body.EditTarDec;
+ 	 var EditPostAct=req.body.EditPostAct;
+ 	 var EditMainCon=req.body.EditMainCon;
+ 	 var EditSBCon=req.body.EditSBCon;
+ 	 var EditInsertAct=req.body.EditInsertAct;
+ 	 var EditInsertTarDec=req.body.EditInsertTarDec;
+ 	 var EditUseCase=req.body.EditUseCase;
+ 	 var OldTarDec=req.body.OldTarDec;
+ 	 var OldPostAct=req.body.OldPostAct;
+ 	 var OldMainCon=req.body.OldMainCon;
+ 	 var OldSBCon=req.body.OldSBCon;
+ 	 var OldInsertAct=req.body.OldInsertAct;
+ 	 var OldInsertTarDec=req.body.OldInsertTarDec;
+ 	 var OldUseCase=req.body.OldUseCase;
+ 	 var positions=req.body.positions;
+	 var current_guard_id=req.body.current_guard_id;
+	 var hidden_fields=req.body.hidden_fields;
+	 var projectID=req.body.projectID;
+	 //console.log("EditTarDec:"+EditTarDec+" EditPreAct:"+EditPreAct+" EditMainCon:"+EditMainCon+" EditSBCon:"+EditSBCon+" EditInsertAct:"+EditInsertAct+" EditInsertTarAct:"+EditInsertTarAct+" EditUseCase:"+EditUseCase+" OldTarDec:"+OldTarDec+" OldPreAct:"+OldPreAct+" OldMainCon:"+OldMainCon+" OldSBCon:"+OldSBCon+" OldInsertAct:"+OldInsertAct+" OldInsertTarAct:"+OldInsertTarAct+" OldUseCase:"+OldUseCase);
+	  operation_name="Insert "+OldTarDec.split(".")[1]+" before "+OldPostAct.split(".")[1]+" with ( "+OldMainCon.split(".")[1]+" ),( "+OldSBCon.split(".")[1]+" , "+OldInsertAct.split(".")[1]+" , "+OldInsertTarDec.split(".")[1]+" ) in "+OldUseCase.split(".")[1];
+	  //console.log("user:"+user+" id:"+id+" editTartAct:"+editTartAct+" editPreAct:"+editPreAct+" editUseCase:"+editUseCase+" positions:"+positions+" current_guard_id:"+current_guard_id+" hidden_fields:"+hidden_fields+" projectID:"+projectID+" operation_name:"+operation_name);
+	  console.log("####################:"+operation_name);
+
+	  ElementDepency.deleteInsertDecBeforeActWith(req.session.user.name,id,operation_name,hidden_fields,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+			Tracerule.deleteInsertDecBeforeActWith(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				  ElementDepency.saveInsertDecBeforeAct(req.session.user.name,EditTarDec,EditPostAct,EditMainCon,EditSBCon,EditInsertAct,EditInsertTarDec,EditUseCase,current_guard_id,function(err,elementdepencys){
+	  				if(err){
+	  					elementdepencys=[];
+	  				}
+
+						Tracerule.saveInsertDecBeforeActWith(req.session.user.name,id,EditTarDec,EditPostAct,EditMainCon,EditSBCon,EditInsertAct,EditInsertTarDec,EditUseCase,positions, function(err, tracerules) {
+							if (err) {
+								tracerules = [];
+							}
+				
+							res.send({"editInsertDecAfterAct":1});
+						});
+					});
+			});
+
+   });
+}
+
+exports.editInsertDecBeforeActCon = function(req,res){
+	console.log("###editInsertDecBeforeActCon###");
+	 var user=req.body.user;
+ 	 var id=req.body.id;
+ 	 var EditTarDec=req.body.EditTarDec;
+ 	 var EditInsertAct=req.body.EditInsertAct;
+ 	 var EditInsertCon=req.body.EditInsertCon;
+ 	 var EditMainCon=req.body.EditMainCon;
+ 	 var EditSBCon=req.body.EditSBCon;
+ 	 var EditInsertAct=req.body.EditInsertAct;
+ 	 var EditInsertTarDec=req.body.EditInsertTarDec;
+ 	 var EditUseCase=req.body.EditUseCase;
+ 	 var OldTarDec=req.body.OldTarDec;
+ 	 var OldInsertAct=req.body.OldInsertAct;
+ 	 var OldInsertCon=req.body.OldInsertCon;
+ 	 var OldMainCon=req.body.OldMainCon;
+ 	 var OldSBCon=req.body.OldSBCon;
+ 	 var OldInsertAct=req.body.OldInsertAct;
+ 	 var OldInsertTarDec=req.body.OldInsertTarDec;
+ 	 var OldUseCase=req.body.OldUseCase;
+ 	 var positions=req.body.positions;
+	 var current_guard_id=req.body.current_guard_id;
+	 var hidden_fields=req.body.hidden_fields;
+	 var projectID=req.body.projectID;
+	 operation_name="Insert "+OldTarDec.split(".")[1]+" before ( "+OldInsertAct.split(".")[1]+" , "+OldInsertCon.split(".")[1]+" ) "+" with ( "+OldMainCon.split(".")[1]+" ),( "+OldSBCon.split(".")[1]+" , "+OldInsertAct.split(".")[1]+" , "+OldInsertTarDec.split(".")[1]+" ) in "+OldUseCase.split(".")[1];
+	  console.log("hidden_fields:"+hidden_fields);
+	  ElementDepency.deleteInsertDecBeforeActCon(req.session.user.name,id,operation_name,hidden_fields,function(err,elementdepencys){
+	  		
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+	  		
+			Tracerule.deleteInsertDecBeforeActCon(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
+			if (err) {
+				tracerules = [];
+			}
+				
+				  ElementDepency.saveInsertDecBeforeActCon(req.session.user.name,EditTarDec,EditInsertAct,EditInsertCon,EditMainCon,EditSBCon,EditInsertAct,EditInsertTarDec,EditUseCase,current_guard_id,function(err,elementdepencys){
+	  				if(err){
+	  					elementdepencys=[];
+	  				}
+
+						Tracerule.saveInsertDecBeforeActCon(req.session.user.name,id,EditTarDec,EditInsertAct,EditInsertCon,EditMainCon,EditSBCon,EditInsertAct,EditInsertTarDec,EditUseCase,positions, function(err, tracerules) {
+							if (err) {
+								tracerules = [];
+							}
+				
+							res.send({"editInsertDecAfterAct":1});
+						});
+					});
+			});
+
+   });
+}
 
 exports.insertActAfterPreDialog = function(req, res) {
 	  console.log("content:"+req.params.content);
@@ -2280,7 +2748,7 @@ exports.addTraceRule = function(req, res){
  	 console.log($user+" "+$id+" "+$selfname+" "+$guardname+" "+$positionss+" "+$current_guard_id+" "+$projectID);
  	 
 
- 	
+ 	if($id!=""){
 	Tracerule.savePositions($user,$id,$positionss,function(err){
 		
  	 Tracerule.getByName($user,$projectID,$guardname, function(err,tracerule ) {
@@ -2358,6 +2826,82 @@ exports.addTraceRule = function(req, res){
 		});
 	});
   });
+ }else{
+ 	Tracerule.getByName($user,$projectID,$guardname, function(err,tracerule ) {
+		if (tracerule)
+			err = 'Guardname already exists.';
+		if (err) {
+			req.flash('error', err);
+			return res.redirect('/T/'+$current_guard_id);
+		}
+		console.log("1");
+		 Tracerule.getBySelfName($user,$projectID,$selfname, function(err,tracerule ) {
+			if (tracerule)
+				err = 'Selfname already exists.';
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('/T/'+$current_guard_id);
+			}
+
+				Tracerule.addNewTraceRule($user,$guardname,$selfname,$projectID,function(err,tracerules){
+					if (err) {
+						req.flash('error', err);
+						return res.redirect('/T/'+$current_guard_id);
+					}
+					Tracerule.returnIDByName($user,$projectID,$guardname, function(err,returnID) {
+						console.log("$$$$$ "+returnID);
+						
+    					$newGuardId=returnID;
+/*
+    					NewGuard.save(function(err,guardlists) {
+							if (err) {
+								req.flash('error', err);
+								return res.redirect('/T/'+current_guard_id);
+							}
+*/
+				console.log($newGuardId+" %%%%%");
+ 				Guardlist.addNewGuardList($user,$selfname,$newGuardId,$projectID, function(err, guardlists) {
+					if (err) {
+						guradlists = [];
+							}
+								var $subroute=$projectID+"_"+returnID;
+								res.send({"newGuardID":$newGuardId});
+								/*
+								Post.get(null, function(err, posts) {
+									if (err) {
+										posts = [];
+									}
+									 ElementDepency.get(req.session.user.name,$projectID,function(err,elementdepencys){
+	  									if(err){
+	  										console.log("elementdepencys is null!");
+	  										elementdepencys=[];
+	  									}
+	  									console.log("haha:"+tracerules.length);
+	  									res.render('TTT', {
+											title : 'Traceability',
+											posts : posts,
+											guardlists : guardlists,
+											tracerules : tracerules,
+											elementdepencys : elementdepencys,
+											projectID: $projectID,
+											user : req.session.user,
+											current_guard : returnID,
+											success : req.flash('success').toString(),
+											error : req.flash('error').toString()
+										});	
+	  									
+	  								});
+
+								});*/
+							
+			
+						});				
+					});
+				});
+		
+		});
+	});
+ }
 }
 
 exports.addTraceRuleZero = function(req, res){

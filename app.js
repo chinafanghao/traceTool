@@ -138,6 +138,15 @@ app.post('/EditUseCase',routes.editUseCase);
 app.post('/EditActivity',routes.editActivity);
 app.post('/EditDecision',routes.editDecision);
 app.post('/EditCondition',routes.editCondition);
+app.post('/EditInsertActAfterPre',routes.editInsertActAfterPre);
+app.post('/EditInsertActBeforePost',routes.editInsertActBeforePost);
+app.post('/EditInterAfterDecCon',routes.editInterAfterDecCon);
+app.post('/EditInterBeforeActConCon',routes.editInterBeforeActConCon);
+app.post('/EditInsertDecAfterAct',routes.editInsertDecAfterAct);
+app.post('/EditInsertDecAfterDecCon',routes.editInsertDecAfterDecCon);
+app.post('/EditInsertDecBeforeAct',routes.editInsertDecBeforeAct);
+app.post('/EditInsertDecBeforeActWith',routes.editInsertDecBeforeActWith);
+app.post('/EditInsertDecBeforeActCon',routes.editInsertDecBeforeActCon);
 
 app.post('/addNewFeature',routes.addNewFeature);
 app.post('/loadFeatureModel', routes.loadFeatureModel);

@@ -712,13 +712,13 @@ var $operation_position;
                             $operation_position=$operation_position+$(this).attr("id");
 
                         })
-                    
+                     
                       $.ajax({
                         type: "POST",
                         url: "/addTraceRule",
                         data: {
-                          user:"<%=tracerules[0].user%>",
-                          id:"<%=tracerules[0]._id%>",
+                          user:"<%=user.name%>",
+                          id:"",
                           selfname:$addTraceRule_selfname,
                           guardname:$addTraceRule_guardname,
                           operation_position:$operation_position,

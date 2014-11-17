@@ -1028,6 +1028,12 @@ Tracerule.saveInsertBetween = function saveInsertBetween(user,id,TarAct,PreAct,P
 
 Tracerule.saveInsertActAfterPre = function saveInsertActAfterPre(user,id,TarAct,PreAct,UseCase,positions,callback){
 	// 存入 Mongodb 的文檔
+	if(TarAct.indexOf(".")>0){
+			TarAct=TarAct.split(".")[0]+"_"+TarAct.split(".")[1];
+			PreAct=PreAct.split(".")[0]+"_"+PreAct.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
+	console.log("saveInsertActAfterPre:"+TarAct+" "+PreAct+" "+UseCase);
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -1116,6 +1122,11 @@ Tracerule.saveInsertActAfterPre = function saveInsertActAfterPre(user,id,TarAct,
 
 Tracerule.saveInsertActBeforePost = function saveInsertActBeforePost(user,id,TarAct,PostAct,UseCase,positions,callback){
 	// 存入 Mongodb 的文檔
+	if(TarAct.indexOf(".")>0){
+			TarAct=TarAct.split(".")[0]+"_"+TarAct.split(".")[1];
+			PostAct=PostAct.split(".")[0]+"_"+PostAct.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -1204,6 +1215,13 @@ Tracerule.saveInsertActBeforePost = function saveInsertActBeforePost(user,id,Tar
 
 Tracerule.saveInsertActAfterDecCon = function saveInsertActAfterDecCon(user,id,TarAct,Decision,Condition,UseCase,positions,callback){
 	// 存入 Mongodb 的文檔
+	if(TarAct.indexOf(".")>0){
+			TarAct=TarAct.split(".")[0]+"_"+TarAct.split(".")[1];
+			Decision=Decision.split(".")[0]+"_"+Decision.split(".")[1];
+			Condition=Condition.split(".")[0]+"_"+Condition.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
+		console.log("saveInsertActAfterDecCon:"+TarAct+" "+Decision+" "+Condition+" "+UseCase);
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -1295,6 +1313,12 @@ Tracerule.saveInsertActAfterDecCon = function saveInsertActAfterDecCon(user,id,T
 
 Tracerule.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(user,id,TarAct,PostAct,Condition,UseCase,positions,callback){
 	// 存入 Mongodb 的文檔
+	if(TarAct.indexOf(".")>0){
+			TarAct=TarAct.split(".")[0]+"_"+TarAct.split(".")[1];
+			PostAct=PostAct.split(".")[0]+"_"+PostAct.split(".")[1];
+			Condition=Condition.split(".")[0]+"_"+Condition.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -1385,6 +1409,15 @@ Tracerule.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(user,id
 }
 
 Tracerule.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,id,TarDec,PreAct,MainBranchCon,SupBranchCon,InserAct,TargetAct,UseCase,positions,callback){
+	if(TarDec.indexOf(".")>0){
+			TarDec=TarDec.split(".")[0]+"_"+TarDec.split(".")[1];
+			PreAct=PreAct.split(".")[0]+"_"+PreAct.split(".")[1];
+			MainBranchCon=MainBranchCon.split(".")[0]+"_"+MainBranchCon.split(".")[1];
+			SupBranchCon=SupBranchCon.split(".")[0]+"_"+SupBranchCon.split(".")[1];
+			InserAct=InserAct.split(".")[0]+"_"+InserAct.split(".")[1];
+			TargetAct=TargetAct.split(".")[0]+"_"+TargetAct.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
 	// 存入 Mongodb 的文檔
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -1492,6 +1525,16 @@ Tracerule.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,id,T
 }
 
 Tracerule.saveInsertDecAfterDecCon = function saveInsertDecAfterDecCon(user,id,TarDec,InserDec,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,positions,callback){
+	if(TarDec.indexOf(".")>0){
+			TarDec=TarDec.split(".")[0]+"_"+TarDec.split(".")[1];
+			InserDec=InserDec.split(".")[0]+"_"+InserDec.split(".")[1];
+			InserCon=InserCon.split(".")[0]+"_"+InserCon.split(".")[1];
+			MainBranchCon=MainBranchCon.split(".")[0]+"_"+MainBranchCon.split(".")[1];
+			SupBranchCon=SupBranchCon.split(".")[0]+"_"+SupBranchCon.split(".")[1];
+			InserAct=InserAct.split(".")[0]+"_"+InserAct.split(".")[1];
+			TargetDec=TargetDec.split(".")[0]+"_"+TargetDec.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
 	// 存入 Mongodb 的文檔
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -1596,6 +1639,15 @@ Tracerule.saveInsertDecAfterDecCon = function saveInsertDecAfterDecCon(user,id,T
 }
 
 Tracerule.saveInsertDecBeforeAct = function saveInsertDecBeforeAct(user,id,TarDec,PostAct,Con1,Tar1,Con2,Tar2,UseCase,positions,callback){
+	if(TarDec.indexOf(".")>0){
+			TarDec=TarDec.split(".")[0]+"_"+TarDec.split(".")[1];
+			PostAct=PostAct.split(".")[0]+"_"+PostAct.split(".")[1];
+			Con1=Con1.split(".")[0]+"_"+Con1.split(".")[1];
+			Tar1=Tar1.split(".")[0]+"_"+Tar1.split(".")[1];
+			Con2=Con2.split(".")[0]+"_"+Con2.split(".")[1];
+			Tar2=Tar2.split(".")[0]+"_"+Tar2.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
 	// 存入 Mongodb 的文檔
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -1698,6 +1750,15 @@ Tracerule.saveInsertDecBeforeAct = function saveInsertDecBeforeAct(user,id,TarDe
 }
 
 Tracerule.saveInsertDecBeforeActWith = function saveInsertDecBeforeActWith(user,id,TarDec,PostAct,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,positions,callback){
+	if(TarDec.indexOf(".")>0){
+			TarDec=TarDec.split(".")[0]+"_"+TarDec.split(".")[1];
+			PostAct=PostAct.split(".")[0]+"_"+PostAct.split(".")[1];
+			MainBranchCon=MainBranchCon.split(".")[0]+"_"+MainBranchCon.split(".")[1];
+			SupBranchCon=SupBranchCon.split(".")[0]+"_"+SupBranchCon.split(".")[1];
+			InserAct=InserAct.split(".")[0]+"_"+InserAct.split(".")[1];
+			TargetDec=TargetDec.split(".")[0]+"_"+TargetDec.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
 	// 存入 Mongodb 的文檔
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -1805,6 +1866,16 @@ Tracerule.saveInsertDecBeforeActWith = function saveInsertDecBeforeActWith(user,
 }
 
 Tracerule.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(user,id,TarDec,PostAct,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,positions,callback){
+	if(TarDec.indexOf(".")>0){
+			TarDec=TarDec.split(".")[0]+"_"+TarDec.split(".")[1];
+			PostAct=PostAct.split(".")[0]+"_"+PostAct.split(".")[1];
+			InserCon=InserCon.split(".")[0]+"_"+InserCon.split(".")[1];
+			MainBranchCon=MainBranchCon.split(".")[0]+"_"+MainBranchCon.split(".")[1];
+			SupBranchCon=SupBranchCon.split(".")[0]+"_"+SupBranchCon.split(".")[1];
+			InserAct=InserAct.split(".")[0]+"_"+InserAct.split(".")[1];
+			TargetDec=TargetDec.split(".")[0]+"_"+TargetDec.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
 	// 存入 Mongodb 的文檔
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -2904,7 +2975,7 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 				    var ObjectID = require("mongodb").ObjectID;
 				  
 					if(doc._id==id)
-				{
+				    {
 						query2={$set:{"positions":positions}};
 							collection.update({"user":user,"_id":ObjectID(id)},query2,{safe:true},function(err){
 							if(err) console.warn(err.message);

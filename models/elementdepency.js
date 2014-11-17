@@ -559,7 +559,13 @@ ElementDepency.saveInsertBetween = function saveInsertBetween(user,TarAct,PreAct
 */
 
 ElementDepency.saveInsertActAfterPre = function saveInsertActAfterPre(user,TarAct,PreAct,UseCase,current_guard_id,callback){
-		
+		console.log("saveInsertActAfterPre:"+TarAct+" "+PreAct+" "+UseCase);
+		if(TarAct.indexOf(".")>0){
+			TarAct=TarAct.split(".")[0]+"_"+TarAct.split(".")[1];
+			PreAct=PreAct.split(".")[0]+"_"+PreAct.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
+		console.log("saveInsertActAfterPre:"+TarAct+" "+PreAct+" "+UseCase);
 		mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -571,7 +577,7 @@ ElementDepency.saveInsertActAfterPre = function saveInsertActAfterPre(user,TarAc
 				return callback(err);
 			}
 			
-		
+			
 			var traceruleID1=TarAct.split('_');
 			var traceruleID2=PreAct.split('_');
 			var traceruleID3=UseCase.split('_');
@@ -646,7 +652,11 @@ ElementDepency.saveInsertActAfterPre = function saveInsertActAfterPre(user,TarAc
 	}
 
 ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,TarAct,PostAct,UseCase,current_guard_id,callback){
-		
+		if(TarAct.indexOf(".")>0){
+			TarAct=TarAct.split(".")[0]+"_"+TarAct.split(".")[1];
+			PostAct=PostAct.split(".")[0]+"_"+PostAct.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
 		mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -730,7 +740,13 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
   }
 
   ElementDepency.saveInsertActAfterDecCon = function saveInsertActAfterDecCon(user,TarAct,Decision,Condition,UseCase,current_guard_id,callback){
-		
+		if(TarAct.indexOf(".")>0){
+			TarAct=TarAct.split(".")[0]+"_"+TarAct.split(".")[1];
+			Decision=Decision.split(".")[0]+"_"+Decision.split(".")[1];
+			Condition=Condition.split(".")[0]+"_"+Condition.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
+		console.log("saveInsertActAfterDecCon:"+TarAct+" "+Decision+" "+Condition+" "+UseCase);
 		mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -833,7 +849,12 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
   }
 
 ElementDepency.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(user,TarAct,PostAct,Condition,UseCase,current_guard_id,callback){
-		
+		if(TarAct.indexOf(".")>0){
+			TarAct=TarAct.split(".")[0]+"_"+TarAct.split(".")[1];
+			PostAct=PostAct.split(".")[0]+"_"+PostAct.split(".")[1];
+			Condition=Condition.split(".")[0]+"_"+Condition.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
 		mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -936,7 +957,15 @@ ElementDepency.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(us
   }
 
 ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,TarDec,PreAct,MainBranchCon,SupBranchCon,InserAct,TargetAct,UseCase,current_guard_id,callback){
-		
+		if(TarDec.indexOf(".")>0){
+			TarDec=TarDec.split(".")[0]+"_"+TarDec.split(".")[1];
+			PreAct=PreAct.split(".")[0]+"_"+PreAct.split(".")[1];
+			MainBranchCon=MainBranchCon.split(".")[0]+"_"+MainBranchCon.split(".")[1];
+			SupBranchCon=SupBranchCon.split(".")[0]+"_"+SupBranchCon.split(".")[1];
+			InserAct=InserAct.split(".")[0]+"_"+InserAct.split(".")[1];
+			TargetAct=TargetAct.split(".")[0]+"_"+TargetAct.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
 		mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -1095,7 +1124,17 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
   }
 
 ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user,TarDec,InserDec,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,current_guard_id,callback){
-		
+		if(TarDec.indexOf(".")>0){
+			TarDec=TarDec.split(".")[0]+"_"+TarDec.split(".")[1];
+			InserDec=InserDec.split(".")[0]+"_"+InserDec.split(".")[1];
+			InserCon=InserCon.split(".")[0]+"_"+InserCon.split(".")[1];
+			MainBranchCon=MainBranchCon.split(".")[0]+"_"+MainBranchCon.split(".")[1];
+			SupBranchCon=SupBranchCon.split(".")[0]+"_"+SupBranchCon.split(".")[1];
+			InserAct=InserAct.split(".")[0]+"_"+InserAct.split(".")[1];
+			TargetDec=TargetDec.split(".")[0]+"_"+TargetDec.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
+
 		mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -1273,7 +1312,16 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
   }
 
   ElementDepency.saveInsertDecBeforeAct = function saveInsertDecBeforeAct(user,TarDec,PostAct,Con1,Tar1,Con2,Tar2,UseCase,current_guard_id,callback){
-		
+		if(TarDec.indexOf(".")>0){
+			TarDec=TarDec.split(".")[0]+"_"+TarDec.split(".")[1];
+			PostAct=PostAct.split(".")[0]+"_"+PostAct.split(".")[1];
+			Con1=Con1.split(".")[0]+"_"+Con1.split(".")[1];
+			Tar1=Tar1.split(".")[0]+"_"+Tar1.split(".")[1];
+			Con2=Con2.split(".")[0]+"_"+Con2.split(".")[1];
+			Tar2=Tar2.split(".")[0]+"_"+Tar2.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
+
 		mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -1432,7 +1480,15 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
   }
 
   ElementDepency.saveInsertDecBeforeActWith = function saveInsertDecBeforeActWith(user,TarDec,PostAct,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,current_guard_id,callback){
-		
+		if(TarDec.indexOf(".")>0){
+			TarDec=TarDec.split(".")[0]+"_"+TarDec.split(".")[1];
+			PostAct=PostAct.split(".")[0]+"_"+PostAct.split(".")[1];
+			MainBranchCon=MainBranchCon.split(".")[0]+"_"+MainBranchCon.split(".")[1];
+			SupBranchCon=SupBranchCon.split(".")[0]+"_"+SupBranchCon.split(".")[1];
+			InserAct=InserAct.split(".")[0]+"_"+InserAct.split(".")[1];
+			TargetDec=TargetDec.split(".")[0]+"_"+TargetDec.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
 		mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -1591,7 +1647,16 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
   }
 
 ElementDepency.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(user,TarDec,PostAct,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,current_guard_id,callback){
-		
+		if(TarDec.indexOf(".")>0){
+			TarDec=TarDec.split(".")[0]+"_"+TarDec.split(".")[1];
+			PostAct=PostAct.split(".")[0]+"_"+PostAct.split(".")[1];
+			InserCon=InserCon.split(".")[0]+"_"+InserCon.split(".")[1];
+			MainBranchCon=MainBranchCon.split(".")[0]+"_"+MainBranchCon.split(".")[1];
+			SupBranchCon=SupBranchCon.split(".")[0]+"_"+SupBranchCon.split(".")[1];
+			InserAct=InserAct.split(".")[0]+"_"+InserAct.split(".")[1];
+			TargetDec=TargetDec.split(".")[0]+"_"+TargetDec.split(".")[1];
+			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
+		}
 		mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -1979,7 +2044,7 @@ ElementDepency.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,i
 			return callback(err);
 		}
 	
-	
+		console.log("deleteInsertActAfterPre:"+user+" "+id+" "+operation_name+" "+hide_field);
 	   db.collection('elementdepency', function(err, collection) {
 			if (err) {
 				mongodb.close();
@@ -1989,7 +2054,7 @@ ElementDepency.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,i
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log(name[length]);
+			console.log("deleteInsertActAfterPre:"+name[length]);
 
 		    var name=operation_name.split(" ");
 			
@@ -3280,6 +3345,8 @@ ElementDepency.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCo
 		
 	});
 };
+
+
 
 ElementDepency.editUseCaseDependee = function editUseCaseDependee(user,elementname,oldelementname,dependee,type,callback){
 	// 存入 Mongodb 的文檔

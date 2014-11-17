@@ -721,7 +721,13 @@
          $(this).siblings().show();
       })
 
+        var $OldTarAct,$OldPreAct,$OldUseCase;
         $(".icon-pencil.editOperation.insertactafterpre").click(function(){
+          
+          $OldTarAct=$(this).parent().find(".InterBetTar").find("option:selected").val();
+          $OldPreAct=$(this).parent().parent().find(".InterBetPre").find("option:selected").val();
+          $OldUseCase=$(this).parent().parent().find(".InterBetUseCase").find("option:selected").val();
+          //alert($OldTarAct+" "+$OldPreAct+" "+$OldUseCase);
         jQuery.each($(this).parent().parent().parent(),function(){
           $(this).find('select').attr("disabled",false);
           
@@ -732,16 +738,489 @@
       })
 
       $(".icon-ok.editOperation.insertactafterpre").click(function(){
+         var $hidden_fields=$(this).parent().parent().parent().find("#hidden_insertactafterpre").val();
+
         jQuery.each($(this).parent().parent().parent(),function(){
           $(this).find('select').attr("disabled",true);
+        })
+           var $editTartAct=$(this).parent().find(".InterBetTar").find("option:selected").val();
+           var $editPreAct=$(this).parent().parent().find(".InterBetPre").find("option:selected").val();
+           var $editUseCase=$(this).parent().parent().find(".InterBetUseCase").find("option:selected").val();
+         var $nums=0;
+        $(this).parent().parent().parent().parent().parent().find("b").each(function(i){
+          $nums++;
+          if($nums==1&&$(this).html()==$OldTarAct.split(".")[1]){
+            $(this).html($editTartAct.split(".")[1]);
+          }
+          if($nums==2&&$(this).html()==$OldPreAct.split(".")[1]){
+            $(this).html($editPreAct.split(".")[1]);
+          }
+           if($nums==3&&$(this).html()==$OldUseCase.split(".")[1]){
+            $(this).html($editUseCase.split(".")[1]);
+          }
+           
+        })
+        var $tempname="Insert "+$editTartAct.split(".")[1]+" after "+$editPreAct.split(".")[1]+" in "+$editUseCase.split(".")[1];
+        $(this).parent().parent().parent().parent().parent().parent().attr("id",$tempname);
+
+          $operation_position="";
+          var $mark=false;
+       $(".section_accordion").each(function(){
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          
+          $operation_position=$operation_position+$(this).attr("id");
+       })
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+          $.ajax({
+            type: "POST",
+            url: "/EditInsertActAfterPre",
+            async:false,
+            data: {
+              user:"<%=tracerules[0].user%>",
+              id:"<%=tracerules[0]._id%>",
+              editTartAct:$editTartAct,
+              editPreAct:$editPreAct,
+              editUseCase:$editUseCase,
+              oldTarAct:$OldTarAct,
+              oldPreAct:$OldPreAct,
+              oldUseCase:$OldUseCase,
+              positions:$operation_position,
+              current_guard_id:$current_guard_id,
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+              elementdepencyss=Object.elementdepencys;
+              console.log(elementdepencyss);
+
+            },
+            error:function(a){
+
+              alert("errssssssss");
+              alert(typeof(a));
+            }
+          }); 
+
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+      })
+
+          var $OldPostAct;
+        $(".icon-pencil.editOperation.insertActBeforePost").click(function(){
+          
+          $OldTarAct=$(this).parent().find(".InterBetTar").find("option:selected").val();
+          $OldPostAct=$(this).parent().parent().find(".InterBetPre").find("option:selected").val();
+          $OldUseCase=$(this).parent().parent().find(".InterBetUseCase").find("option:selected").val();
+          //alert($OldTarAct+" "+$OldPostAct+" "+$OldUseCase);
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
         })
         //$(this).parent().parent().parent().('input').attr("readonly",false);
          $(this).css("display","none");
          $(this).siblings().show();
       })
 
+      $(".icon-ok.editOperation.insertActBeforePost").click(function(){
+         var $hidden_fields=$(this).parent().parent().parent().find("#hidden_insertActBeforePost").val();
+
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+           var $editTartAct=$(this).parent().find(".InterBetTar").find("option:selected").val();
+           var $editPostAct=$(this).parent().parent().find(".InterBetPre").find("option:selected").val();
+           var $editUseCase=$(this).parent().parent().find(".InterBetUseCase").find("option:selected").val();
+         var $nums=0;
+        $(this).parent().parent().parent().parent().parent().find("b").each(function(i){
+          $nums++;
+          if($nums==1&&$(this).html()==$OldTarAct.split(".")[1]){
+            $(this).html($editTartAct.split(".")[1]);
+          }
+          if($nums==2&&$(this).html()==$OldPostAct.split(".")[1]){
+            $(this).html($editPostAct.split(".")[1]);
+          }
+           if($nums==3&&$(this).html()==$OldUseCase.split(".")[1]){
+            $(this).html($editUseCase.split(".")[1]);
+          }
+           
+        })
+        var $tempname="Insert "+$editTartAct.split(".")[1]+" before "+$editPostAct.split(".")[1]+" in "+$editUseCase.split(".")[1];
+        $(this).parent().parent().parent().parent().parent().parent().attr("id",$tempname);
+
+          $operation_position="";
+          var $mark=false;
+       $(".section_accordion").each(function(){
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          
+          $operation_position=$operation_position+$(this).attr("id");
+       })
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+          $.ajax({
+            type: "POST",
+            url: "/EditInsertActBeforePost",
+            async:false,
+            data: {
+              user:"<%=tracerules[0].user%>",
+              id:"<%=tracerules[0]._id%>",
+              editTartAct:$editTartAct,
+              editPostAct:$editPostAct,
+              editUseCase:$editUseCase,
+              oldTarAct:$OldTarAct,
+              oldPostAct:$OldPostAct,
+              oldUseCase:$OldUseCase,
+              positions:$operation_position,
+              current_guard_id:$current_guard_id,
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+              elementdepencyss=Object.elementdepencys;
+              console.log(elementdepencyss);
+
+            },
+            error:function(a){
+
+              alert("errssssssss");
+              alert(typeof(a));
+            }
+          }); 
+
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+      })
+        var $OldDec,$OldCon;
+       $(".icon-pencil.editOperation.insertActAfterDecCon").click(function(){
+          
+          $OldTarAct=$(this).parent().find(".InterAfterDecConAct").find("option:selected").val();
+          $OldDec=$(this).parent().parent().find(".InterAfterDecConDec").find("option:selected").val();
+          $OldCon=$(this).parent().parent().find(".InterAfterDecConCon").find("option:selected").val();
+          $OldUseCase=$(this).parent().parent().find(".InterAfterDecConUseCase").find("option:selected").val();
+          //alert($OldTarAct+" "+$OldPostAct+" "+$OldUseCase);
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-ok.editOperation.insertActAfterDecCon").click(function(){
+         var $hidden_fields=$(this).parent().parent().parent().find("#hidden_insertActAfterDecCon").val();
+
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+           var $editTartAct=$(this).parent().find(".InterAfterDecConAct").find("option:selected").val();
+           var $editDec=$(this).parent().parent().find(".InterAfterDecConDec").find("option:selected").val();
+           var $editCon=$(this).parent().parent().find(".InterAfterDecConCon").find("option:selected").val();
+           var $editUseCase=$(this).parent().parent().find(".InterAfterDecConUseCase").find("option:selected").val();
+         var $nums=0;
+        $(this).parent().parent().parent().parent().parent().find("b").each(function(i){
+          $nums++;
+          if($nums==1&&$(this).html()==$OldTarAct.split(".")[1]){
+            $(this).html($editTartAct.split(".")[1]);
+          }
+          if($nums==2&&$(this).html()==$OldDec.split(".")[1]){
+            $(this).html($editDec.split(".")[1]);
+          }
+          if($nums==3&&$(this).html()==$OldCon.split(".")[1]){
+            $(this).html($editCon.split(".")[1]);
+          }
+           if($nums==4&&$(this).html()==$OldUseCase.split(".")[1]){
+            $(this).html($editUseCase.split(".")[1]);
+          }
+           
+        })
+        var $tempname="Insert "+$editTartAct.split(".")[1]+" after "+$editDec.split(".")[1]+" , "+$editCon.split(".")[1]+" in "+$editUseCase.split(".")[1];
+        $(this).parent().parent().parent().parent().parent().parent().attr("id",$tempname);
+
+          $operation_position="";
+          var $mark=false;
+       $(".section_accordion").each(function(){
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          
+          $operation_position=$operation_position+$(this).attr("id");
+       })
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+          $.ajax({
+            type: "POST",
+            url: "/EditInterAfterDecCon",
+            async:false,
+            data: {
+              user:"<%=tracerules[0].user%>",
+              id:"<%=tracerules[0]._id%>",
+              editTartAct:$editTartAct,
+              editDec:$editDec,
+              editCon:$editCon,
+              editUseCase:$editUseCase,
+              oldTarAct:$OldTarAct,
+              oldDec:$OldDec,
+              oldCon:$OldCon,
+              oldUseCase:$OldUseCase,
+              positions:$operation_position,
+              current_guard_id:$current_guard_id,
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+              elementdepencyss=Object.elementdepencys;
+              console.log(elementdepencyss);
+
+            },
+            error:function(a){
+
+              alert("errssssssss");
+              alert(typeof(a));
+            }
+          }); 
+
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+      })
+        var $OldAct;
+       $(".icon-pencil.editOperation.insertActBeforeActCon").click(function(){
+          
+          $OldTarAct=$(this).parent().find(".InterBeforeActConTar").find("option:selected").val();
+          $OldAct=$(this).parent().parent().find(".InterBeforeActConAct").find("option:selected").val();
+          $OldCon=$(this).parent().parent().find(".InterBeforeActConCon").find("option:selected").val();
+          $OldUseCase=$(this).parent().parent().find(".InterBeforeActConUseCase").find("option:selected").val();
+          //alert($OldTarAct+" "+$OldPostAct+" "+$OldUseCase);
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+
+      $(".icon-ok.editOperation.insertActBeforeActCon").click(function(){
+         var $hidden_fields=$(this).parent().parent().parent().find("#hidden_insertActBeforeActCon").val();
+
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+           var $editTartAct=$(this).parent().find(".InterBeforeActConTar").find("option:selected").val();
+           var $editAct=$(this).parent().parent().find(".InterBeforeActConAct").find("option:selected").val();
+           var $editCon=$(this).parent().parent().find(".InterBeforeActConCon").find("option:selected").val();
+           var $editUseCase=$(this).parent().parent().find(".InterBeforeActConUseCase").find("option:selected").val();
+         var $nums=0;
+        $(this).parent().parent().parent().parent().parent().find("b").each(function(i){
+          $nums++;
+          if($nums==1&&$(this).html()==$OldTarAct.split(".")[1]){
+            $(this).html($editTartAct.split(".")[1]);
+          }
+          if($nums==2&&$(this).html()==$OldAct.split(".")[1]){
+            $(this).html($editAct.split(".")[1]);
+          }
+          if($nums==3&&$(this).html()==$OldCon.split(".")[1]){
+            $(this).html($editCon.split(".")[1]);
+          }
+           if($nums==4&&$(this).html()==$OldUseCase.split(".")[1]){
+            $(this).html($editUseCase.split(".")[1]);
+          }
+           
+        })
+        var $tempname="Insert "+$editTartAct.split(".")[1]+" before "+$editAct.split(".")[1]+" , "+$editCon.split(".")[1]+" in "+$editUseCase.split(".")[1];
+        $(this).parent().parent().parent().parent().parent().parent().attr("id",$tempname);
+
+          $operation_position="";
+          var $mark=false;
+       $(".section_accordion").each(function(){
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          
+          $operation_position=$operation_position+$(this).attr("id");
+       })
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+          $.ajax({
+            type: "POST",
+            url: "/EditInterBeforeActConCon",
+            async:false,
+            data: {
+              user:"<%=tracerules[0].user%>",
+              id:"<%=tracerules[0]._id%>",
+              editTartAct:$editTartAct,
+              editAct:$editAct,
+              editCon:$editCon,
+              editUseCase:$editUseCase,
+              oldTarAct:$OldTarAct,
+              oldAct:$OldAct,
+              oldCon:$OldCon,
+              oldUseCase:$OldUseCase,
+              positions:$operation_position,
+              current_guard_id:$current_guard_id,
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+              elementdepencyss=Object.elementdepencys;
+              console.log(elementdepencyss);
+
+            },
+            error:function(a){
+
+              alert("errssssssss");
+              alert(typeof(a));
+            }
+          }); 
+
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+      })
+
+
+/*
+      $(".icon-ok.editOperation.Activity").click(function(){
+        var $hidden_fields=$(this).parent().parent().parent().find("#hidden_editactivity").val();
+        console.log($hidden_fields+"lalalalalalalal");
+          $ActivityName=$(this).parent().find('input').val();
+          $ActivityDescription=$(this).parent().parent().parent().find('textarea').val();
+          $ActivityExecutor=$(this).parent().parent().parent().find("option:selected").val();
+
+        jQuery.each($(this).parent().parent().parent(),function(){
+           $(this).find('input').attr("readonly",true);
+           $(this).find('textarea').attr("readonly",true);
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+        $("b").each(function(i){
+          if($(this).html()==$OldActivityName){
+            $(this).html($ActivityName);
+          }
+           if($(this).html()==$OldActivityExecutor){
+            $(this).html($ActivityExecutor);
+          }
+        })
+
+        $("option").each(function(i){
+          
+          var spl=$(this).val().split(".");
+          if(spl.length===2 && spl[1]==$OldActivityName){
+
+            $(this).val(spl[0]+"."+$ActivityName);
+            $(this).html($ActivityName);
+          }
+          
+        })
+          $operation_position="";
+          var $mark=false;
+       $(".section_accordion").each(function(){
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          var temp_operation=$(this).attr("id").split(" ");
+          var temps="";
+          for(temp in temp_operation)
+          {
+            if(temps!="")
+              temps=temps+" ";
+            
+            if(temp_operation[temp]==$OldActivityName)
+            {
+              temp_operation[temp]=$ActivityName;
+            }
+            temps=temps+temp_operation[temp];
+
+          }
+          $(this).attr("id",temps);
+          $operation_position=$operation_position+$(this).attr("id");
+       })
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+         var $nameMark;
+         var $DescriptionMark;
+         var $ExecutorMark;
+         if($ActivityName!==$OldActivityName)
+            $nameMark=true;
+          else
+            $nameMark=false;
+         if($ActivityDescription!==$OldActivityDescription)
+            $DescriptionMark=true;
+          else
+            $DescriptionMark=false;
+         if($ActivityExecutor!=$OldActivityExecutor)
+            $ExecutorMark=true;
+          else
+            $ExecutorMark=false;
+
+         if($ActivityName!==$OldActivityName || $ActivityDescription!==$OldActivityDescription||$ActivityExecutor!=$OldActivityExecutor){
+          $.ajax({
+            type: "POST",
+            url: "/EditActivity",
+            async:false,
+            data: {
+              nameMark:$nameMark,
+              descriptionMark:$DescriptionMark,
+              executorMark:$ExecutorMark,
+              user:"<%=tracerules[0].user%>",
+              id:"<%=tracerules[0]._id%>",
+              activityname:$ActivityName,
+              activitydescription:$ActivityDescription,
+              activityexecutor:$ActivityExecutor,
+              oldactivityname:$OldActivityName,
+              oldactivitydescription:$OldActivityDescription,
+              oldactivityexecutor:$OldActivityExecutor,
+              positions:$operation_position,
+              current_guard_id:$current_guard_id,
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+              elementdepencyss=Object.elementdepencys;
+              console.log(elementdepencyss);
+
+            },
+            error:function(a){
+
+              alert("errssssssss");
+              alert(typeof(a));
+            }
+          }); 
+        }
+
+      })
+
+*/
+      var $OldTarDec;
+      var $OldPreAct;
+      var $OldMainCon;
+      var $OldSBCon;
+      var $OldInsertAct;
+      var $OldInsertTarAct;
 
        $(".icon-pencil.editOperation.InsertAfterDecCon").click(function(){
+          $OldTarDec=$(this).parent().find(".InsertDecAfterActDec").find("option:selected").val();
+          $OldPreAct=$(this).parent().parent().find(".InsertDecAfterActPreAct").find("option:selected").val();
+          $OldMainCon=$(this).parent().parent().find(".InsertDecAfterActMainCon").find("option:selected").val();
+          $OldSBCon=$(this).parent().parent().find(".InsertDecAfterActSupCon").find("option:selected").val();
+          $OldInsertAct=$(this).parent().parent().find(".InsertDecAfterActInserAct").find("option:selected").val();
+          $OldInsertTarAct=$(this).parent().parent().find(".InsertDecAfterActTarAct").find("option:selected").val(); 
+          $OldUseCase=$(this).parent().parent().find(".InsertDecAfterActUseCase").find("option:selected").val();
         jQuery.each($(this).parent().parent().parent(),function(){
           $(this).find('select').attr("disabled",false);
           
@@ -836,8 +1315,16 @@
       })
 
       
+    
 
       $(".icon-pencil.editOperation.InsertDecAfterAct").click(function(){
+          $OldTarDec=$(this).parent().find(".InsertDecAfterActDec").find("option:selected").val();
+          $OldPreAct=$(this).parent().parent().find(".InsertDecAfterActPreAct").find("option:selected").val();
+          $OldMainCon=$(this).parent().parent().find(".InsertDecAfterActMainCon").find("option:selected").val();
+          $OldSBCon=$(this).parent().parent().find(".InsertDecAfterActSupCon").find("option:selected").val();
+          $OldInsertAct=$(this).parent().parent().find(".InsertDecAfterActInserAct").find("option:selected").val();
+          $OldInsertTarAct=$(this).parent().parent().find(".InsertDecAfterActTarAct").find("option:selected").val(); 
+          $OldUseCase=$(this).parent().parent().find(".InsertDecAfterActUseCase").find("option:selected").val();
         jQuery.each($(this).parent().parent().parent(),function(){
           $(this).find('select').attr("disabled",false);
           
@@ -848,12 +1335,593 @@
       })
 
       $(".icon-ok.editOperation.InsertDecAfterAct").click(function(){
+        var $hidden_fields=$(this).parent().parent().parent().find("#hidden_insertDecAfterAct").val();
+
         jQuery.each($(this).parent().parent().parent(),function(){
           $(this).find('select').attr("disabled",true);
+        })
+          
+           var $EditTarDec=$(this).parent().find(".InsertDecAfterActDec").find("option:selected").val();
+           var $EditPreAct=$(this).parent().parent().find(".InsertDecAfterActPreAct").find("option:selected").val();
+           var $EditMainCon=$(this).parent().parent().find(".InsertDecAfterActMainCon").find("option:selected").val();
+           var $EditSBCon=$(this).parent().parent().find(".InsertDecAfterActSupCon").find("option:selected").val();
+           var $EditInsertAct=$(this).parent().parent().find(".InsertDecAfterActInserAct").find("option:selected").val();
+           var $EditInsertTarAct=$(this).parent().parent().find(".InsertDecAfterActTarAct").find("option:selected").val(); 
+           var $EditUseCase=$(this).parent().parent().find(".InsertDecAfterActUseCase").find("option:selected").val();
+
+         var $nums=0;
+
+        $(this).parent().parent().parent().parent().parent().find("b").each(function(i){
+          $nums++; console.log($nums+":"+$(this).html());
+          if($nums==1&&$(this).html()==$OldTarDec.split(".")[1]){
+            $(this).html($EditTarDec.split(".")[1]);
+          }
+          if($nums==2&&$(this).html()==$OldPreAct.split(".")[1]){
+            $(this).html($EditPreAct.split(".")[1]);
+          }
+          if($nums==3&&$(this).html()==$OldMainCon.split(".")[1]){
+            $(this).html($EditMainCon.split(".")[1]);
+          }
+          if($nums==4&&$(this).html()==$OldSBCon.split(".")[1]){
+            $(this).html($EditSBCon.split(".")[1]);
+          }
+          if($nums==5&&$(this).html()==$OldInsertAct.split(".")[1]){
+            $(this).html($EditInsertAct.split(".")[1]);
+          }
+          if($nums==6&&$(this).html()==$OldInsertTarAct.split(".")[1]){
+            $(this).html($EditInsertTarAct.split(".")[1]);
+          }
+          if($nums==7&&$(this).html()==$OldUseCase.split(".")[1]){
+            $(this).html($EditUseCase.split(".")[1]);
+          }
+           
+        })
+        var $tempname="Insert "+$EditTarDec.split(".")[1]+" after "+$EditPreAct.split(".")[1]+" with ( "+$EditMainCon.split(".")[1]+" ),( "+$EditSBCon.split(".")[1]+" , "+$EditInsertAct.split(".")[1]+" , "+$EditInsertTarAct.split(".")[1]+" ) in "+$EditUseCase.split(".")[1];
+        $(this).parent().parent().parent().parent().parent().parent().attr("id",$tempname);
+
+          $operation_position="";
+          var $mark=false;
+       $(".section_accordion").each(function(){
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          
+          $operation_position=$operation_position+$(this).attr("id");
+       })
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+          $.ajax({
+            type: "POST",
+            url: "/EditInsertDecAfterAct",
+            async:false,
+            data: {
+              user:"<%=tracerules[0].user%>",
+              id:"<%=tracerules[0]._id%>",
+              EditTarDec:$EditTarDec,
+              EditPreAct:$EditPreAct,
+              EditMainCon:$EditMainCon,
+              EditSBCon:$EditSBCon,
+              EditInsertAct:$EditInsertAct,
+              EditInsertTarAct:$EditInsertTarAct,
+              EditUseCase:$EditUseCase,
+              OldTarDec:$OldTarDec,
+              OldPreAct:$OldPreAct,
+              OldMainCon:$OldMainCon,
+              OldSBCon:$OldSBCon,
+              OldInsertAct:$OldInsertAct,
+              OldInsertTarAct:$OldInsertTarAct,
+              OldUseCase:$OldUseCase,
+              positions:$operation_position,
+              current_guard_id:$current_guard_id,
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+              elementdepencyss=Object.elementdepencys;
+              console.log(elementdepencyss);
+
+            },
+            error:function(a){
+
+              alert("errssssssss");
+              alert(typeof(a));
+            }
+          }); 
+
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+      })
+      var $OldInsertDec,$OldInsertCon;
+      $(".icon-pencil.editOperation.insertDecAfterDecCon").click(function(){
+          $OldTarDec=$(this).parent().find(".InsertDecAfterDecConDec").find("option:selected").val();
+          $OldInsertDec=$(this).parent().parent().find(".InsertDecAfterDecConInserDec").find("option:selected").val();
+          $OldInsertCon=$(this).parent().parent().find(".InsertDecAfterDecConInserCon").find("option:selected").val();
+          $OldMainCon=$(this).parent().parent().find(".InsertDecAfterDecConMainCon").find("option:selected").val();
+          $OldSBCon=$(this).parent().parent().find(".InsertDecAfterDecConSupCon").find("option:selected").val();
+          $OldInsertAct=$(this).parent().parent().find(".InsertDecAfterDecConInserAct").find("option:selected").val();
+          $OldInsertTarAct=$(this).parent().parent().find(".InsertDecAfterDecConTarAct").find("option:selected").val(); 
+          $OldUseCase=$(this).parent().parent().find(".InsertDecAfterDecConUseCase").find("option:selected").val();
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
         })
         //$(this).parent().parent().parent().('input').attr("readonly",false);
          $(this).css("display","none");
          $(this).siblings().show();
+      })
+  
+      var $EditInsertDec,$EditInsertCon;
+      $(".icon-ok.editOperation.insertDecAfterDecCon").click(function(){
+        var $hidden_fields=$(this).parent().parent().parent().find("#hidden_insertDecAfterDecCon").val();
+
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+          
+          $EditTarDec=$(this).parent().find(".InsertDecAfterDecConDec").find("option:selected").val();
+          $EditInsertDec=$(this).parent().parent().find(".InsertDecAfterDecConInserDec").find("option:selected").val();
+          $EditInsertCon=$(this).parent().parent().find(".InsertDecAfterDecConInserCon").find("option:selected").val();
+          $EditMainCon=$(this).parent().parent().find(".InsertDecAfterDecConMainCon").find("option:selected").val();
+          $EditSBCon=$(this).parent().parent().find(".InsertDecAfterDecConSupCon").find("option:selected").val();
+          $EditInsertAct=$(this).parent().parent().find(".InsertDecAfterDecConInserAct").find("option:selected").val();
+          $EditInsertTarAct=$(this).parent().parent().find(".InsertDecAfterDecConTarAct").find("option:selected").val(); 
+          $EditUseCase=$(this).parent().parent().find(".InsertDecAfterDecConUseCase").find("option:selected").val();
+
+         var $nums=0;
+
+        $(this).parent().parent().parent().parent().parent().find("b").each(function(i){
+          $nums++; console.log($nums+":"+$(this).html());
+          if($nums==1&&$(this).html()==$OldTarDec.split(".")[1]){
+            $(this).html($EditTarDec.split(".")[1]);
+          }
+          if($nums==2&&$(this).html()==$OldInsertDec.split(".")[1]){
+            $(this).html($EditInsertDec.split(".")[1]);
+          }
+          if($nums==3&&$(this).html()==$OldInsertCon.split(".")[1]){
+            $(this).html($EditInsertCon.split(".")[1]);
+          }
+          if($nums==4&&$(this).html()==$OldMainCon.split(".")[1]){
+            $(this).html($EditMainCon.split(".")[1]);
+          }
+          if($nums==5&&$(this).html()==$OldSBCon.split(".")[1]){
+            $(this).html($EditSBCon.split(".")[1]);
+          }
+          if($nums==6&&$(this).html()==$OldInsertAct.split(".")[1]){
+            $(this).html($EditInsertAct.split(".")[1]);
+          }
+          if($nums==7&&$(this).html()==$OldInsertTarAct.split(".")[1]){
+            $(this).html($EditInsertTarAct.split(".")[1]);
+          }
+          if($nums==8&&$(this).html()==$OldUseCase.split(".")[1]){
+            $(this).html($EditUseCase.split(".")[1]);
+          }
+           
+        })
+        var $tempname="Insert "+$EditTarDec.split(".")[1]+" after ( "+$EditInsertDec.split(".")[1]+" , "+$EditInsertCon.split(".")[1]+" )"+" with ( "+$EditMainCon.split(".")[1]+" ),( "+$EditSBCon.split(".")[1]+" , "+$EditInsertAct.split(".")[1]+" , "+$EditInsertTarAct.split(".")[1]+" ) in "+$EditUseCase.split(".")[1];
+        $(this).parent().parent().parent().parent().parent().parent().attr("id",$tempname);
+
+          $operation_position="";
+          var $mark=false;
+       $(".section_accordion").each(function(){
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          
+          $operation_position=$operation_position+$(this).attr("id");
+       })
+         $(this).css("display","none");
+         $(this).siblings().show();
+         
+          $.ajax({
+            type: "POST",
+            url: "/EditInsertDecAfterDecCon",
+            async:false,
+            data: {
+              user:"<%=tracerules[0].user%>",
+              id:"<%=tracerules[0]._id%>",
+              EditTarDec:$EditTarDec,
+              EditInsertDec:$EditInsertDec,
+              EditInsertCon:$EditInsertCon,
+              EditMainCon:$EditMainCon,
+              EditSBCon:$EditSBCon,
+              EditInsertAct:$EditInsertAct,
+              EditInsertTarAct:$EditInsertTarAct,
+              EditUseCase:$EditUseCase,
+              OldTarDec:$OldTarDec,
+              OldInsertDec:$OldInsertDec,
+              OldInsertCon:$OldInsertCon,
+              OldMainCon:$OldMainCon,
+              OldSBCon:$OldSBCon,
+              OldInsertAct:$OldInsertAct,
+              OldInsertTarAct:$OldInsertTarAct,
+              OldUseCase:$OldUseCase,
+              positions:$operation_position,
+              current_guard_id:$current_guard_id,
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+              elementdepencyss=Object.elementdepencys;
+              console.log(elementdepencyss);
+
+            },
+            error:function(a){
+
+              alert("errssssssss!!!");
+              alert(typeof(a));
+            }
+          });  
+
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+      })
+
+        var $OldCon1,$OldCon2,$OldTart1,$OldTart2;
+       $(".icon-pencil.editOperation.insertDecBeforeAct").click(function(){
+          $OldTarDec=$(this).parent().find(".InsertDecBeforeActDec").find("option:selected").val();
+          $OldPostAct=$(this).parent().parent().find(".InsertDecBeforeActPostAct").find("option:selected").val();
+          $OldCon1=$(this).parent().parent().find(".InsertDecBeforeActCon1").find("option:selected").val();
+          $OldTart1=$(this).parent().parent().find(".InsertDecBeforeActTar1").find("option:selected").val();
+          $OldCon2=$(this).parent().parent().find(".InsertDecBeforeActCon2").find("option:selected").val();
+          $OldTart2=$(this).parent().parent().find(".InsertDecBeforeActTar2").find("option:selected").val();
+          $OldUseCase=$(this).parent().parent().find(".InterBeforeActUseCase").find("option:selected").val();
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+  
+      var $EditCon1,$EditCon2,$EditTart1,$EditTart2; 
+      $(".icon-ok.editOperation.insertDecBeforeAct").click(function(){
+        var $hidden_fields=$(this).parent().parent().parent().find("#hidden_insertDecBeforeAct").val();
+
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+          
+          $EditTarDec=$(this).parent().find(".InsertDecBeforeActDec").find("option:selected").val();
+          $EditPostAct=$(this).parent().parent().find(".InsertDecBeforeActPostAct").find("option:selected").val();
+          $EditCon1=$(this).parent().parent().find(".InsertDecBeforeActCon1").find("option:selected").val();
+          $EditTart1=$(this).parent().parent().find(".InsertDecBeforeActTar1").find("option:selected").val();
+          $EditCon2=$(this).parent().parent().find(".InsertDecBeforeActCon2").find("option:selected").val();
+          $EditTart2=$(this).parent().parent().find(".InsertDecBeforeActTar2").find("option:selected").val();
+          $EditUseCase=$(this).parent().parent().find(".InterBeforeActUseCase").find("option:selected").val();
+
+         var $nums=0;
+
+        $(this).parent().parent().parent().parent().parent().find("b").each(function(i){
+          $nums++; console.log($nums+":"+$(this).html());
+          if($nums==1&&$(this).html()==$OldTarDec.split(".")[1]){
+            $(this).html($EditTarDec.split(".")[1]);
+          }
+          if($nums==2&&$(this).html()==$OldPostAct.split(".")[1]){
+            $(this).html($EditPostAct.split(".")[1]);
+          }
+          if($nums==3&&$(this).html()==$OldCon1.split(".")[1]){
+            $(this).html($EditCon1.split(".")[1]);
+          }
+          if($nums==4&&$(this).html()==$OldTart1.split(".")[1]){
+            $(this).html($EditTart1.split(".")[1]);
+          }
+          if($nums==5&&$(this).html()==$OldCon2.split(".")[1]){
+            $(this).html($EditCon2.split(".")[1]);
+          }
+          if($nums==6&&$(this).html()==$OldTart2.split(".")[1]){
+            $(this).html($EditTart2.split(".")[1]);
+          }
+          if($nums==7&&$(this).html()==$OldUseCase.split(".")[1]){
+            $(this).html($EditUseCase.split(".")[1]);
+          }
+           
+        })
+        var $tempname="Insert "+$EditTarDec.split(".")[1]+" before "+$EditPostAct.split(".")[1]+" with ( "+$EditCon1.split(".")[1]+" , "+$EditTart1.split(".")[1]+" ),( "+$EditCon2.split(".")[1]+" , "+$EditTart2.split(".")[1]+" ) in "+$EditUseCase.split(".")[1];
+        $(this).parent().parent().parent().parent().parent().parent().attr("id",$tempname);
+
+          $operation_position="";
+          var $mark=false;
+       $(".section_accordion").each(function(){
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          
+          $operation_position=$operation_position+$(this).attr("id");
+       })
+         $(this).css("display","none");
+         $(this).siblings().show();
+         
+          $.ajax({
+            type: "POST",
+            url: "/EditInsertDecBeforeAct",
+            async:false,
+            data: {
+              user:"<%=tracerules[0].user%>",
+              id:"<%=tracerules[0]._id%>",
+              EditTarDec:$EditTarDec,
+              EditPostAct:$EditPostAct,
+              EditCon1:$EditCon1,
+              EditTart1:$EditTart1,
+              EditCon2:$EditCon2,
+              EditTart2:$EditTart2,
+              EditUseCase:$EditUseCase,
+              OldTarDec:$OldTarDec,
+              OldPostAct:$OldPostAct,
+              OldCon1:$OldCon1,
+              OldTart1:$OldTart1,
+              OldCon2:$OldCon2,
+              OldTart2:$OldTart2,
+              OldUseCase:$OldUseCase,
+              positions:$operation_position,
+              current_guard_id:$current_guard_id,
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+              elementdepencyss=Object.elementdepencys;
+              console.log(elementdepencyss);
+
+            },
+            error:function(a){
+
+              alert("errssssssss!!!");
+              alert(typeof(a));
+            }
+          });  
+
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+      })
+      var $OldInsertTarDec,$OldPostAct;
+      $(".icon-pencil.editOperation.insertDecBeforeActWith").click(function(){
+          $OldTarDec=$(this).parent().find(".InsertDecBeforeActWithTar").find("option:selected").val();
+          $OldPostAct=$(this).parent().parent().find(".InsertDecBeforeActWithPostAct").find("option:selected").val();
+          $OldMainCon=$(this).parent().parent().find(".InsertDecBeforeActWithMainCon").find("option:selected").val();
+          $OldSBCon=$(this).parent().parent().find(".InsertDecBeforeActWithSupCon").find("option:selected").val();
+          $OldInsertAct=$(this).parent().parent().find(".InsertDecBeforeActWithInserAct").find("option:selected").val();
+          $OldInsertTarDec=$(this).parent().parent().find(".InsertDecBeforeActWithDec").find("option:selected").val(); 
+          $OldUseCase=$(this).parent().parent().find(".InsertDecBeforeActWithUseCase").find("option:selected").val();
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+      var $EditInsertTarDec,$EditPostAct;
+      $(".icon-ok.editOperation.insertDecBeforeActWith").click(function(){
+        var $hidden_fields=$(this).parent().parent().parent().find("#hidden_insertDecBeforeActWit").val();
+
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+          
+          var $EditTarDec=$(this).parent().find(".InsertDecBeforeActWithTar").find("option:selected").val();
+          var $EditPostAct=$(this).parent().parent().find(".InsertDecBeforeActWithPostAct").find("option:selected").val();
+          var $EditMainCon=$(this).parent().parent().find(".InsertDecBeforeActWithMainCon").find("option:selected").val();
+          var $EditSBCon=$(this).parent().parent().find(".InsertDecBeforeActWithSupCon").find("option:selected").val();
+          var $EditInsertAct=$(this).parent().parent().find(".InsertDecBeforeActWithInserAct").find("option:selected").val();
+          var $EditInsertTarDec=$(this).parent().parent().find(".InsertDecBeforeActWithDec").find("option:selected").val(); 
+          var $EditUseCase=$(this).parent().parent().find(".InsertDecBeforeActWithUseCase").find("option:selected").val();
+         var $nums=0;
+
+        $(this).parent().parent().parent().parent().parent().find("b").each(function(i){
+          $nums++; console.log($nums+":"+$(this).html());
+          if($nums==1&&$(this).html()==$OldTarDec.split(".")[1]){
+            $(this).html($EditTarDec.split(".")[1]);
+          }
+          if($nums==2&&$(this).html()==$OldPostAct.split(".")[1]){
+            $(this).html($EditPostAct.split(".")[1]);
+          }
+          if($nums==3&&$(this).html()==$OldMainCon.split(".")[1]){
+            $(this).html($EditMainCon.split(".")[1]);
+          }
+          if($nums==4&&$(this).html()==$OldSBCon.split(".")[1]){
+            $(this).html($EditSBCon.split(".")[1]);
+          }
+          if($nums==5&&$(this).html()==$OldInsertAct.split(".")[1]){
+            $(this).html($EditInsertAct.split(".")[1]);
+          }
+          if($nums==6&&$(this).html()==$OldInsertTarDec.split(".")[1]){
+            $(this).html($EditInsertTarDec.split(".")[1]);
+          }
+          if($nums==7&&$(this).html()==$OldUseCase.split(".")[1]){
+            $(this).html($EditUseCase.split(".")[1]);
+          }
+           
+        })
+        var $tempname="Insert "+$EditTarDec.split(".")[1]+" before "+$EditPostAct.split(".")[1]+" with ( "+$EditMainCon.split(".")[1]+" ),( "+$EditSBCon.split(".")[1]+" , "+$EditInsertAct.split(".")[1]+" , "+$EditInsertTarDec.split(".")[1]+" ) in "+$EditUseCase.split(".")[1];
+        $(this).parent().parent().parent().parent().parent().parent().attr("id",$tempname);
+        console.log("tempname:"+$tempname);
+          $operation_position="";
+          var $mark=false;
+       $(".section_accordion").each(function(){
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          
+          $operation_position=$operation_position+$(this).attr("id");
+       })
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+          $.ajax({
+            type: "POST",
+            url: "/EditInsertDecBeforeActWith",
+            async:false,
+            data: {
+              user:"<%=tracerules[0].user%>",
+              id:"<%=tracerules[0]._id%>",
+              EditTarDec:$EditTarDec,
+              EditPostAct:$EditPostAct,
+              EditMainCon:$EditMainCon,
+              EditSBCon:$EditSBCon,
+              EditInsertAct:$EditInsertAct,
+              EditInsertTarDec:$EditInsertTarDec,
+              EditUseCase:$EditUseCase,
+              OldTarDec:$OldTarDec,
+              OldPostAct:$OldPostAct,
+              OldMainCon:$OldMainCon,
+              OldSBCon:$OldSBCon,
+              OldInsertAct:$OldInsertAct,
+              OldInsertTarDec:$OldInsertTarDec,
+              OldUseCase:$OldUseCase,
+              positions:$operation_position,
+              current_guard_id:$current_guard_id,
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+              elementdepencyss=Object.elementdepencys;
+              console.log(elementdepencyss);
+
+            },
+            error:function(a){
+
+              alert("errssssssss");
+              alert(typeof(a));
+            }
+          }); 
+
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+
+      })
+
+      var $OldInsertDec,$OldInsertCon;
+      $(".icon-pencil.editOperation.insertDecBeforeActCon").click(function(){
+          $OldTarDec=$(this).parent().find(".InsertDecBeforeActConTar").find("option:selected").val();
+          $OldInsertAct=$(this).parent().parent().find(".InsertDecBeforeActConPostAct").find("option:selected").val();
+          $OldInsertCon=$(this).parent().parent().find(".InsertDecBeforeActConInserCon").find("option:selected").val();
+          $OldMainCon=$(this).parent().parent().find(".InsertDecBeforeActConMainCon").find("option:selected").val();
+          $OldSBCon=$(this).parent().parent().find(".InsertDecBeforeActConSupCon").find("option:selected").val();
+          $OldInsertAct=$(this).parent().parent().find(".InsertDecBeforeActConInserAct").find("option:selected").val();
+          $OldInsertTarDec=$(this).parent().parent().find(".InsertDecBeforeActConTarDec").find("option:selected").val(); 
+          $OldUseCase=$(this).parent().parent().find(".InsertDecBeforeActConUseCase").find("option:selected").val();
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",false);
+          
+        })
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+      })
+  
+      var $EditInsertDec,$EditInsertCon;
+      $(".icon-ok.editOperation.insertDecBeforeActCon").click(function(){
+        var $hidden_fields=$(this).parent().parent().parent().find("#hidden_insertDecBeforeActCon").val();
+
+        jQuery.each($(this).parent().parent().parent(),function(){
+          $(this).find('select').attr("disabled",true);
+        })
+          $EditTarDec=$(this).parent().find(".InsertDecBeforeActConTar").find("option:selected").val();
+          $EditInsertAct=$(this).parent().parent().find(".InsertDecBeforeActConPostAct").find("option:selected").val();
+          $EditInsertCon=$(this).parent().parent().find(".InsertDecBeforeActConInserCon").find("option:selected").val();
+          $EditMainCon=$(this).parent().parent().find(".InsertDecBeforeActConMainCon").find("option:selected").val();
+          $EditSBCon=$(this).parent().parent().find(".InsertDecBeforeActConSupCon").find("option:selected").val();
+          $EditInsertAct=$(this).parent().parent().find(".InsertDecBeforeActConInserAct").find("option:selected").val();
+          $EditInsertTarDec=$(this).parent().parent().find(".InsertDecBeforeActConTarDec").find("option:selected").val(); 
+          $EditUseCase=$(this).parent().parent().find(".InsertDecBeforeActConUseCase").find("option:selected").val();
+
+         var $nums=0;
+
+        $(this).parent().parent().parent().parent().parent().find("b").each(function(i){
+          $nums++; console.log($nums+":"+$(this).html());
+          if($nums==1&&$(this).html()==$OldTarDec.split(".")[1]){
+            $(this).html($EditTarDec.split(".")[1]);
+          }
+          if($nums==2&&$(this).html()==$OldInsertAct.split(".")[1]){
+            $(this).html($EditInsertAct.split(".")[1]);
+          }
+          if($nums==3&&$(this).html()==$OldInsertCon.split(".")[1]){
+            $(this).html($EditInsertCon.split(".")[1]);
+          }
+          if($nums==4&&$(this).html()==$OldMainCon.split(".")[1]){
+            $(this).html($EditMainCon.split(".")[1]);
+          }
+          if($nums==5&&$(this).html()==$OldSBCon.split(".")[1]){
+            $(this).html($EditSBCon.split(".")[1]);
+          }
+          if($nums==6&&$(this).html()==$OldInsertAct.split(".")[1]){
+            $(this).html($EditInsertAct.split(".")[1]);
+          }
+          if($nums==7&&$(this).html()==$OldInsertTarDec.split(".")[1]){
+            $(this).html($EditInsertTarDec.split(".")[1]);
+          }
+          if($nums==8&&$(this).html()==$OldUseCase.split(".")[1]){
+            $(this).html($EditUseCase.split(".")[1]);
+          }
+           
+        })
+        var $tempname="Insert "+$EditTarDec.split(".")[1]+" before ( "+$EditInsertAct.split(".")[1]+" , "+$EditInsertCon.split(".")[1]+" )"+" with ( "+$EditMainCon.split(".")[1]+" ),( "+$EditSBCon.split(".")[1]+" , "+$EditInsertAct.split(".")[1]+" , "+$EditInsertTarDec.split(".")[1]+" ) in "+$EditUseCase.split(".")[1];
+        $(this).parent().parent().parent().parent().parent().parent().attr("id",$tempname);
+
+          $operation_position="";
+          var $mark=false;
+       $(".section_accordion").each(function(){
+          if($operation_position!="")
+            $operation_position=$operation_position+"$";
+          
+          $operation_position=$operation_position+$(this).attr("id");
+       })
+         $(this).css("display","none");
+         $(this).siblings().show();
+         
+          $.ajax({
+            type: "POST",
+            url: "/EditInsertDecBeforeActCon",
+            async:false,
+            data: {
+              user:"<%=tracerules[0].user%>",
+              id:"<%=tracerules[0]._id%>",
+              EditTarDec:$EditTarDec,
+              EditInsertAct:$EditInsertAct,
+              EditInsertCon:$EditInsertCon,
+              EditMainCon:$EditMainCon,
+              EditSBCon:$EditSBCon,
+              EditInsertAct:$EditInsertAct,
+              EditInsertTarDec:$EditInsertTarDec,
+              EditUseCase:$EditUseCase,
+              OldTarDec:$OldTarDec,
+              OldInsertAct:$OldInsertAct,
+              OldInsertCon:$OldInsertCon,
+              OldMainCon:$OldMainCon,
+              OldSBCon:$OldSBCon,
+              OldInsertAct:$OldInsertAct,
+              OldInsertTarDec:$OldInsertTarDec,
+              OldUseCase:$OldUseCase,
+              positions:$operation_position,
+              current_guard_id:$current_guard_id,
+              hidden_fields:$hidden_fields,
+              projectID:$("#hidden_project_id").val()
+           },
+            dataType:'json',
+            success:function(Object){
+              elementdepencyss=Object.elementdepencys;
+              console.log(elementdepencyss);
+
+            },
+            error:function(a){
+
+              alert("errssssssss!!!");
+              alert(typeof(a));
+            }
+          });  
+
+        //$(this).parent().parent().parent().('input').attr("readonly",false);
+         $(this).css("display","none");
+         $(this).siblings().show();
+
       })
 
       var $edit_guard_id;
@@ -1337,7 +2405,7 @@
          var $hidden_fields=$(this).parent().parent().find("#hidden_insertDecAfterDecCon").val();
          $(this).parent().remove();
          $operation_position="";
-        
+        alert("hi");
          $(".section_accordion").each(function(){
 
          if($operation_position!="" && $(this).attr("id")!=$current_accordion)

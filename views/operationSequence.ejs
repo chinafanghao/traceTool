@@ -38,6 +38,7 @@
                 positions=trace.positions.split('$');
                 console.log("positions: "+positions);
                 for(key in positions){
+                      console.log("now guard:"+positions[key]);
                       var element_path=new Array();
                       if(trace.operations[positions[key]].element!=""){
                          element_path=trace.operations[positions[key]].element.split('.');
@@ -435,14 +436,14 @@
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
-                                        
+                                        var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target1[2]){
 
                                         %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%=Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{
                                       %>
-                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                        <option value="<%=Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                       }
@@ -455,16 +456,16 @@
         
                                   </div>
                                   <div style="margin-top:20px">
-                                    Pre Activity:
-                                    <select style="width:72%;margin-left:43px" class="InterBetPre" disabled=true>
+                                    Post Activity:
+                                    <select style="width:72%;margin-left:37px" class="InterBetPre" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target2[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -479,12 +480,12 @@
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
-                                        
+                                        var Useid=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                           if(elementdepencys[keyss].element!=target3[2]){
                                     %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>"><%= elementdepencys[keyss].element%></option>
                                     <%}else{%>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                     <%
                                           }
                                         }
@@ -523,14 +524,14 @@
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
-                                        
+                                        var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target1[2]){
 
                                         %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                     <%}else{
                                       %>
-                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                        <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                       }
@@ -547,11 +548,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="decision"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target2[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -566,11 +567,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target3[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -585,12 +586,12 @@
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
-                                        
+                                        var Useid=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                           if(elementdepencys[keyss].element!=target4[2]){
                                     %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>"><%= elementdepencys[keyss].element%></option>
                                     <%}else{%>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                     <%
                                           }
                                         }
@@ -629,14 +630,14 @@
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
-                                        
+                                        var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target1[2]){
 
                                         %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                     <%}else{
                                       %>
-                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                        <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                       }
@@ -653,11 +654,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target2[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -672,11 +673,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target3[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -691,12 +692,12 @@
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
-                                        
+                                        var Useid=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                           if(elementdepencys[keyss].element!=target4[2]){
                                     %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>"><%= elementdepencys[keyss].element%></option>
                                     <%}else{%>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                     <%
                                           }
                                         }
@@ -740,6 +741,19 @@
                               <b><%=target6[2]%></b> )
 
                               in <b><%= target7[2]%></b>
+                               <%
+                                var cpstr="Insert "+target1[2]+" after "+target2[2]+" with ( "+target3[2]+" ),( "+target4[2]+" , ";
+                                  if(target5!=""){
+                                    cpstr=cpstr+target5[2]+" , ";
+                                  }
+                                  cpstr=cpstr+target6[2]+" ) in "+target7[2];
+                                var strlen=cpstr.length;
+                                if(strlen>72&&strlen<80){
+                              %>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+                              <%
+                                }
+                              %>
                               <i class="icon-minus deleteInsertDecAfterAct" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
@@ -752,35 +766,35 @@
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
-                                        
+                                        var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target1[2]){
-
+                                          
                                         %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                     <%}else{
                                       %>
-                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                        <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                       }
                                     }%>
               
                                     </select>
-                                    <i class="icon-pencil editOperation insertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer"></i>
-                                    <i class="icon-ok editOperation insertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
+                                    <i class="icon-pencil editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer"></i>
+                                    <i class="icon-ok editOperation InsertDecAfterAct" style="float:right;margin-right:0px;cursor:pointer;display:none"></i>
         
                                   </div>
                                   <div style="margin-top:20px">
                                     Pre-Activity:
-                                    <select style="width:60%;margin-left:116px" class="InsertDecAfterActPreAct" disabled=true>
+                                    <select style="width:60%;margin-left:117px" class="InsertDecAfterActPreAct" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target2[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -791,15 +805,15 @@
                                   </div>
                                   <div style="margin-top:20px">
                                     Main Branch Condition:
-                                    <select style="width:60%;margin-left:40px" class="InsertDecAfterActMainCon" disabled=true>
+                                    <select style="width:60%;margin-left:35px" class="InsertDecAfterActMainCon" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target3[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -811,15 +825,15 @@
 
                                   <div style="margin-top:20px">
                                     Additonal Branch Condition:
-                                    <select style="width:60%;margin-left:5px" class="InsertDecAfterActSupCon" disabled=true>
+                                    <select style="width:60%;margin-left:0px" class="InsertDecAfterActSupCon" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target4[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                         <%
                                           }
                                             }
@@ -837,11 +851,11 @@
                                       if(target5!=""){
                                         for(keyss in elementdepencys){
                                           if(elementdepencys[keyss].type=="activity"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                           if(elementdepencys[keyss].element!=target5[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                         <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                         <%
                                           }
                                             }
@@ -849,9 +863,9 @@
                                             }else{
                                               for(keyss in elementdepencys){
                                           if(elementdepencys[keyss].type=="activity"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                           if(elementdepencys[keyss].element!=""){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                        <%}else{%>
                                             <option value="none" selected="selected">
                                               no inserted activity</option>
@@ -867,15 +881,15 @@
 
                                   <div style="margin-top:20px">
                                     Target Activity:
-                                    <select style="width:60%;margin-left:94px" class="InsertDecAfterActTarAct" disabled=true>
+                                    <select style="width:60%;margin-left:96px" class="InsertDecAfterActTarAct" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target6[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -887,16 +901,16 @@
 
                                   <div style="margin-top:20px">
                                   Use Case:
-                                  <select style="width:60%;margin-left:134px" class="InterBeforeActConUseCase" disabled=true>
+                                  <select style="width:60%;margin-left:137px" class="InsertDecAfterActUseCase" disabled=true>
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
-                                        
+                                        var Useid=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                           if(elementdepencys[keyss].element!=target7[2]){
                                     %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>"><%= elementdepencys[keyss].element%></option>
                                     <%}else{%>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                     <%
                                           }
                                         }
@@ -913,6 +927,7 @@
                     <%
                               }//end I6
                             else{
+
                                if(trace.operations[positions[key]].type=="I7"){
                               var target1=trace.operations[positions[key]].element.split('.');
                               var target2=trace.operations[positions[key]].insertdecision.split('.');
@@ -928,6 +943,16 @@
                           <div class="accordion">
                             <h4>
                               Insert <b><%=target1[2]%></b> after ( <b><%=target2[2]%></b> , <b><%=target3[2]%></b> ) with ( <b><%=target4[2]%></b> ),( <b><%=target5[2]%></b> , <b><%=target6[2]%></b> , <b><%=target7[2]%></b> ) in <b><%= target8[2]%></b>
+                              <%
+                                var cpstr="Insert "+target1[2]+" after ( "+target2[2]+" , "+target3[2]+" ) with ( "+target4[2]+" ),( "+target5[2]+" , "+target6[2]+" , "+target7[2]+" ) in "+target8[2];
+                                var strlen=cpstr.length;
+                                if(strlen>72&&strlen<80){
+                              %>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              <%
+                                }
+                              %>
+                              
                               <i class="icon-minus deleteInsertDecAfterDecCon" style="float:right;margin-right:6px;display:none"></i><i class="icon-plus" style="float:right;margin-right:6px;display:none"></i>
                             </h4>
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
@@ -940,14 +965,14 @@
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
-                                        
+                                         var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target1[2]){
 
                                         %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                     <%}else{
                                       %>
-                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                        <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                       }
@@ -964,11 +989,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="decision"){
-                                            
+                                             var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target2[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -984,11 +1009,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                             var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target3[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1001,15 +1026,15 @@
 
                                   <div style="margin-top:20px">
                                     Main Branch Condition:
-                                    <select style="width:60%;margin-left:40px" class="InsertDecAfterActMainCon" disabled=true>
+                                    <select style="width:60%;margin-left:40px" class="InsertDecAfterDecConMainCon" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                             var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target4[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1021,15 +1046,15 @@
 
                                   <div style="margin-top:20px">
                                     Additonal Branch Condition:
-                                    <select style="width:60%;margin-left:5px" class="InsertDecAfterActSupCon" disabled=true>
+                                    <select style="width:60%;margin-left:5px" class="InsertDecAfterDecConSupCon" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                             var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target5[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1041,17 +1066,17 @@
 
                                   <div style="margin-top:20px">
                                     Inserted Activity:
-                                    <select style="width:60%;margin-left:82px" class="InsertDecAfterActInserAct" disabled=true>
+                                    <select style="width:60%;margin-left:82px" class="InsertDecAfterDecConInserAct" disabled=true>
                
                                       <% 
                                   
                                       for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
-                                            
+                                             var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target6[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1064,15 +1089,15 @@
 
                                   <div style="margin-top:20px">
                                     Target Decision:
-                                    <select style="width:60%;margin-left:88px" class="InsertDecAfterActTarAct" disabled=true>
+                                    <select style="width:60%;margin-left:88px" class="InsertDecAfterDecConTarAct" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="decision"){
-                                            
+                                             var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target7[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1084,16 +1109,16 @@
 
                                   <div style="margin-top:20px">
                                   Use Case:
-                                  <select style="width:60%;margin-left:134px" class="InterBeforeActConUseCase" disabled=true>
+                                  <select style="width:60%;margin-left:134px" class="InsertDecAfterDecConUseCase" disabled=true>
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
-                                        
+                                        var Useid=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                           if(elementdepencys[keyss].element!=target8[2]){
                                     %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>"><%= elementdepencys[keyss].element%></option>
                                     <%}else{%>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                     <%
                                           }
                                         }
@@ -1135,14 +1160,14 @@
                                      
                                       <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
-                                        
+                                        var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target1[2]){
 
                                         %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{
                                         %>
-                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                        <option value="<%=Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                         <%
                                           }
                                         }
@@ -1159,11 +1184,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
-                                            
+                                             var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target2[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1178,11 +1203,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                             var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target3[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1198,11 +1223,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
-                                            
+                                             var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target4[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1218,11 +1243,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                             var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target5[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1237,11 +1262,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
-                                            
+                                             var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target6[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1257,12 +1282,12 @@
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
-                                        
+                                          var Useid=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                           if(elementdepencys[keyss].element!=target7[2]){
                                     %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>"><%= elementdepencys[keyss].element%></option>
                                     <%}else{%>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                     <%
                                           }
                                         }
@@ -1308,14 +1333,14 @@
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
-                                        
+                                        var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target1[2]){
 
                                         %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                     <%}else{
                                       %>
-                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                        <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                       }
@@ -1332,11 +1357,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target2[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1351,11 +1376,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target3[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1371,11 +1396,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target4[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1392,11 +1417,11 @@
                                       <% 
                                       for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target5[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1413,11 +1438,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="decision"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target6[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1433,12 +1458,12 @@
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
-                                        
+                                        var Useid=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                           if(elementdepencys[keyss].element!=target7[2]){
                                     %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>"><%= elementdepencys[keyss].element%></option>
                                     <%}else{%>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                     <%
                                           }
                                         }
@@ -1482,14 +1507,14 @@
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
-                                        
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target1[2]){
 
                                         %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{
                                       %>
-                                        <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                        <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                       }
@@ -1506,11 +1531,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target2[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1526,11 +1551,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target3[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1547,11 +1572,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target4[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1567,11 +1592,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target5[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                         <%
                                           }
                                             }
@@ -1589,11 +1614,11 @@
                                   
                                       for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target6[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1610,11 +1635,11 @@
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="decision"){
-                                            
+                                            var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                         if(elementdepencys[keyss].element!=target7[2]){%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                       <%}else{%>
-                                            <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                            <option value="<%= Id%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                       <%
                                         }
                                           }
@@ -1630,12 +1655,12 @@
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
-                                        
+                                          var Useid=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                           if(elementdepencys[keyss].element!=target8[2]){
                                     %>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>"><%= elementdepencys[keyss].element%></option>
                                     <%}else{%>
-                                      <option value="<%= elementdepencys[keyss].dependee%>"+"."+"<%= elementdepencys[keyss].element%>" selected="selected"><%= elementdepencys[keyss].element%></option>
+                                      <option value="<%= Useid%>" selected="selected"><%= elementdepencys[keyss].element%></option>
                                     <%
                                           }
                                         }
