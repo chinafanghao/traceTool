@@ -5,7 +5,7 @@
        
        <div style="margin-left:5%;margin-top:10px">
 
-            Target Activity:
+            Inserted Activity:
             <select style="width:60%;margin-left:22px" id="InterBeforeActConTar">
                <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
@@ -21,7 +21,7 @@
         <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
       
             Post Activity:
-            <select style="width:60%;margin-left:40px" id="InterBeforeActConAct">
+            <select style="width:60%;margin-left:57px" id="InterBeforeActConAct">
                 <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
                     if(elementdepencys[key].type=="activity"){
@@ -36,7 +36,7 @@
         <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
 
           Condition:
-            <select style="width:60%;margin-left:60px" id="InterBeforeActConCon">
+            <select style="width:60%;margin-left:78px" id="InterBeforeActConCon">
                 <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
                     if(elementdepencys[key].type=="condition"){
@@ -51,7 +51,7 @@
            <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
          
           Use Case:
-          <select style="width:60%;margin-left:62px" id="InterBeforeActConUseCase">
+          <select style="width:60%;margin-left:79px" id="InterBeforeActConUseCase">
                 <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
                   if(elementdepencys[key].type=="UseCase"){

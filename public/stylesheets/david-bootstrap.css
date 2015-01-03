@@ -3,77 +3,77 @@
 }
 
 .span11-5 {
-	width:1025px;
+  width:1025px;
 }
 .span11 {
   width: 980px;
 }
 
 .span10-5 {
-	width:935px;
+  width:935px;
 }
 .span10 {
   width: 890px;
 }
 
 .span9-5 {
-	width:845px;
+  width:845px;
 }
 .span9 {
   width: 800px;
 }
 
 .span8-5 {
-	width:755px;
+  width:755px;
 }
 .span8 {
   width: 710px;
 }
 
 .span7-5 {
-	width:665px;
+  width:665px;
 }
 .span7 {
   width: 620px;
 }
 
 .span6-5 {
-	width:575px;
+  width:575px;
 }
 .span6 {
   width: 530px;
 }
 
 .span5-5 {
-	width:485px;
+  width:485px;
 }
 .span5 {
   width: 440px;
 }
 
 .span4-5 {
-	width:395px;
+  width:395px;
 }
 .span4 {
   width: 350px;
 }
 
 .span3-5 {
-	width:305px;
+  width:305px;
 }
 .span3 {
   width: 260px;
 }
 
 .span2-5 {
-	width:215px;
+  width:215px;
 }
 .span2 {
   width: 170px;
 }
 
 .span1-5 {
-	width:125px;
+  width:125px;
 }
 .span1 {
   width: 80px;
@@ -180,4 +180,62 @@
 .myOptVP {
   width:15px;
   height:15px;
+}
+
+.myConstraint {
+  border-bottom: 1px solid #c3c3c3;
+}
+
+.myConstraintLeft table{
+  width:117px;
+  padding:10px;
+  margin:5px;
+  text-align:right;
+}
+
+.myConstraintMiddle {
+  width:49px; 
+  padding:10px;
+  margin:5px;
+  text-align: center;
+}
+
+.myConstraintMiddle img {
+  height:10px;
+}
+
+.myConstraintRight table{
+  width:117px; 
+  padding:10px;
+  margin:5px;
+}
+
+.myConstraintButton {
+  width:20px;
+  text-align: center;
+}
+
+
+.addNewConstraintSelect {
+  width:200px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+.addNewConstraintItemTable {
+  
+}
+
+.addNewConstraintRelation {
+  width:80px;
+  margin:10px;
+}
+
+.addNewConstraintIsNot {
+  width:50px;
+  margin: 5px;
+}
+
+.addNewConstraintRemove {
+  width:20px;
+  text-align: center;
 }

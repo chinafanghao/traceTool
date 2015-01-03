@@ -5,7 +5,7 @@
        
        <div style="margin-left:5%;margin-top:10px">
 
-            Target Activity:
+            Inserted Activity:
             <select style="width:60%;margin-left:20px" id="InterPreTar">
                <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
@@ -21,7 +21,7 @@
         <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
       
             Pre Activity:
-            <select style="width:60%;margin-left:43px" id="InterPrePre">
+            <select style="width:60%;margin-left:60px" id="InterPrePre">
                 <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
                     if(elementdepencys[key].type=="activity"){
@@ -36,7 +36,7 @@
            <HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=1>
          
           Use Case:
-          <select style="width:60%;margin-left:60px" id="InterPreUseCase">
+          <select style="width:60%;margin-left:80px" id="InterPreUseCase">
                 <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
                   if(elementdepencys[key].type=="UseCase"){

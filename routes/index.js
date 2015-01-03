@@ -12,6 +12,7 @@ var ElementDepency = require('../models/elementdepency.js');
 var Configuration=require('../models/configuration.js');
 var async = require('async'); 
 var Feature = require('../models/feature.js');
+var Constraint = require('../models/constraint.js');
 var Project = require('../models/project.js')
 
 exports.index = function(req, res){
@@ -1251,7 +1252,7 @@ exports.deleteActivity = function(req, res){
 			}
 
  	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,dependencyElement){
-		 	 	
+		err=""; 	 	
  	 	if(dependencyElement[0].todepenNum>0){
  	 		err = 'This activity still has dependent relation(s):';
  	 		var flag=false;
@@ -1279,13 +1280,45 @@ exports.deleteActivity = function(req, res){
  	 		}
  	 	 
  	 	}
- 	 	if (err) {
-			req.flash('error', err);
-			return res.redirect('/T/'+current_guard_id);
-		}
+ 	 	var $dependernum=0;
+ 	 	flag=false;
+ 	 	for(key in dependencyElement[0].depender)
+ 	 		{
+ 	 			
+ 	 			if($dependernum==0)
+ 	 			{
+ 	 			   if(err!="")
+ 	 				err=err+"\n";
+ 	 				err=err+"This activity is dependent on these elements:";
+ 	 			}
+ 	 			$dependernum++;
+ 	 			if(flag){
+ 	 				err=err+", ";
+ 	 			}
+ 	 			var keys=key.split("_");
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
+ 	 				console.log("haha:"+guardlists[keyss].selfname+" "+guardlists[keyss]._id+" "+keys[0]);
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
 
+ 	 			}
+ 	 		}
+ 	 	
+ 	 	if (err) {
+ 	 		/*var $now_ID=projectID+"_"+current_guard_id;
+ 	 		console.log(err+":1");
+			req.flash('error', err);
+			return res.redirect('/T/'+$now_ID);
+			console.log(err+":2");*/
+			res.send({"errs":err});
+		}
 		else{
- 	
 		  ElementDepency.deleteActivityDependee(req.session.user.name,id,operation_name,function(err,elementdepencys){
 	  		
 	  		if(err){
@@ -1303,7 +1336,7 @@ exports.deleteActivity = function(req, res){
 	
    });
   
- 	 }//else
+ 	}
  	}); //getToDepenNum
 		})
 }
@@ -1317,10 +1350,14 @@ exports.deleteDecision = function(req, res){
  	 operation=operation_name.split(" ");
  	 var positions=req.body.operation_position;
  	 var current_guard_id=id;
+ 	 var projectID=req.body.projectID;
  	 console.log(user+" "+id+" "+operation_name+" "+positions);
-
+ 	 Guardlist.get(req.session.user.name, projectID,function(err, guardlists) {
+				if (err) {
+				guradlists = [];
+			}
  	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,dependencyElement){
- 	 	
+ 	 	err="";
  	 	if(dependencyElement[0].todepenNum>0){
  	 		err = 'This decision still have dependent relation(s):';
  	 		var flag=false;
@@ -1329,7 +1366,7 @@ exports.deleteDecision = function(req, res){
  	 			var keys=key.split("_");
  	 			if(flag)
  	 			{
- 	 				err=err+",";
+ 	 				err=err+", ";
  	 			}
  	 			err=err+" "+keys[1];
  	 			if(!flag)
@@ -1339,9 +1376,39 @@ exports.deleteDecision = function(req, res){
  	 			}
  	 		}
  	 	}
+
+ 	 	var $dependernum=0;
+ 	 	flag=false;
+ 	 	for(key in dependencyElement[0].depender)
+ 	 		{
+ 	 			
+ 	 			if($dependernum==0)
+ 	 			{
+ 	 			   if(err!="")
+ 	 				err=err+"\n";
+ 	 				err=err+"This decision is dependent on these elements:";
+ 	 			}
+ 	 			$dependernum++;
+ 	 			if(flag){
+ 	 				err=err+", ";
+ 	 			}
+ 	 			var keys=key.split("_");
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
+ 	 				console.log("haha:"+guardlists[keyss].selfname+" "+guardlists[keyss]._id+" "+keys[0]);
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
+
  	 	if (err) {
-			req.flash('error', err);
-			return res.redirect('/T/'+current_guard_id);
+			res.send({"errs":err});
 		}
 
 		
@@ -1365,6 +1432,7 @@ exports.deleteDecision = function(req, res){
   
  }//else
  	}); //getToDepenNum
+	})
 }
 
 exports.deleteCondition = function(req, res){
@@ -1378,8 +1446,12 @@ exports.deleteCondition = function(req, res){
  	 var projectID=req.body.projectID;
  	 var current_guard_id=id;
  	 //console.log(user+" "+id+" "+operation_name+" "+positions);
+ 	 Guardlist.get(req.session.user.name, projectID,function(err, guardlists) {
+				if (err) {
+				guradlists = [];
+			}
  	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,dependencyElement){
- 	 	
+ 	 	err="";
  	 	if(dependencyElement[0].todepenNum>0){
  	 		err = 'This condition still have dependent relation(s):';
  	 		var flag=false;
@@ -1399,11 +1471,42 @@ exports.deleteCondition = function(req, res){
  	 		}
  	 	}
  	 	if (err) {
-			req.flash('error', err);
-			return res.redirect('/T/'+current_guard_id);
+			res.send({"errs":err});
 		}
 
-		
+		var $dependernum=0;
+ 	 	flag=false;
+ 	 	for(key in dependencyElement[0].depender)
+ 	 		{
+ 	 			
+ 	 			if($dependernum==0)
+ 	 			{
+ 	 			   if(err!="")
+ 	 				err=err+"\n";
+ 	 				err=err+"This condition is dependent on these elements:";
+ 	 			}
+ 	 			$dependernum++;
+ 	 			if(flag){
+ 	 				err=err+", ";
+ 	 			}
+ 	 			var keys=key.split("_");
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
+ 	 				console.log("haha:"+guardlists[keyss].selfname+" "+guardlists[keyss]._id+" "+keys[0]);
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
+ 	 		if (err) {
+			res.send({"errs":err});
+		}
+
  	 else{
 
 	   ElementDepency.deleteConditionDependee(req.session.user.name,id,operation_name,function(err,elementdepencys){
@@ -1425,6 +1528,7 @@ exports.deleteCondition = function(req, res){
 
  	 }//else
  	}); //getToDepenNum
+  })
 }
 
 exports.deleteUseCase = function(req, res){
@@ -1436,10 +1540,13 @@ exports.deleteUseCase = function(req, res){
  	 var positions=req.body.operation_position;
  	 var current_guard_id=id;
  	 var projectID=req.body.projectID;
-
+	Guardlist.get(req.session.user.name, projectID,function(err, guardlists) {
+				if (err) {
+				guradlists = [];
+			}
  	 console.log("deleteUseCase: "+user+" "+id+" "+operation_name+" "+positions+" "+current_guard_id+" "+projectID);
  	 ElementDepency.getToDepenNum(user,operation[operation.length-1],function(err,dependencyElement){
- 	 	
+ 	 	err="";
  	 	if(dependencyElement[0].todepenNum>0){
  	 		err = 'This use case still have dependent relation(s):';
  	 		var flag=false;
@@ -1450,7 +1557,13 @@ exports.deleteUseCase = function(req, res){
  	 			{
  	 				err=err+",";
  	 			}
- 	 			err=err+" "+keys[1];
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
+ 	 				console.log("haha:"+guardlists[keyss].selfname+" "+guardlists[keyss]._id+" "+keys[0]);
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
  	 			if(!flag)
  	 			{
  	 				flag=true;
@@ -1458,9 +1571,39 @@ exports.deleteUseCase = function(req, res){
  	 			}
  	 		}
  	 	}
+
+ 	 	var $dependernum=0;
+ 	 	flag=false;
+ 	 	for(key in dependencyElement[0].depender)
+ 	 		{
+ 	 			
+ 	 			if($dependernum==0)
+ 	 			{
+ 	 			   if(err!="")
+ 	 				err=err+"\n";
+ 	 				err=err+"This use case is dependent on these elements:";
+ 	 			}
+ 	 			$dependernum++;
+ 	 			if(flag){
+ 	 				err=err+", ";
+ 	 			}
+ 	 			var keys=key.split("_");
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
+ 	 				console.log("haha:"+guardlists[keyss].selfname+" "+guardlists[keyss]._id+" "+keys[0]);
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
+
  	 	if (err) {
-			req.flash('error', err);
-			return res.redirect('/T/'+current_guard_id);
+			res.send({"errs":err});
 		}
 
 		
@@ -1485,6 +1628,7 @@ exports.deleteUseCase = function(req, res){
  
  	 }//else
  	}); //getToDepenNum
+})
 }
 
 //I2
@@ -2725,6 +2869,83 @@ exports.updateVP = function(req,res) {
 			return res.redirect('/');
 		}
 		console.log("UPDATE VP: SUCCESS");
+	});
+};
+
+exports.addNewConstraint = function(req,res) {
+	console.log("index.js中的 \"addNewConstraint\"开始了！");
+  var newConstraint = new Constraint({
+		left       : req.body.left     ,
+		relation   : req.body.relation ,
+		right      : req.body.right    ,
+		projectID  : req.body.projectID,
+  });
+  Constraint.get(newConstraint, function(err, constraint) {
+  	if (constraint)
+  	  err = 'Constraint already exists.';
+  	if (err) {
+  		req.flash('error', err);
+  		console.log("Constraint already exists.");
+  		return res.redirect('/');
+  	}
+  	newConstraint.save(function(err) {
+  		if (err)  {
+  			req.flash('error', err);
+  			return res.redirect('/');
+  		}
+ 			Constraint.get(newConstraint, function(err, theconstraint) {
+ 				if (!theconstraint)
+ 					err = 'Constraint has not be inserted.';
+ 				if (err) {
+ 					req.flash('error', err);
+ 					console.log("Constraint has not be inserted.");
+ 					return res.redirect('/');
+ 				}
+ 				res.send({'_id': theconstraint._id});
+ 				console.log("ADD NEW CONSTRAINT: SUCCESS");
+ 			});
+  	});
+  });
+};
+
+exports.getFeatureById = function(req, res) {
+	console.log("START \"getFeatureById\"");
+	var _id = req.body._id;
+	//console.log(_id + '\n');
+	Feature.getById(_id, function(err, feature) {
+		if (err) {
+			console.log("GET FEATURE BY ID FAILED");
+			req.flash('error', err);
+			return res.redirect('/');
+		}
+		res.send({'feature':feature});
+	});
+};
+
+exports.loadConstraints = function(req,res) {
+	var $projectID=req.body.projectID;
+	console.log("START \"loadConstraints\"");
+	Constraint.getById($projectID,function(err,constraints){
+		if (err) {
+			console.log("LOAD CONSTRAINT: FAIL");
+			req.flash('error', err);
+			return res.redirect('/');
+		}
+		res.send({'constraints': constraints});
+		console.log("FINISH SENDING");
+	})
+};
+
+exports.removeConstraint = function(req,res) {
+	console.log("START \"removeConstraint\"");
+	var _id = req.body._id;
+	Constraint.remove(_id, function(err){ 
+		if (err) {
+			req.flash('error', err);
+			return res.redirect('/');
+		}
+		res.send({});
+		console.log("DELETE CONSTRAINT: SUCCESS");
 	});
 };
 

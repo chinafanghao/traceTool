@@ -157,6 +157,10 @@ app.post('/updateOptionality', routes.updateOptionality);
 app.post('/updateParent_id', routes.updateParent_id);
 app.post('/updateVP', routes.updateVP);
 app.post('/removeSubtree', routes.removeSubtree);
+app.post('/addNewConstraint', routes.addNewConstraint);
+app.post('/getFeatureById', routes.getFeatureById);
+app.post('/loadConstraints', routes.loadConstraints);
+app.post('/removeConstraint', routes.removeConstraint);
 
 app.post('/newConfiguration',routes.newConfiguration);
 app.post('/DeleteConfiguration',routes.deleteConfiguration);

@@ -111,7 +111,7 @@
       })
 
       $(".icon-edit").click(function(){
-        //alert($("#hidden_current_id").val());
+        
         window.location.href='/F/'+$("#hidden_current_id").val();
       })
 
@@ -135,8 +135,7 @@
 
       $(".myInsideA").click(function(){
         if($(this).attr('name')!=null){
-          //window.location.href="/T/"+$(this).attr('name');
-          //alert("<%=projects[0].name%>");
+          
          
          $.ajax({
             type: "POST",

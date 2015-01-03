@@ -245,8 +245,8 @@
                               <form class="form-horizontal">
                                 <div style="margin-top:10px">
                                   <div>
-                                    Target Activity:
-                                    <select style="width:72%;margin-left:20px" class="InterBetTar" disabled=true>
+                                    Inserted Activity:
+                                    <select style="width:72%;margin-left:7px" class="InterBetTar" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
@@ -347,8 +347,8 @@
                                 <input type="hidden" id="hidden_insertactafterpre" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
-                                    Target Activity:
-                                    <select style="width:72%;margin-left:20px" class="InterBetTar" disabled=true>
+                                    Inserted Activity:
+                                    <select style="width:72%;margin-left:7px" class="InterBetTar" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
@@ -431,8 +431,8 @@
                                 <input type="hidden" id="hidden_insertActBeforePost" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
-                                    Target Activity:
-                                    <select style="width:72%;margin-left:20px" class="InterBetTar" disabled=true>
+                                    Inserted Activity:
+                                    <select style="width:72%;margin-left:7px" class="InterBetTar" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
@@ -519,8 +519,8 @@
                                 <input type="hidden" id="hidden_insertActAfterDecCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
-                                    Target Activity:
-                                    <select style="width:72%;margin-left:20px" class="InterAfterDecConAct" disabled=true>
+                                    Inserted Activity:
+                                    <select style="width:72%;margin-left:7px" class="InterAfterDecConAct" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
@@ -625,8 +625,8 @@
                                  <input type="hidden" id="hidden_insertActBeforeActCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>">
                                 <div style="margin-top:10px">
                                   <div>
-                                    Target Activity:
-                                    <select style="width:72%;margin-left:20px" class="InterBeforeActConTar" disabled=true>
+                                    Inserted Activity:
+                                    <select style="width:72%;margin-left:7px" class="InterBeforeActConTar" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="activity"&&elementdepencys[keyss].dependee==current_guard){
@@ -762,7 +762,7 @@
                                 <div style="margin-top:10px">
                                   <div>
                                     Target Decision:
-                                    <select style="width:60%;margin-left:88px" class="InsertDecAfterActDec" disabled=true>
+                                    <select style="width:60%;margin-left:89px" class="InsertDecAfterActDec" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
@@ -786,7 +786,7 @@
                                   </div>
                                   <div style="margin-top:20px">
                                     Pre-Activity:
-                                    <select style="width:60%;margin-left:117px" class="InsertDecAfterActPreAct" disabled=true>
+                                    <select style="width:60%;margin-left:119px" class="InsertDecAfterActPreAct" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
@@ -880,7 +880,7 @@
                                   </div>
 
                                   <div style="margin-top:20px">
-                                    Target Activity:
+                                    Inserted Activity:
                                     <select style="width:60%;margin-left:96px" class="InsertDecAfterActTarAct" disabled=true>
                
                                       <% for(keyss in elementdepencys){
@@ -961,7 +961,7 @@
                                 <div style="margin-top:10px">
                                   <div>
                                     Target Decision:
-                                    <select style="width:60%;margin-left:88px" class="InsertDecAfterDecConDec" disabled=true>
+                                    <select style="width:60%;margin-left:97px" class="InsertDecAfterDecConDec" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
@@ -985,7 +985,7 @@
                                   </div>
                                   <div style="margin-top:20px">
                                     Inserted Decision:
-                                    <select style="width:60%;margin-left:73px" class="InsertDecAfterDecConInserDec" disabled=true>
+                                    <select style="width:60%;margin-left:87px" class="InsertDecAfterDecConInserDec" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="decision"){
@@ -1005,7 +1005,7 @@
 
                                   <div style="margin-top:20px">
                                     Inserted Condition:
-                                    <select style="width:60%;margin-left:67px" class="InsertDecAfterDecConInserCon" disabled=true>
+                                    <select style="width:60%;margin-left:73px" class="InsertDecAfterDecConInserCon" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
@@ -1026,7 +1026,7 @@
 
                                   <div style="margin-top:20px">
                                     Main Branch Condition:
-                                    <select style="width:60%;margin-left:40px" class="InsertDecAfterDecConMainCon" disabled=true>
+                                    <select style="width:60%;margin-left:43px" class="InsertDecAfterDecConMainCon" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
@@ -1066,7 +1066,7 @@
 
                                   <div style="margin-top:20px">
                                     Inserted Activity:
-                                    <select style="width:60%;margin-left:82px" class="InsertDecAfterDecConInserAct" disabled=true>
+                                    <select style="width:60%;margin-left:87px" class="InsertDecAfterDecConInserAct" disabled=true>
                
                                       <% 
                                   
@@ -1089,7 +1089,7 @@
 
                                   <div style="margin-top:20px">
                                     Target Decision:
-                                    <select style="width:60%;margin-left:88px" class="InsertDecAfterDecConTarAct" disabled=true>
+                                    <select style="width:60%;margin-left:94px" class="InsertDecAfterDecConTarAct" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="decision"){
@@ -1109,7 +1109,7 @@
 
                                   <div style="margin-top:20px">
                                   Use Case:
-                                  <select style="width:60%;margin-left:134px" class="InsertDecAfterDecConUseCase" disabled=true>
+                                  <select style="width:60%;margin-left:142px" class="InsertDecAfterDecConUseCase" disabled=true>
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
@@ -1329,7 +1329,7 @@
                                 <div style="margin-top:10px">
                                   <div>
                                     Target Decision:
-                                    <select style="width:60%;margin-left:88px" class="InsertDecBeforeActWithTar" disabled=true>
+                                    <select style="width:60%;margin-left:96px" class="InsertDecBeforeActWithTar" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
@@ -1353,7 +1353,7 @@
                                   </div>
                                   <div style="margin-top:20px">
                                     Pre-Activity:
-                                    <select style="width:60%;margin-left:116px" class="InsertDecBeforeActWithPostAct" disabled=true>
+                                    <select style="width:60%;margin-left:126px" class="InsertDecBeforeActWithPostAct" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
@@ -1372,7 +1372,7 @@
                                   </div>
                                   <div style="margin-top:20px">
                                     Main Branch Condition:
-                                    <select style="width:60%;margin-left:40px" class="InsertDecBeforeActWithMainCon" disabled=true>
+                                    <select style="width:60%;margin-left:42px" class="InsertDecBeforeActWithMainCon" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
@@ -1412,7 +1412,7 @@
 
                                   <div style="margin-top:20px">
                                     Inserted Activity:
-                                    <select style="width:60%;margin-left:82px" class="InsertDecBeforeActWithInserAct" disabled=true>
+                                    <select style="width:60%;margin-left:88px" class="InsertDecBeforeActWithInserAct" disabled=true>
                
                                       <% 
                                       for(keyss in elementdepencys){
@@ -1434,7 +1434,7 @@
 
                                   <div style="margin-top:20px">
                                     Target Decision:
-                                    <select style="width:60%;margin-left:88px" class="InsertDecBeforeActWithDec" disabled=true>
+                                    <select style="width:60%;margin-left:94px" class="InsertDecBeforeActWithDec" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="decision"){
@@ -1454,7 +1454,7 @@
 
                                   <div style="margin-top:20px">
                                     Use Case:
-                                    <select style="width:60%;margin-left:134px" class="InsertDecBeforeActWithUseCase" disabled=true>
+                                    <select style="width:60%;margin-left:142px" class="InsertDecBeforeActWithUseCase" disabled=true>
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){
@@ -1503,7 +1503,7 @@
                                 <div style="margin-top:10px">
                                   <div>
                                     Target Decision:
-                                    <select style="width:60%;margin-left:88px" class="InsertDecBeforeActConTar" disabled=true>
+                                    <select style="width:60%;margin-left:97px" class="InsertDecBeforeActConTar" disabled=true>
                                      
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="decision"&&elementdepencys[keyss].dependee==current_guard){
@@ -1527,7 +1527,7 @@
                                   </div>
                                   <div style="margin-top:20px">
                                     Post-Activity:
-                                    <select style="width:60%;margin-left:110px" class="InsertDecBeforeActConPostAct" disabled=true>
+                                    <select style="width:60%;margin-left:118px" class="InsertDecBeforeActConPostAct" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){
@@ -1547,7 +1547,7 @@
 
                                   <div style="margin-top:20px">
                                     Inserted Condition:
-                                    <select style="width:60%;margin-left:67px" class="InsertDecBeforeActConInserCon" disabled=true>
+                                    <select style="width:60%;margin-left:73px" class="InsertDecBeforeActConInserCon" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
@@ -1568,7 +1568,7 @@
 
                                   <div style="margin-top:20px">
                                     Main Branch Condition:
-                                    <select style="width:60%;margin-left:40px" class="InsertDecBeforeActConMainCon" disabled=true>
+                                    <select style="width:60%;margin-left:42px" class="InsertDecBeforeActConMainCon" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="condition"){
@@ -1608,7 +1608,7 @@
 
                                   <div style="margin-top:20px">
                                     Inserted Activity:
-                                    <select style="width:60%;margin-left:80px" class="InsertDecBeforeActConInserAct" disabled=true>
+                                    <select style="width:60%;margin-left:83px" class="InsertDecBeforeActConInserAct" disabled=true>
                
                                       <% 
                                   
@@ -1631,7 +1631,7 @@
 
                                   <div style="margin-top:20px">
                                     Target Decision:
-                                    <select style="width:60%;margin-left:86px" class="InsertDecBeforeActConTarDec" disabled=true>
+                                    <select style="width:60%;margin-left:93px" class="InsertDecBeforeActConTarDec" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="decision"){
@@ -1651,7 +1651,7 @@
 
                                   <div style="margin-top:20px">
                                   Use Case:
-                                  <select style="width:60%;margin-left:134px" class="InsertDecBeforeActConUseCase" disabled=true>
+                                  <select style="width:60%;margin-left:140px" class="InsertDecBeforeActConUseCase" disabled=true>
                 
                                     <% for(keyss in elementdepencys){
                                       if(elementdepencys[keyss].type=="UseCase"){

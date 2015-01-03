@@ -2083,9 +2083,14 @@
             dataType:'json',
             success:function(Object){
              console.log(Object);
+             if(Object.errs!=undefined){
+                alert(Object.errs);
+             }
              window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
             },
-            error:function(){
+            error:function(err){
+              
+              console.log(err.responseText);
 
             }
           });
@@ -2119,6 +2124,9 @@
             dataType:'json',
             success:function(Object){
              console.log(Object);
+             if(Object.errs!=undefined){
+                alert(Object.errs);
+             }
              window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
             },
             error:function(){
@@ -2156,6 +2164,9 @@
             dataType:'json',
             success:function(Object){
              console.log(Object);
+             if(Object.errs!=undefined){
+                alert(Object.errs);
+             }
              window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
             },
             error:function(){
@@ -2193,6 +2204,9 @@
             dataType:'json',
             success:function(Object){
              console.log(Object);
+             if(Object.errs!=undefined){
+                alert(Object.errs);
+             }
              window.location.href="/T/"+$("#hidden_project_id").val()+"_"+$current_guard_id;
             },
             error:function(){
