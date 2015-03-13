@@ -10,7 +10,7 @@
                <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
                 if(elementdepencys[key].type=="decision"&&elementdepencys[key].dependee==current_guard){
-                   var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                   var elementPath=elementdepencys[key].dependee+"."+elementdepencys[key].element;
                   %>
                 <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
               <%}
@@ -25,7 +25,7 @@
                <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
                 if(elementdepencys[key].type=="activity"){
-                   var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                   var elementPath=elementdepencys[key].dependee+"."+elementdepencys[key].element;
                   %>
                 <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
               <%}
@@ -40,7 +40,7 @@
                <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
                 if(elementdepencys[key].type=="condition"){
-                   var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                   var elementPath=elementdepencys[key].dependee+"."+elementdepencys[key].element;
                   %>
                 <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
               <%}
@@ -53,7 +53,7 @@
                 <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
                     if(elementdepencys[key].type=="activity"){
-                      var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                      var elementPath=elementdepencys[key].dependee+"."+elementdepencys[key].element;
                       %>
                 <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
               <%}
@@ -68,7 +68,7 @@
                <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
                 if(elementdepencys[key].type=="condition"){
-                   var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                   var elementPath=elementdepencys[key].dependee+"."+elementdepencys[key].element;
                   %>
                 <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
               <%}
@@ -81,7 +81,7 @@
                 <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
                     if(elementdepencys[key].type=="activity"){
-                      var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                      var elementPath=elementdepencys[key].dependee+"."+elementdepencys[key].element;
                       %>
                 <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
               <%}
@@ -94,7 +94,7 @@
                 <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
                   if(elementdepencys[key].type=="UseCase"){
-                     var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;%>
+                     var elementPath=elementdepencys[key].dependee+"."+elementdepencys[key].element;%>
                 <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
               <%}
             }%>

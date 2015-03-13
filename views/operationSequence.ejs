@@ -116,9 +116,10 @@
                             </div>
                           </div>
                         </div>
+              
               <%
-              }
-              else{
+              }else{
+                 
                 if(trace.operations[positions[key]].type=="C1"){
                   var target1=trace.operations[positions[key]].element.split(".");
                   %>
@@ -345,6 +346,7 @@
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
                                 <input type="hidden" id="hidden_insertactafterpre" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>">
+                                <input type="hidden" id="hidden_insertactafterpre_guardID" value="<%=target1[0] %>">
                                 <div style="margin-top:10px">
                                   <div>
                                     Inserted Activity:
@@ -429,6 +431,7 @@
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
                                 <input type="hidden" id="hidden_insertActBeforePost" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>">
+                                <input type="hidden" id="hidden_insertActBeforePost_guardID" value="<%=target1[0] %>">
                                 <div style="margin-top:10px">
                                   <div>
                                     Inserted Activity:
@@ -517,6 +520,7 @@
                                 <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
                                 <input type="hidden" id="hidden_insertActAfterDecCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>">
+                                <input type="hidden" id="hidden_insertActAfterDecCon_guardID" value="<%=target1[0] %>">
                                 <div style="margin-top:10px">
                                   <div>
                                     Inserted Activity:
@@ -623,6 +627,7 @@
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
                                  <input type="hidden" id="hidden_insertActBeforeActCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>">
+                                 <input type="hidden" id="hidden_insertActBeforeActCon_guardID" value="<%=target1[0] %>">
                                 <div style="margin-top:10px">
                                   <div>
                                     Inserted Activity:
@@ -759,6 +764,7 @@
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
                                 <input type="hidden" id="hidden_insertDecAfterAct" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>">
+                                <input type="hidden" id="hidden_insertDecAfterAct_guardID" value="<%=target1[0] %>">
                                 <div style="margin-top:10px">
                                   <div>
                                     Target Decision:
@@ -958,6 +964,7 @@
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
                                  <input type="hidden" id="hidden_insertDecAfterDecCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>_<%= target8[0]%>">
+                                 <input type="hidden" id="hidden_insertDecAfterDecCon_guardID" value="<%=target1[0] %>">
                                 <div style="margin-top:10px">
                                   <div>
                                     Target Decision:
@@ -1153,6 +1160,7 @@
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
                                 <input type="hidden" id="hidden_insertDecBeforeAct" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>">
+                                <input type="hidden" id="hidden_insertDecBeforeAct_guardID" value="<%=target1[0] %>">
                                 <div style="margin-top:10px">
                                   <div>
                                     Target Decision:
@@ -1326,6 +1334,7 @@
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
                                 <input type="hidden" id="hidden_insertDecBeforeActWit" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>">
+                                <input type="hidden" id="hidden_insertDecBeforeActWit_guardID" value="<%=target1[0] %>">
                                 <div style="margin-top:10px">
                                   <div>
                                     Target Decision:
@@ -1500,6 +1509,7 @@
                             <div id="accordion_<%= trace.operations[positions[key]].name%>_content" >
                               <form class="form-horizontal">
                                 <input type="hidden" id="hidden_insertDecBeforeActCon" value="<%= target1[0]%>_<%=target2[0]%>_<%= target3[0]%>_<%= target4[0]%>_<%= target5[0]%>_<%= target6[0]%>_<%= target7[0]%>_<%= target8[0]%>">
+                                <input type="hidden" id="hidden_insertDecBeforeActCon_guardID" value="<%=target1[0] %>">
                                 <div style="margin-top:10px">
                                   <div>
                                     Target Decision:

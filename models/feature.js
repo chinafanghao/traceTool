@@ -63,6 +63,8 @@ Feature.getById = function getById(feature_id, callback) {
 	});
 };
 
+
+
 Feature.getByTextAndRoot = function getByTextAndRoot(feature_text, feature_root, callback) {
 	mongodb.collection('fmtree', function(err, collection) {
 		if (err) {

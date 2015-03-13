@@ -53,7 +53,7 @@ ElementDepency.prototype.save = function save(callback) {
 
 
 ElementDepency.get = function get(user, projectID,callback) {
-	console.log(user+"#"+projectID);
+	//console.log(user+"#"+projectID);
 	mongodb.open(function(err, db) {
 		if (err) {
 
@@ -87,7 +87,7 @@ ElementDepency.get = function get(user, projectID,callback) {
 				docs.forEach(function(doc, index) {
 					var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.insidedepender,doc.todepen,doc.todepenNum,doc.insidetodepen,doc.type,doc.projectID,doc._id);
 					elementdepencys.push(elementdepency);
-					console.log("#####"+doc.element);
+					//console.log("#####"+doc.element);
 				});
 
 				callback(null, elementdepencys);
@@ -194,8 +194,8 @@ ElementDepency.removeTraceRule = function removeTraceRule(user,deleteID,callback
 				 				depender={};
 								depender[dependerNum]=-1;
 								
-								collection.update({"user":user,"element":doc.element},{"$inc":{"todepenNum":-1}},true,function(){
-									collection.update({"user":user,"element":doc.element},{"$inc":depender},true,function(){
+								collection.update({"user":user,"element":doc.element},{"$inc":{"todepenNum":-1}},function(){
+									collection.update({"user":user,"element":doc.element},{"$inc":depender},function(){
 
 									}); 
 								}); 	
@@ -285,16 +285,17 @@ ElementDepency.replaceDependKeyName = function replaceDependKeyName(user,oldname
 	
 	var Oldnames=hide_field+"_"+oldname;
 	var Newnames=hide_field+"_"+newname;
+
 	var refer_num;
 	mongodb.open(function(err, db) {
 		if (err) {
-			console.log("#1");
+			//console.log("#1");
 			return callback(err);
 		}
 	var elementdepencys = [];
 		db.collection('elementdepency', function(err, collection) {
 			if (err) {
-				console.log("#2");
+				//console.log("#2");
 				mongodb.close();
 				return callback(err);
 			}
@@ -309,12 +310,9 @@ ElementDepency.replaceDependKeyName = function replaceDependKeyName(user,oldname
 			collection.find(query).toArray(function(err, docs) {
 
 				if (err) {
-					console.log("#3");
+					//console.log("#3");
 					callback(err, null);
 				}
-
-				
-
 
 				docs.forEach(function(doc, index) {
 					var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.insidedepender,doc.todepen,doc.todepenNum,doc.insidetodepen,doc.type,doc._id);
@@ -610,13 +608,13 @@ ElementDepency.saveInsertBetween = function saveInsertBetween(user,TarAct,PreAct
 */
 
 ElementDepency.saveInsertActAfterPre = function saveInsertActAfterPre(user,TarAct,PreAct,UseCase,current_guard_id,callback){
-		console.log("saveInsertActAfterPre:"+TarAct+" "+PreAct+" "+UseCase);
+		//console.log("saveInsertActAfterPre:"+TarAct+" "+PreAct+" "+UseCase);
 		if(TarAct.indexOf(".")>0){
 			TarAct=TarAct.split(".")[0]+"_"+TarAct.split(".")[1];
 			PreAct=PreAct.split(".")[0]+"_"+PreAct.split(".")[1];
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
-		console.log("saveInsertActAfterPre:"+TarAct+" "+PreAct+" "+UseCase);
+		//console.log("saveInsertActAfterPre:"+TarAct+" "+PreAct+" "+UseCase);
 		mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -632,6 +630,9 @@ ElementDepency.saveInsertActAfterPre = function saveInsertActAfterPre(user,TarAc
 			var traceruleID1=TarAct.split('_');
 			var traceruleID2=PreAct.split('_');
 			var traceruleID3=UseCase.split('_');
+			if(traceruleID2[2]=="Start"){
+				traceruleID2[1]=traceruleID2[1]+"_"+traceruleID2[2];
+			}
 			
 			var query1={"user":user,"element":traceruleID1[1]};
 			var query2={};
@@ -642,28 +643,31 @@ ElementDepency.saveInsertActAfterPre = function saveInsertActAfterPre(user,TarAc
 				var dependerNum="depender."+PreAct+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){	
-				});	
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){	
+					dependerNum="todepen."+TarAct+".refer_num";
+					depender={};
+					depender[dependerNum]=1;
+					collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},function(){	
+						collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},function(){	
+						});	
+					});	
+				});
 
-				dependerNum="todepen."+TarAct+".refer_num";
-				depender={};
-				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},true,function(){	
-				});	
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},true,function(){	
-				});	
 			}else{
+				//console.log("PreAct:"+PreAct+" traceruleID1[1]:"+traceruleID1[1]);
 				var insidedependerNum="insidedepender."+PreAct+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){	
+					//console.log("TarAct:"+TarAct+" traceruleID2[1]:"+traceruleID2[1]);
+					var insidetodepenNum="insidetodepen."+TarAct+".refer_num";
+					var insidetodepen={};
+					insidetodepen[insidetodepenNum]=1;
+					collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidetodepen},function(){	
+				
+					});	
 				});	
 
-				insidedependerNum="insidetodepen."+TarAct+".refer_num";
-				insidedepender={};
-				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},true,function(){	
-				});	
 				
 			}
 
@@ -674,32 +678,33 @@ ElementDepency.saveInsertActAfterPre = function saveInsertActAfterPre(user,TarAc
 				var depender={};
 			//	depender[dependerElement]=UseCase;
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
-					
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
+					dependerNum="todepen."+TarAct+".refer_num";
+					depender={};
+					depender[dependerNum]=1;
+					collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},function(){	
+						collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},function(){	
+						});	
+					});
+				
 				});	
 
-				dependerNum="todepen."+TarAct+".refer_num";
-				depender={};
-				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},true,function(){	
-				});
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},true,function(){	
-				});	
+				
 			}else{
 				var insidedependerNum="insidedepender."+UseCase+".refer_num";
 				var insidedependerElement="insidedepender."+UseCase+".name";
 				var insidedepender={};
 			//	depender[dependerElement]=UseCase;
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
-					
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
+					insidedependerNum="insidetodepen."+TarAct+".refer_num";
+					insidedepender={};
+					insidedepender[insidedependerNum]=1;
+					collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},function(){	
+					});
 				});	
 
-				insidedependerNum="insidetodepen."+TarAct+".refer_num";
-				insidedepender={};
-				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},true,function(){	
-				});
+				
 				
 			}
 
@@ -752,7 +757,10 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 			var traceruleID1=TarAct.split('_');
 			var traceruleID2=PostAct.split('_');
 			var traceruleID3=UseCase.split('_');
-			
+			if(traceruleID2[2]=="End"){
+				traceruleID2[1]=traceruleID2[1]+"_"+traceruleID2[2];
+			}
+
 			var query1={"user":user,"element":traceruleID1[1]};
 			var query2={};
 			if(traceruleID2[0]!=traceruleID1[0])
@@ -760,29 +768,29 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 				var dependerNum="depender."+PostAct+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarAct+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},function(){	
 				});	
 			}else{
 				var insidedependerNum="insidedepender."+PostAct+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarAct+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},function(){	
 				});		
 			}
 
@@ -791,29 +799,29 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 				var dependerNum="depender."+UseCase+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarAct+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},function(){	
 				});	
 			}else{
 				var insidedependerNum="insidedepender."+UseCase+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarAct+".refer_num";
 				insidedepender={};
 				insidedepender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},function(){	
 				});	
 			
 			}
@@ -853,7 +861,7 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 			Condition=Condition.split(".")[0]+"_"+Condition.split(".")[1];
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
-		console.log("saveInsertActAfterDecCon:"+TarAct+" "+Decision+" "+Condition+" "+UseCase);
+		//console.log("saveInsertActAfterDecCon:"+TarAct+" "+Decision+" "+Condition+" "+UseCase);
 		mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -870,6 +878,9 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 			var traceruleID2=Decision.split('_');
 			var traceruleID3=Condition.split('_');
 			var traceruleID4=UseCase.split('_');
+			if(traceruleID1[2]=="Start"||traceruleID1[2]=="End"){
+				traceruleID1[1]=traceruleID1[1]+"_"+traceruleID1[2];
+			}
 			
 			var query1={"user":user,"element":traceruleID1[1]};
 			var query2={};
@@ -878,29 +889,29 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 			 	var dependerNum="depender."+Decision+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarAct+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},function(){	
 				});	
 			}else{
 				var insidedependerNum="insidedepender."+Decision+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarAct+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},function(){	
 				});	
 				
 			}
@@ -910,29 +921,29 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 				var dependerNum="depender."+Condition+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarAct+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},function(){	
 				});	
 			}else{
 				var insidedependerNum="insidedepender."+Condition+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarAct+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 
@@ -941,29 +952,29 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 				var dependerNum="depender."+UseCase+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarAct+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},function(){	
 				});	
 			}else{
 				var insidedependerNum="insidedepender."+UseCase+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarAct+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 
@@ -1018,7 +1029,12 @@ ElementDepency.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(us
 			var traceruleID2=PostAct.split('_');
 			var traceruleID3=Condition.split('_');
 			var traceruleID4=UseCase.split('_');
-			
+			if(traceruleID1[2]=="Start"||traceruleID1[2]=="End"){
+				traceruleID1[1]=traceruleID1[1]+"_"+traceruleID1[2];
+			}
+			if(traceruleID2[2]=="Start"||traceruleID2[2]=="End"){
+				traceruleID2[1]=traceruleID2[1]+"_"+traceruleID2[2];
+			}
 			var query1={"user":user,"element":traceruleID1[1]};
 			var query2={};
 			if(traceruleID2[0]!=traceruleID1[0])
@@ -1026,29 +1042,29 @@ ElementDepency.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(us
 			 	var dependerNum="depender."+PostAct+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarAct+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},function(){	
 				});	
 			}else{
 				var insidedependerNum="insidedepender."+PostAct+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarAct+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -1057,29 +1073,29 @@ ElementDepency.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(us
 				var dependerNum="depender."+Condition+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarAct+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},function(){	
 				});	
 			}else{
 				var insidedependerNum="insidedepender."+Condition+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarAct+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 
@@ -1088,29 +1104,29 @@ ElementDepency.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(us
 				var dependerNum="depender."+UseCase+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarAct+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},function(){	
 				});	
 			}else{
 				var insidedependerNum="insidedepender."+UseCase+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarAct+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 
@@ -1171,6 +1187,15 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
 			var traceruleID5=InserAct.split('_');
 			var traceruleID6=TargetAct.split('_');
 			var traceruleID7=UseCase.split('_');
+			if(traceruleID2[2]=="Start"||traceruleID2[2]=="End"){
+				traceruleID2[1]=traceruleID2[1]+"_"+traceruleID2[2];
+			}
+			if(traceruleID5[2]=="Start"||traceruleID5[2]=="End"){
+				traceruleID5[1]=traceruleID5[1]+"_"+traceruleID5[2];
+			}
+			if(traceruleID6[2]=="Start"||traceruleID6[2]=="End"){
+				traceruleID6[1]=traceruleID6[1]+"_"+traceruleID6[2];
+			}
 			
 			var query1={"user":user,"element":traceruleID1[1]};
 			var query2={};
@@ -1179,29 +1204,29 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
 			 	var dependerNum="depender."+PreAct+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+PreAct+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 
@@ -1210,29 +1235,29 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+MainBranchCon+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+MainBranchCon+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 
@@ -1241,29 +1266,29 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+SupBranchCon+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},function(){	
 				});
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+SupBranchCon+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -1272,29 +1297,29 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+InserAct+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":depender},function(){	
 				});
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+InserAct+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -1303,29 +1328,29 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+TargetAct+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":depender},function(){	
 				});
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+TargetAct+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -1334,29 +1359,29 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+UseCase+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+UseCase+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 			var query = {};
@@ -1419,6 +1444,9 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			var traceruleID6=InserAct.split('_');
 			var traceruleID7=TargetDec.split('_');
 			var traceruleID8=UseCase.split('_');
+			if(traceruleID6[2]=="Start"||traceruleID6[2]=="End"){
+				traceruleID6[1]=traceruleID6[1]+"_"+traceruleID6[2];
+			}
 			
 			var query1={"user":user,"element":traceruleID1[1]};
 			var query2={};
@@ -1427,29 +1455,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			 	var dependerNum="depender."+InserDec+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+InserDec+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 
@@ -1458,29 +1486,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			 	var dependerNum="depender."+InserCon+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+InserCon+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -1489,29 +1517,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+MainBranchCon+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},function(){	
 				});
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},function(){	
 				});	
 			}else{
 				var insidedependerNum="insidedepender."+MainBranchCon+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -1520,29 +1548,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+SupBranchCon+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+SupBranchCon+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -1551,30 +1579,30 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+InserAct+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				if(traceruleID6[0]==traceruleID1[0]){
 					var insidedependerNum="insidedepender."+InserAct+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":insidedepender},function(){	
 				});
 				}
 			}
@@ -1584,29 +1612,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+TargetDec+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+TargetDec+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 
@@ -1615,29 +1643,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+UseCase+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID8[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID8[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID8[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID8[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+UseCase+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID8[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID8[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 			var query = {};
@@ -1698,6 +1726,15 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			var traceruleID5=Con2.split('_');
 			var traceruleID6=Tar2.split('_');
 			var traceruleID7=UseCase.split('_');
+			if(traceruleID2[2]=="Start"||traceruleID2[2]=="End"){
+				traceruleID2[1]=traceruleID2[1]+"_"+traceruleID2[2];
+			}
+			if(traceruleID4[2]=="Start"||traceruleID4[2]=="End"){
+				traceruleID4[1]=traceruleID4[1]+"_"+traceruleID4[2];
+			}
+			if(traceruleID6[2]=="Start"||traceruleID6[2]=="End"){
+				traceruleID6[1]=traceruleID6[1]+"_"+traceruleID6[2];
+			}
 			
 			var query1={"user":user,"element":traceruleID1[1]};
 			var query2={};
@@ -1706,29 +1743,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			 	var dependerNum="depender."+PostAct+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+PostAct+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -1737,29 +1774,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+Con1+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},function(){	
 				});
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},function(){	
 				});	
 			}else{
 				var insidedependerNum="insidedepender."+Con1+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -1768,29 +1805,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+Tar1+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+Tar1+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -1799,29 +1836,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+Con2+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+Con2+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -1830,29 +1867,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+Tar2+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+Tar2+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -1861,29 +1898,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+UseCase+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+UseCase+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 			var query = {};
@@ -1943,7 +1980,13 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			var traceruleID5=InserAct.split('_');
 			var traceruleID6=TargetDec.split('_');
 			var traceruleID7=UseCase.split('_');
-			
+			if(traceruleID2[2]=="Start"||traceruleID2[2]=="End"){
+				traceruleID2[1]=traceruleID2[1]+"_"+traceruleID2[2];
+			}
+			if(traceruleID5[2]=="Start"||traceruleID5[2]=="End"){
+				traceruleID5[1]=traceruleID5[1]+"_"+traceruleID5[2];
+			}
+
 			var query1={"user":user,"element":traceruleID1[1]};
 			var query2={};
 			if(traceruleID2[0]!=traceruleID1[0])
@@ -1951,29 +1994,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			 	var dependerNum="depender."+PostAct+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+PostAct+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -1982,29 +2025,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+MainBranchCon+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+MainBranchCon+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -2013,29 +2056,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+SupBranchCon+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+SupBranchCon+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -2044,29 +2087,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+InserAct+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":depender},function(){	
 				});		
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+InserAct+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 
@@ -2075,29 +2118,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+TargetDec+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+TargetDec+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 
@@ -2106,29 +2149,29 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 				var dependerNum="depender."+UseCase+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+UseCase+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 			var query = {};
@@ -2190,7 +2233,12 @@ ElementDepency.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(us
 			var traceruleID6=InserAct.split('_');
 			var traceruleID7=TargetDec.split('_');
 			var traceruleID8=UseCase.split('_');
-			
+			if(traceruleID2[2]=="Start"||traceruleID2[2]=="End"){
+				traceruleID2[1]=traceruleID2[1]+"_"+traceruleID2[2];
+			}
+			if(traceruleID6[2]=="Start"||traceruleID6[2]=="End"){
+				traceruleID6[1]=traceruleID6[1]+"_"+traceruleID6[2];
+			}
 			var query1={"user":user,"element":traceruleID1[1]};
 			var query2={};
 			if(traceruleID2[0]!=traceruleID1[0])
@@ -2198,29 +2246,29 @@ ElementDepency.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(us
 			 	var dependerNum="depender."+PostAct+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+PostAct+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID2[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -2229,29 +2277,29 @@ ElementDepency.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(us
 			 	var dependerNum="depender."+InserCon+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+InserCon+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID3[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -2260,29 +2308,29 @@ ElementDepency.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(us
 				var dependerNum="depender."+MainBranchCon+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+MainBranchCon+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID4[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -2291,29 +2339,29 @@ ElementDepency.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(us
 				var dependerNum="depender."+SupBranchCon+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+SupBranchCon+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 
@@ -2322,29 +2370,29 @@ ElementDepency.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(us
 				var dependerNum="depender."+InserAct+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+InserAct+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID6[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 
@@ -2353,29 +2401,29 @@ ElementDepency.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(us
 				var dependerNum="depender."+TargetDec+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+TargetDec+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID7[1]},{"$inc":insidedepender},function(){	
 				});	
 			}
 
@@ -2384,29 +2432,29 @@ ElementDepency.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(us
 				var dependerNum="depender."+UseCase+".refer_num";
 				var depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+TarDec+".refer_num";
 				depender={};
 				depender[dependerNum]=1;
-				collection.update({"user":user,"element":traceruleID8[1]},{"$inc":depender},true,function(){	
+				collection.update({"user":user,"element":traceruleID8[1]},{"$inc":depender},function(){	
 				});	
-				collection.update({"user":user,"element":traceruleID8[1]},{"$inc":{"todepenNum":1}},true,function(){	
+				collection.update({"user":user,"element":traceruleID8[1]},{"$inc":{"todepenNum":1}},function(){	
 				});
 			}else{
 				var insidedependerNum="insidedepender."+UseCase+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":traceruleID1[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+TarDec+".refer_num";
 				insidedepender={};
 				insidedepender[insidedependerNum]=1;
-				collection.update({"user":user,"element":traceruleID8[1]},{"$inc":insidedepender},true,function(){	
+				collection.update({"user":user,"element":traceruleID8[1]},{"$inc":insidedepender},function(){	
 				});
 			}
 			var query = {};
@@ -2453,7 +2501,7 @@ ElementDepency.deleteActivityDependee = function deleteActivityDependee(user,id,
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log(name[length]);
+			//console.log(name[length]);
 			collection.remove({'element':name[length]},function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete element success");
@@ -2504,7 +2552,7 @@ ElementDepency.deleteDecisionDependee = function deleteDecisionDependee(user,id,
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log(name[length]);
+			//console.log(name[length]);
 			collection.remove({'element':name[length]},function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete element success");
@@ -2555,7 +2603,7 @@ ElementDepency.deleteConditionDependee = function deleteConditionDependee(user,i
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log(name[length]);
+			//console.log(name[length]);
 			collection.remove({'element':name[length]},function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete element success");
@@ -2606,35 +2654,51 @@ ElementDepency.deleteUseCaseDependee = function deleteUseCaseDependee(user,id,op
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log(name[length]);
+			//console.log(name[length]);
+			var $startname=name[length]+"_Start";
+			var $endname=name[length]+"_End";
 			collection.remove({'element':name[length]},function(err){
 					if(err) console.warn(err.message);
-					else console.log("delete element success");
+					else{ 
+						//console.log("delete element success");
+						collection.remove({'element':$startname},function(err){
+							if(err) console.warn(err.message);
+							else{
+								collection.remove({'element':$endname},function(err){
+								if(err) console.warn(err.message);
+								else{
+											var query = {};
+											if (user) {
+				
+												query={"user":user};
+											}
+											collection.ensureIndex('user');
+
+												collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
+												mongodb.close();
+
+												if (err) {
+													callback(err, null);
+												}
+
+												var elementdepencys = [];
+				
+												docs.forEach(function(doc, index) {
+													var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.insidedepender,doc.todepen,doc.todepenNum,doc.insidetodepen,doc.type,doc._id);
+													elementdepencys.push(elementdepency);
+												});
+
+												callback(null, elementdepencys);
+											});
+									}
+								});
+							}
+						});
+					}
 				});
 
-			var query = {};
-			if (user) {
-				
-				query={"user":user};
-			}
-			collection.ensureIndex('user');
+		
 
-			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
-				if (err) {
-					callback(err, null);
-				}
-
-				var elementdepencys = [];
-				
-				docs.forEach(function(doc, index) {
-					var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.insidedepender,doc.todepen,doc.todepenNum,doc.insidetodepen,doc.type,doc._id);
-					elementdepencys.push(elementdepency);
-				});
-
-				callback(null, elementdepencys);
-			});
 
 		  });
 		
@@ -2648,7 +2712,7 @@ ElementDepency.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,i
 			return callback(err);
 		}
 	
-		console.log("deleteInsertActAfterPre:"+user+" "+id+" "+operation_name+" "+hide_field);
+		//console.log("deleteInsertActAfterPre:"+user+" "+id+" "+operation_name+" "+hide_field);
 	   db.collection('elementdepency', function(err, collection) {
 			if (err) {
 				mongodb.close();
@@ -2658,9 +2722,7 @@ ElementDepency.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,i
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log("deleteInsertActAfterPre:"+name[length]);
-
-		    var name=operation_name.split(" ");
+			//console.log("deleteInsertActAfterPre:"+name[length]);
 			
 			var query1={"user":user,"element":name[1]};
 			var query2={};
@@ -2670,72 +2732,78 @@ ElementDepency.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,i
 				var dependerNum="depender."+field[1]+"_"+name[3]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					collection.update({"user":user,"element":name[1],dependerNum:0},{"$unset":depender},function(err){
 					if(err) console.warn(err.message);
-					else console.log("delete decision success");
-					})
-				});	
+					else {
+						//console.log("delete decision success");
 
 				 dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":depender},function(){
+					collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},function(){
 
+					});
 				});
-				collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},true,function(){
+				
+						}
+					})
+				});	
 
-				});
 			}else{
 				var insidedependerNum="insidedepender."+field[1]+"_"+name[3]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					collection.update({"user":user,"element":name[1],insidedependerNum:0},{"$unset":insidedepender},function(err){
 					if(err) console.warn(err.message);
-					else console.log("delete decision success");
+					else {
+						//console.log("delete decision success");
+						 insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
+				 		 insidedepender={};
+						 insidedepender[insidedependerNum]=-1;
+						 collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},function(){
+
+							});
+						}
 					})
 				});	
 
-				 insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
-				 insidedepender={};
-				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},true,function(){
-
-				});
+				
 				
 			}
 			if(field[0]!==field[2]){
 				var dependerNum="depender."+field[2]+"_"+name[5]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
-					
-				});	
-
-				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
+					dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[5]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[5]},{"$inc":depender},function(){
+					collection.update({"user":user,"element":name[5]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
-				collection.update({"user":user,"element":name[5]},{"$inc":{"todepenNum":-1}},true,function(){
-
 				});
+				
+				});	
+
+				
 			}else{
 				var insidedependerNum="insidedepender."+field[2]+"_"+name[5]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
-					
-				});	
-
-				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
+					insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[5]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[5]},{"$inc":insidedepender},function(){
 
 				});
+				});	
+
+				
 				
 			}
 
@@ -2785,7 +2853,7 @@ ElementDepency.deleteInsertActBeforePost = function deleteInsertActBeforePost(us
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log(name[length]);
+			//console.log(name[length]);
 
 		    var name=operation_name.split(" ");
 			
@@ -2798,31 +2866,31 @@ ElementDepency.deleteInsertActBeforePost = function deleteInsertActBeforePost(us
 				var dependerNum="depender."+field[1]+"_"+name[3]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[1]+"_"+name[3]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -2830,31 +2898,31 @@ ElementDepency.deleteInsertActBeforePost = function deleteInsertActBeforePost(us
 				var dependerNum="depender."+field[2]+"_"+name[5]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[5]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[5]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[5]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[5]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[2]+"_"+name[5]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[5]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[5]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -2905,7 +2973,7 @@ ElementDepency.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log(name[length]);
+			//console.log(name[length]);
 
 		    var name=operation_name.split(" ");
 			
@@ -2918,31 +2986,31 @@ ElementDepency.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(
 				var dependerNum="depender."+field[1]+"_"+name[3]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 				
 				});
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":depender},function(){
 
 				});	
-				collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[1]+"_"+name[3]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 				
 				});
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -2950,31 +3018,31 @@ ElementDepency.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(
 				var dependerNum="depender."+field[2]+"_"+name[5]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[5]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[5]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[5]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[5]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[2]+"_"+name[5]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[5]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[5]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -2982,31 +3050,31 @@ ElementDepency.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(
 				var dependerNum="depender."+field[3]+"_"+name[7]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[7]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[7]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[7]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[7]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[3]+"_"+name[7]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[7]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[7]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3058,7 +3126,7 @@ ElementDepency.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCo
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log(name[length]);
+			//console.log(name[length]);
 
 		    var name=operation_name.split(" ");
 			
@@ -3071,31 +3139,31 @@ ElementDepency.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCo
 				var dependerNum="depender."+field[1]+"_"+name[3]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[1]+"_"+name[3]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3103,31 +3171,31 @@ ElementDepency.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCo
 				var dependerNum="depender."+field[2]+"_"+name[5]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[5]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[5]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[5]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[5]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[2]+"_"+name[5]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[5]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[5]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3135,31 +3203,31 @@ ElementDepency.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCo
 				var dependerNum="depender."+field[3]+"_"+name[7]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[7]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[7]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[7]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[7]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[3]+"_"+name[7]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[7]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[7]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3211,75 +3279,44 @@ ElementDepency.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,i
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log(name[length]);
+			//console.log(name[length]);
 
 		    var name=operation_name.split(" ");
 			
 			var query1={"user":user,"element":name[1]};
 			var query2={};
-		/*
-			 	collection.update(query1,{$pop:{"depender":new RegExp(name[3]+"$")}},{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("delete depen Pre Act");
-				});
-			
-
-				collection.update(query1,{$pop:{"depender":new RegExp(name[6]+"$")}},{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("delete depen use case");
-				});
-
-				collection.update(query1,{$pop:{"depender":new RegExp(name[8]+"$")}},{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("delete depen use case");
-				});
-
-				collection.update(query1,{$pop:{"depender":new RegExp(name[10]+"$")}},{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("delete depen use case");
-				});
-
-				collection.update(query1,{$pop:{"depender":new RegExp(name[12]+"$")}},{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("delete depen use case");
-				});
-
-				collection.update(query1,{$pop:{"depender":new RegExp(name[15]+"$")}},{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("delete depen use case");
-				});
-				*/
+	
 			var field=hide_field.split("_");
 
 			if(field[0]!==field[1]){
 				var dependerNum="depender."+field[1]+"_"+name[3]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 				
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[1]+"_"+name[3]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 				
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3287,31 +3324,31 @@ ElementDepency.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,i
 				var dependerNum="depender."+field[2]+"_"+name[6]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[6]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[6]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[2]+"_"+name[6]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[6]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3319,31 +3356,31 @@ ElementDepency.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,i
 				var dependerNum="depender."+field[3]+"_"+name[8]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[8]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[8]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[8]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[8]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[3]+"_"+name[8]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[8]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[8]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3352,31 +3389,31 @@ ElementDepency.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,i
 				var dependerNum="depender."+field[4]+"_"+name[10]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[10]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[10]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[4]+"_"+name[10]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[10]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3384,31 +3421,31 @@ ElementDepency.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,i
 				var dependerNum="depender."+field[5]+"_"+name[12]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[12]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[12]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[5]+"_"+name[12]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[12]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3416,31 +3453,31 @@ ElementDepency.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,i
 				var dependerNum="depender."+field[6]+"_"+name[15]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[15]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[15]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[15]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[15]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[6]+"_"+name[15]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[15]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[15]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3492,7 +3529,7 @@ ElementDepency.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log(name[length]);
+			//console.log(name[length]);
 
 		    var name=operation_name.split(" ");
 			
@@ -3506,31 +3543,31 @@ ElementDepency.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(
 				var dependerNum="depender."+field[1]+"_"+name[4]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[4]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[4]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[4]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[4]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[1]+"_"+name[4]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[4]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[4]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3538,31 +3575,31 @@ ElementDepency.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(
 				var dependerNum="depender."+field[2]+"_"+name[6]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[6]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[6]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[2]+"_"+name[6]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[6]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3570,31 +3607,31 @@ ElementDepency.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(
 				var dependerNum="depender."+field[3]+"_"+name[10]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[10]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[10]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[3]+"_"+name[10]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[10]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3603,31 +3640,31 @@ ElementDepency.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(
 				var dependerNum="depender."+field[4]+"_"+name[12]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[12]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[12]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[4]+"_"+name[12]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[12]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3635,31 +3672,31 @@ ElementDepency.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(
 				var dependerNum="depender."+field[5]+"_"+name[14]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[14]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[14]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[14]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[14]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[5]+"_"+name[14]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[14]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[14]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3667,31 +3704,31 @@ ElementDepency.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(
 				var dependerNum="depender."+field[6]+"_"+name[16]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[16]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[16]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[16]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[16]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[6]+"_"+name[16]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[16]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[16]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3699,31 +3736,31 @@ ElementDepency.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(
 				var dependerNum="depender."+field[7]+"_"+name[19]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[19]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[19]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[19]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[19]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[7]+"_"+name[19]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[19]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[19]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3776,7 +3813,7 @@ ElementDepency.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log(name[length]);
+			//console.log(name[length]);
 
 		    var name=operation_name.split(" ");
 			
@@ -3789,31 +3826,31 @@ ElementDepency.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user
 				var dependerNum="depender."+field[1]+"_"+name[3]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[1]+"_"+name[3]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3821,31 +3858,31 @@ ElementDepency.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user
 				var dependerNum="depender."+field[2]+"_"+name[6]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[6]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[6]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[2]+"_"+name[6]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[6]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3853,31 +3890,31 @@ ElementDepency.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user
 				var dependerNum="depender."+field[3]+"_"+name[8]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[8]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[8]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[8]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[8]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[3]+"_"+name[8]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[8]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[8]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3886,31 +3923,31 @@ ElementDepency.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user
 				var dependerNum="depender."+field[4]+"_"+name[10]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[10]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[10]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[4]+"_"+name[10]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[10]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3918,29 +3955,29 @@ ElementDepency.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user
 				var dependerNum="depender."+field[5]+"_"+name[12]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[12]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[12]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[5]+"_"+name[12]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[12]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -3948,31 +3985,31 @@ ElementDepency.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user
 				var dependerNum="depender."+field[6]+"_"+name[15]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[15]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[15]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[15]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[15]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[6]+"_"+name[15]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[15]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[15]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -4024,7 +4061,7 @@ ElementDepency.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActW
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log(name[length]);
+			//console.log(name[length]);
 
 		    var name=operation_name.split(" ");
 			
@@ -4037,31 +4074,31 @@ ElementDepency.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActW
 				var dependerNum="depender."+field[1]+"_"+name[3]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[1]+"_"+name[3]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[3]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -4069,31 +4106,31 @@ ElementDepency.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActW
 				var dependerNum="depender."+field[2]+"_"+name[6]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[6]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[6]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[2]+"_"+name[6]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[6]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -4101,31 +4138,31 @@ ElementDepency.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActW
 				var dependerNum="depender."+field[3]+"_"+name[8]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[8]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[8]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[8]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[8]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[3]+"_"+name[8]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[8]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[8]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -4134,31 +4171,31 @@ ElementDepency.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActW
 				var dependerNum="depender."+field[4]+"_"+name[10]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[10]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[10]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[4]+"_"+name[10]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[10]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -4166,31 +4203,31 @@ ElementDepency.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActW
 				var dependerNum="depender."+field[5]+"_"+name[12]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[12]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[12]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[5]+"_"+name[12]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[12]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -4198,31 +4235,31 @@ ElementDepency.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActW
 				var dependerNum="depender."+field[6]+"_"+name[15]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[15]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[15]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[15]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[15]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[6]+"_"+name[15]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[15]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[15]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -4274,7 +4311,7 @@ ElementDepency.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCo
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
-			console.log(name[length]);
+			//console.log(name[length]);
 
 		    var name=operation_name.split(" ");
 			
@@ -4287,31 +4324,31 @@ ElementDepency.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCo
 				var dependerNum="depender."+field[1]+"_"+name[4]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[4]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[4]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[4]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[4]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[1]+"_"+name[4]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[4]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[4]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -4319,31 +4356,31 @@ ElementDepency.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCo
 				var dependerNum="depender."+field[2]+"_"+name[6]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[6]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[6]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[2]+"_"+name[6]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[6]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[6]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -4351,31 +4388,31 @@ ElementDepency.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCo
 				var dependerNum="depender."+field[3]+"_"+name[10]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[10]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[10]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[3]+"_"+name[10]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[10]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[10]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -4384,31 +4421,31 @@ ElementDepency.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCo
 				var dependerNum="depender."+field[4]+"_"+name[12]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[12]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":depender},function(){
 
 				});	
-				collection.update({"user":user,"element":name[12]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[4]+"_"+name[12]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[12]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[12]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -4416,31 +4453,31 @@ ElementDepency.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCo
 				var dependerNum="depender."+field[5]+"_"+name[14]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[14]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[14]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[14]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[14]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[5]+"_"+name[14]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[14]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[14]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -4448,31 +4485,31 @@ ElementDepency.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCo
 				var dependerNum="depender."+field[6]+"_"+name[16]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[16]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[16]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[16]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[16]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[6]+"_"+name[16]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[16]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[16]},{"$inc":insidedepender},function(){
 
 				});
 			}
@@ -4480,31 +4517,31 @@ ElementDepency.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCo
 				var dependerNum="depender."+field[7]+"_"+name[19]+".refer_num";
 				var depender={};
 				depender[dependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":depender},function(){
 					
 				});	
 
 				dependerNum="todepen."+field[0]+"_"+name[1]+".refer_num";
 				 depender={};
 				depender[dependerNum]=-1;
-				collection.update({"user":user,"element":name[19]},{"$inc":depender},true,function(){
+				collection.update({"user":user,"element":name[19]},{"$inc":depender},function(){
 
 				});
-				collection.update({"user":user,"element":name[19]},{"$inc":{"todepenNum":-1}},true,function(){
+				collection.update({"user":user,"element":name[19]},{"$inc":{"todepenNum":-1}},function(){
 
 				});
 			}else{
 				var insidedependerNum="insidedepender."+field[7]+"_"+name[19]+".refer_num";
 				var insidedepender={};
 				insidedepender[insidedependerNum]=-1;	
-				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[1]},{"$inc":insidedepender},function(){
 					
 				});	
 
 				insidedependerNum="insidetodepen."+field[0]+"_"+name[1]+".refer_num";
 				 insidedepender={};
 				insidedepender[insidedependerNum]=-1;
-				collection.update({"user":user,"element":name[19]},{"$inc":insidedepender},true,function(){
+				collection.update({"user":user,"element":name[19]},{"$inc":insidedepender},function(){
 
 				});
 			}

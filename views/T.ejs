@@ -219,23 +219,29 @@
 
       $(".icon-ok.editOperation.Activity").click(function(){
         var $hidden_fields=$(this).parent().parent().parent().find("#hidden_editactivity").val();
-        console.log($hidden_fields+"lalalalalalalal");
           $ActivityName=$(this).parent().find('input').val();
           $ActivityDescription=$(this).parent().parent().parent().find('textarea').val();
           $ActivityExecutor=$(this).parent().parent().parent().find("option:selected").val();
-
+         
         jQuery.each($(this).parent().parent().parent(),function(){
            $(this).find('input').attr("readonly",true);
            $(this).find('textarea').attr("readonly",true);
+
+   
+            /*$("b").each(function(i){
+              if($(this).html()==$OldActivityExecutor){
+                 $(this).html($ActivityExecutor);
+              }
+            })*/
         })
+
         //$(this).parent().parent().parent().('input').attr("readonly",false);
+
         $("b").each(function(i){
           if($(this).html()==$OldActivityName){
             $(this).html($ActivityName);
           }
-           if($(this).html()==$OldActivityExecutor){
-            $(this).html($ActivityExecutor);
-          }
+        
         })
 
         $("option").each(function(i){
@@ -299,7 +305,7 @@
               descriptionMark:$DescriptionMark,
               executorMark:$ExecutorMark,
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$hidden_fields,
               activityname:$ActivityName,
               activitydescription:$ActivityDescription,
               activityexecutor:$ActivityExecutor,
@@ -423,7 +429,7 @@
               nameMark:$nameMark,
               descriptionMark:$DescriptionMark,
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$hidden_fields,
               usecasename:$UseCaseName,
               usecasedescription:$UseCaseDescription,
               oldusecasename:$OldUseCaseName,
@@ -555,7 +561,7 @@
               descriptionMark:$DescriptionMark,
               executorMark:$ExecutorMark,
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$hidden_fields,
               decisionname:$DecisionName,
               decisiondescription:$DecisionDescription,
               decisionexecutor:$DecisionExecutor,
@@ -676,7 +682,7 @@
               nameMark:$nameMark,
               descriptionMark:$DescriptionMark,
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$hidden_fields,
               conditionname:$ConditionName,
               conditiondescription:$ConditionDescription,
               oldconditionname:$OldConditionName,
@@ -771,16 +777,18 @@
           
           $operation_position=$operation_position+$(this).attr("id");
        })
+        console.log("guardID:"+$("#hidden_insertactafterpre_guardID").val());
+         
          $(this).css("display","none");
          $(this).siblings().show();
-
+          
           $.ajax({
             type: "POST",
             url: "/EditInsertActAfterPre",
             async:false,
             data: {
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$("#hidden_insertactafterpre_guardID").val(),
               editTartAct:$editTartAct,
               editPreAct:$editPreAct,
               editUseCase:$editUseCase,
@@ -788,7 +796,7 @@
               oldPreAct:$OldPreAct,
               oldUseCase:$OldUseCase,
               positions:$operation_position,
-              current_guard_id:$current_guard_id,
+              current_guard_id:$("#hidden_insertactafterpre_guardID").val(),
               hidden_fields:$hidden_fields,
               projectID:$("#hidden_project_id").val()
            },
@@ -870,7 +878,7 @@
             async:false,
             data: {
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$("#hidden_insertActBeforePost_guardID").val(),
               editTartAct:$editTartAct,
               editPostAct:$editPostAct,
               editUseCase:$editUseCase,
@@ -878,7 +886,7 @@
               oldPostAct:$OldPostAct,
               oldUseCase:$OldUseCase,
               positions:$operation_position,
-              current_guard_id:$current_guard_id,
+              current_guard_id:$("#hidden_insertActBeforePost_guardID").val(),
               hidden_fields:$hidden_fields,
               projectID:$("#hidden_project_id").val()
            },
@@ -964,7 +972,7 @@
             async:false,
             data: {
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$("#hidden_insertActAfterDecCon_guardID").val(),
               editTartAct:$editTartAct,
               editDec:$editDec,
               editCon:$editCon,
@@ -974,7 +982,7 @@
               oldCon:$OldCon,
               oldUseCase:$OldUseCase,
               positions:$operation_position,
-              current_guard_id:$current_guard_id,
+              current_guard_id:$("#hidden_insertActAfterDecCon_guardID").val(),
               hidden_fields:$hidden_fields,
               projectID:$("#hidden_project_id").val()
            },
@@ -1060,7 +1068,7 @@
             async:false,
             data: {
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$("#hidden_insertActBeforeActCon_guardID").val(),
               editTartAct:$editTartAct,
               editAct:$editAct,
               editCon:$editCon,
@@ -1070,7 +1078,7 @@
               oldCon:$OldCon,
               oldUseCase:$OldUseCase,
               positions:$operation_position,
-              current_guard_id:$current_guard_id,
+              current_guard_id:$("#hidden_insertActBeforeActCon_guardID").val(),
               hidden_fields:$hidden_fields,
               projectID:$("#hidden_project_id").val()
            },
@@ -1177,7 +1185,7 @@
               descriptionMark:$DescriptionMark,
               executorMark:$ExecutorMark,
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$hidden_fields,
               activityname:$ActivityName,
               activitydescription:$ActivityDescription,
               activityexecutor:$ActivityExecutor,
@@ -1396,7 +1404,7 @@
             async:false,
             data: {
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$("#hidden_insertDecAfterAct_guardID").val(),
               EditTarDec:$EditTarDec,
               EditPreAct:$EditPreAct,
               EditMainCon:$EditMainCon,
@@ -1413,7 +1421,7 @@
               OldUseCase:$OldUseCase,
               positions:$operation_position,
               current_guard_id:$current_guard_id,
-              hidden_fields:$hidden_fields,
+              hidden_fields:$("#hidden_insertDecAfterAct_guardID").val(),
               projectID:$("#hidden_project_id").val()
            },
             dataType:'json',
@@ -1520,7 +1528,7 @@
             async:false,
             data: {
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$("#hidden_insertDecAfterDecCon_guardID").val(),
               EditTarDec:$EditTarDec,
               EditInsertDec:$EditInsertDec,
               EditInsertCon:$EditInsertCon,
@@ -1539,7 +1547,7 @@
               OldUseCase:$OldUseCase,
               positions:$operation_position,
               current_guard_id:$current_guard_id,
-              hidden_fields:$hidden_fields,
+              hidden_fields:$("#hidden_insertDecAfterDecCon_guardID").val(),
               projectID:$("#hidden_project_id").val()
            },
             dataType:'json',
@@ -1642,7 +1650,7 @@
             async:false,
             data: {
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$("#hidden_insertDecBeforeActCon_guardID").val(),
               EditTarDec:$EditTarDec,
               EditPostAct:$EditPostAct,
               EditCon1:$EditCon1,
@@ -1659,7 +1667,7 @@
               OldUseCase:$OldUseCase,
               positions:$operation_position,
               current_guard_id:$current_guard_id,
-              hidden_fields:$hidden_fields,
+              hidden_fields:$("#hidden_insertDecBeforeActCon_guardID").val(),
               projectID:$("#hidden_project_id").val()
            },
             dataType:'json',
@@ -1759,7 +1767,7 @@
             async:false,
             data: {
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$("#hidden_insertDecBeforeActWit_guardID").val(),
               EditTarDec:$EditTarDec,
               EditPostAct:$EditPostAct,
               EditMainCon:$EditMainCon,
@@ -1776,7 +1784,7 @@
               OldUseCase:$OldUseCase,
               positions:$operation_position,
               current_guard_id:$current_guard_id,
-              hidden_fields:$hidden_fields,
+              hidden_fields:$("#hidden_insertDecBeforeActWit_guardID").val(),
               projectID:$("#hidden_project_id").val()
            },
             dataType:'json',
@@ -1883,7 +1891,7 @@
             async:false,
             data: {
               user:"<%=tracerules[0].user%>",
-              id:"<%=tracerules[0]._id%>",
+              id:$("#hidden_insertDecBeforeActCon_guardID").val(),
               EditTarDec:$EditTarDec,
               EditInsertAct:$EditInsertAct,
               EditInsertCon:$EditInsertCon,
@@ -1902,7 +1910,7 @@
               OldUseCase:$OldUseCase,
               positions:$operation_position,
               current_guard_id:$current_guard_id,
-              hidden_fields:$hidden_fields,
+              hidden_fields:$("#hidden_insertDecBeforeActCon_guardID").val(),
               projectID:$("#hidden_project_id").val()
            },
             dataType:'json',
@@ -1941,6 +1949,7 @@
 
         }
       })
+
       $( "#confirmDelete" ).dialog({
           autoOpen: false,
           width: 450,
@@ -2816,6 +2825,11 @@
               $activityname=$("#activityname").val();
         $activitydescription=$("#activitydescription").val();
         $activityexecutor=$('input:radio[name=ExecutorType]:checked').val();
+    
+        if($activityname.indexOf("_")>-1){
+          alert("Activity name can't include '_'");
+        }else{
+
        /*  
         if($("#activityvirtual").is(":checked")==true){
           $activityvirtual="true";
@@ -2845,12 +2859,14 @@
        if($ifNone)
           $operation_position="Create Activity "+$activityname;
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
+
               $( this ).dialog( "close" );
+            }
           
         },
       },
       close: function() {
-       if($("#activityname").val()!=""&&$("#activitydescription").val()!=""){
+       if($("#activityname").val()!=""&&$("#activitydescription").val()!=""&&$activityname.indexOf("_")==-1){
         
         //window.location.href="/createActivity/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$activityname+"分"+$activitydescription+"分"+$activityexecutor+"分"+$current_accordion+"分"+$operation_position+"分"+$current_guard_id;
         $.ajax({
@@ -2890,7 +2906,9 @@
         
         $usecasename=$("#usecasename").val();
         $usecasedescription=$("#usecasedescription").val();
-        
+        if($usecasename.indexOf("_")>-1){
+          alert("Use case name can't include '_'");
+        }else{
         $operation_position="";
         var $mark=false;
         var $ifNone=true;
@@ -2916,12 +2934,13 @@
        
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
               $( this ).dialog( "close" );
+            }
           
         },
       },
       close: function() {
         //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
-        if($("#usecasename").val()!=""){
+        if($("#usecasename").val()!=""&&$usecasename.indexOf("_")==-1){
 
         //window.location.href="/createUseCase/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$usecasename+"分"+$usecasedescription+"分"+$operation_position+"分"+$current_guard_id;
           $.ajax({
@@ -2958,7 +2977,9 @@
                $decisionname=$("#decisionname").val();
                $decisiondescription=$("#decisiondescription").val();
                $decisionexecutor=$('input:radio[name=DecisionExecutorType]:checked').val();
-        
+        if($decisionname.indexOf("_")>-1){
+          alert("Decision name can't include '_'");
+        }else{
         
         $operation_position="";
         var $mark=false;
@@ -2983,12 +3004,12 @@
           $operation_position="Create Decision "+$decisionname;
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
               $( this ).dialog( "close" );
-          
+          }
         },
       },
       close: function() {
         //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
-        if($("#decisionname").val()!=""&&$("#decisiondescription").val()!=""){
+        if($("#decisionname").val()!=""&&$("#decisiondescription").val()!=""&&$decisionname.indexOf("_")==-1){
         //window.location.href="/createDecision/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$decisionname+"分"+$decisiondescription+"分"+$decisionexecutor+"分"+$operation_position+"分"+$current_guard_id;
           $.ajax({
             type: "POST",
@@ -3023,7 +3044,9 @@
             "Confirm": function() {
         $conditionname=$("#conditionname").val();
         $conditiondescription=$("#conditiondescription").val();
-      
+      if($conditionname.indexOf("_")>-1){
+        alert("Condition name can't include '_'");
+      }else{
         $operation_position="";
         var $mark=false;
         var $ifNone=true;
@@ -3047,12 +3070,12 @@
         $operation_position="Create Condition "+$conditionname;
         $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
               $( this ).dialog( "close" );
-          
+          }
         },
       },
       close: function() {
         //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
-         if($("#conditionname").val()!=""&&$("#conditiondescription").val()!=""){
+         if($("#conditionname").val()!=""&&$("#conditiondescription").val()!=""&&$conditionname.indexOf("_")==-1){
          //window.location.href="/createCondition/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$conditionname+"分"+$conditiondescription+"分"+$operation_position+"分"+$current_guard_id;
           $.ajax({
             type: "POST",
@@ -3160,9 +3183,9 @@
           if($TartAct=="-1"||$PreAct=="-1"||$UseCase=="-1")
             $marks=false;
 
-        var TargetActivity=$("#InterPreTar").find("option:selected").val().split('_');
-        var PreActivity=$("#InterPrePre").find("option:selected").val().split('_');
-        var Usecase=$("#InterPreUseCase").find("option:selected").val().split('_');
+        var TargetActivity=$("#InterPreTar").find("option:selected").val().split('.');
+        var PreActivity=$("#InterPrePre").find("option:selected").val().split('.');
+        var Usecase=$("#InterPreUseCase").find("option:selected").val().split('.');
         
             $operation_position="";
         var $mark=false;
@@ -3223,7 +3246,7 @@
           buttons: {
 
             "Confirm": function() {
-              
+             
               $( this ).dialog( "close" );
           
         },
@@ -3238,9 +3261,9 @@
           if($TartAct=="-1"||$PostAct=="-1"||$UseCase=="-1")
             $marks=false;
 
-        var TargetActivity=$("#InterPostTar").find("option:selected").val().split('_');
-        var PostActivity=$("#InterPostPost").find("option:selected").val().split('_');
-        var Usecase=$("#InterPostUseCase").find("option:selected").val().split('_');
+        var TargetActivity=$("#InterPostTar").find("option:selected").val().split('.');
+        var PostActivity=$("#InterPostPost").find("option:selected").val().split('.');
+        var Usecase=$("#InterPostUseCase").find("option:selected").val().split('.');
         
             $operation_position="";
         var $mark=false;
@@ -3315,10 +3338,10 @@
           if($TartAct=="-1"||$Dec=="-1"||$Con=="-1"||$UC=="-1")
             $marks=false;
         
-        var TargetActivity=$("#InterAfterDecConTar").find("option:selected").val().split('_');
-        var Decision=$("#InterAfterDecConDec").find("option:selected").val().split('_');
-        var Conditon=$("#InterAfterDecConCon").find("option:selected").val().split('_');
-        var UseCase=$("#InterAfterDecConUseCase").find("option:selected").val().split('_');
+        var TargetActivity=$("#InterAfterDecConTar").find("option:selected").val().split('.');
+        var Decision=$("#InterAfterDecConDec").find("option:selected").val().split('.');
+        var Conditon=$("#InterAfterDecConCon").find("option:selected").val().split('.');
+        var UseCase=$("#InterAfterDecConUseCase").find("option:selected").val().split('.');
         
             $operation_position="";
         var $mark=false;
@@ -3396,10 +3419,10 @@
           if($TartAct=="-1"||$PostAct=="-1"||$Con=="-1"||$UC=="-1")
             $marks=false;
 
-        var TargetActivity=$("#InterBeforeActConTar").find("option:selected").val().split('_');
-        var PostActivity=$("#InterBeforeActConAct").find("option:selected").val().split('_');
-        var Conditon=$("#InterBeforeActConCon").find("option:selected").val().split('_');
-        var UseCase=$("#InterBeforeActConUseCase").find("option:selected").val().split('_');
+        var TargetActivity=$("#InterBeforeActConTar").find("option:selected").val().split('.');
+        var PostActivity=$("#InterBeforeActConAct").find("option:selected").val().split('.');
+        var Conditon=$("#InterBeforeActConCon").find("option:selected").val().split('.');
+        var UseCase=$("#InterBeforeActConUseCase").find("option:selected").val().split('.');
         
             $operation_position="";
         var $mark=false;
@@ -3480,21 +3503,21 @@
           if($TartDec=="-1"||$PreAct=="-1"||$MainBranchCon=="-1"||$SupBranchCon=="-1"||$InserAct=="-1"||$TargetAct=="-1"||$UC=="-1")
             $marks=false;
 
-          var $TargetDecision=$("#InsertDecAfterActTar").find("option:selected").val().split('_');
-          var $PreActivity=$("#InsertDecAfterActPre").find("option:selected").val().split('_');
-          var $MainBranchConditon=$("#InsertDecAfterActMainCon").find("option:selected").val().split('_');
-          var $SupBranchCondition=$("#InsertDecAfterActSBCon").find("option:selected").val().split('_');
+          var $TargetDecision=$("#InsertDecAfterActTar").find("option:selected").val().split('.');
+          var $PreActivity=$("#InsertDecAfterActPre").find("option:selected").val().split('.');
+          var $MainBranchConditon=$("#InsertDecAfterActMainCon").find("option:selected").val().split('.');
+          var $SupBranchCondition=$("#InsertDecAfterActSBCon").find("option:selected").val().split('.');
           var $markInserAct=false;
           if($InserAct!="none"){
             $markInserAct=true;
-            var $InserActivity=$("#InsertDecAfterActInserAct").find("option:selected").val().split('_');
+            var $InserActivity=$("#InsertDecAfterActInserAct").find("option:selected").val().split('.');
           }
           else
           {
             var $InserActivity=[];
           }
-          var $TargetActivity=$("#InsertDecAfterActTarAct").find("option:selected").val().split('_');
-          var $UseCase=$("#InsertDecAfterActUseCase").find("option:selected").val().split('_');
+          var $TargetActivity=$("#InsertDecAfterActTarAct").find("option:selected").val().split('.');
+          var $UseCase=$("#InsertDecAfterActUseCase").find("option:selected").val().split('.');
         
             $operation_position="";
         var $mark=false;
@@ -3585,14 +3608,14 @@
           if($TartDec=="-1"||$InsertDec=="-1"||$InsertCon=="-1"||$MainBranchCon=="-1"||$SupBranchCon=="-1"||$InserAct=="-1"||$TargetDec=="-1"||$UC=="-1")
             $marks=false;
 
-          var $TargetDecision=$("#InsertDecAfterDecConTar").find("option:selected").val().split('_');
-          var $InsertDecision=$("#InsertDecAfterDecConInserDec").find("option:selected").val().split('_');
-          var $InsertCondition=$("#InsertDecAfterDecConInserCon").find("option:selected").val().split('_');
-          var $MainBranchConditon=$("#InsertDecAfterDecConMainCon").find("option:selected").val().split('_');
-          var $SupBranchCondition=$("#InsertDecAfterDecConSBCon").find("option:selected").val().split('_');
-          var $InserActivity=$("#InsertDecAfterDecConInserAct").find("option:selected").val().split('_');
-          var $TargetDecisions=$("#InsertDecAfterDecConTarDec").find("option:selected").val().split('_');
-          var $UseCase=$("#InsertDecAfterDecConUseCase").find("option:selected").val().split('_');
+          var $TargetDecision=$("#InsertDecAfterDecConTar").find("option:selected").val().split('.');
+          var $InsertDecision=$("#InsertDecAfterDecConInserDec").find("option:selected").val().split('.');
+          var $InsertCondition=$("#InsertDecAfterDecConInserCon").find("option:selected").val().split('.');
+          var $MainBranchConditon=$("#InsertDecAfterDecConMainCon").find("option:selected").val().split('.');
+          var $SupBranchCondition=$("#InsertDecAfterDecConSBCon").find("option:selected").val().split('.');
+          var $InserActivity=$("#InsertDecAfterDecConInserAct").find("option:selected").val().split('.');
+          var $TargetDecisions=$("#InsertDecAfterDecConTarDec").find("option:selected").val().split('.');
+          var $UseCase=$("#InsertDecAfterDecConUseCase").find("option:selected").val().split('.');
         
             $operation_position="";
         var $mark=false;
@@ -3680,13 +3703,13 @@
           if($TartDec=="-1"||$PostAct=="-1"||$Con1=="-1"||$Tar1=="-1"||$Con2=="-1"||$Tar2=="-1"||$UC=="-1")
             $marks=false;
 
-          var $TargetDecision=$("#InsertDecBeforeActTar").find("option:selected").val().split('_');
-          var $PostActivity=$("#InsertDecBeforePostAct").find("option:selected").val().split('_');
-          var $Condition1=$("#InsertDecBeforeActCon1").find("option:selected").val().split('_');
-          var $Target1=$("#InsertDecBeforeActTar1").find("option:selected").val().split('_');
-          var $Condition2=$("#InsertDecBeforeActCon2").find("option:selected").val().split('_');
-          var $Target2=$("#InsertDecBeforeActTar2").find("option:selected").val().split('_');
-          var $UseCase=$("#InsertDecBeforeActUseCase").find("option:selected").val().split('_');
+          var $TargetDecision=$("#InsertDecBeforeActTar").find("option:selected").val().split('.');
+          var $PostActivity=$("#InsertDecBeforePostAct").find("option:selected").val().split('.');
+          var $Condition1=$("#InsertDecBeforeActCon1").find("option:selected").val().split('.');
+          var $Target1=$("#InsertDecBeforeActTar1").find("option:selected").val().split('.');
+          var $Condition2=$("#InsertDecBeforeActCon2").find("option:selected").val().split('.');
+          var $Target2=$("#InsertDecBeforeActTar2").find("option:selected").val().split('.');
+          var $UseCase=$("#InsertDecBeforeActUseCase").find("option:selected").val().split('.');
         
         $operation_position="";
         var $mark=false;
@@ -3772,13 +3795,13 @@
           if($TartDec=="-1"||$PostAct=="-1"||$MainBranchCon=="-1"||$SupBranchCon=="-1"||$InserAct=="-1"||$TartDec=="-1"||$UC=="-1")
             $marks=false;
 
-          var $TargetDecision=$("#InsertDecBeforeActWithTar").find("option:selected").val().split('_');
-          var $PostActivity=$("#InsertDecBeforeActWithPost").find("option:selected").val().split('_');
-          var $MainBranchConditon=$("#InsertDecBeforeActWithMainCon").find("option:selected").val().split('_');
-          var $SupBranchCondition=$("#InsertDecBeforeActWithSBCon").find("option:selected").val().split('_');
-          var $InserActivity=$("#InsertDecBeforeActWithInserAct").find("option:selected").val().split('_');
-          var $TargetDecisions=$("#InsertDecBeforeActWithTarDec").find("option:selected").val().split('_');
-          var $UseCase=$("#InsertDecBeforeActWithUseCase").find("option:selected").val().split('_');
+          var $TargetDecision=$("#InsertDecBeforeActWithTar").find("option:selected").val().split('.');
+          var $PostActivity=$("#InsertDecBeforeActWithPost").find("option:selected").val().split('.');
+          var $MainBranchConditon=$("#InsertDecBeforeActWithMainCon").find("option:selected").val().split('.');
+          var $SupBranchCondition=$("#InsertDecBeforeActWithSBCon").find("option:selected").val().split('.');
+          var $InserActivity=$("#InsertDecBeforeActWithInserAct").find("option:selected").val().split('.');
+          var $TargetDecisions=$("#InsertDecBeforeActWithTarDec").find("option:selected").val().split('.');
+          var $UseCase=$("#InsertDecBeforeActWithUseCase").find("option:selected").val().split('.');
         
             $operation_position="";
         var $mark=false;
@@ -3865,14 +3888,14 @@
           if($TartDec=="-1"||$PostAct=="-1"||$InsertCon=="-1"||$MainBranchCon=="-1"||$SupBranchCon=="-1"||$InserAct=="-1"||$TartDec=="-1"||$UC=="-1")
             $marks=false;
 
-          var $TargetDecision=$("#InsertDecBeforeActConTar").find("option:selected").val().split('_');
-          var $PostActivity=$("#InsertDecBeforeActConPostAct").find("option:selected").val().split('_');
-          var $InsertCondition=$("#InsertDecBeforeActConInserCon").find("option:selected").val().split('_');
-          var $MainBranchConditon=$("#InsertDecBeforeActConMainCon").find("option:selected").val().split('_');
-          var $SupBranchCondition=$("#InsertDecBeforeActConSBCon").find("option:selected").val().split('_');
-          var $InserActivity=$("#InsertDecBeforeActConInserAct").find("option:selected").val().split('_');
-          var $TargetDecisions=$("#InsertDecBeforeActConTarDec").find("option:selected").val().split('_');
-          var $UseCase=$("#InsertDecBeforeActConUseCase").find("option:selected").val().split('_');
+          var $TargetDecision=$("#InsertDecBeforeActConTar").find("option:selected").val().split('.');
+          var $PostActivity=$("#InsertDecBeforeActConPostAct").find("option:selected").val().split('.');
+          var $InsertCondition=$("#InsertDecBeforeActConInserCon").find("option:selected").val().split('.');
+          var $MainBranchConditon=$("#InsertDecBeforeActConMainCon").find("option:selected").val().split('.');
+          var $SupBranchCondition=$("#InsertDecBeforeActConSBCon").find("option:selected").val().split('.');
+          var $InserActivity=$("#InsertDecBeforeActConInserAct").find("option:selected").val().split('.');
+          var $TargetDecisions=$("#InsertDecBeforeActConTarDec").find("option:selected").val().split('.');
+          var $UseCase=$("#InsertDecBeforeActConUseCase").find("option:selected").val().split('.');
         
             $operation_position="";
         var $mark=false;
@@ -3967,7 +3990,7 @@ var $isAddOrEdit;
                         url: "/addTraceRule",
                         data: {
                           user:"<%=tracerules[0].user%>",
-                          id:"<%=tracerules[0]._id%>",
+                          id:$hidden_fields,
                           selfname:$addTraceRule_selfname,
                           guardname:$addTraceRule_guardname,
                           operation_position:$operation_position,
@@ -3990,7 +4013,7 @@ var $isAddOrEdit;
                         url: "/editTraceRule",
                         data: {
                           user:"<%=tracerules[0].user%>",
-                          id:"<%=tracerules[0]._id%>",
+                          id:$hidden_fields,
                           selfname:$addTraceRule_selfname,
                           guardname:$addTraceRule_guardname,
                           operation_position:$operation_position,

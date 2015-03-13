@@ -111,7 +111,7 @@ Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname
 
 
 Tracerule.get = function get(username, projectID,guard_id,callback) {
-	console.log("guard_id:"+guard_id);
+	
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -552,18 +552,18 @@ Tracerule.createActivity = function createActivity(user,id,activityname,activity
 							//elements:elements[activityname]
 						
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else {
 						console.log("createActivity success");
 						query2={"$set":elements}
 						
-						collection.update(query1,query2,{safe:true},function(err){
+						collection.update(query1,query2,function(err){
 							if(err) console.warn(err.message);
 							else {
 								console.log("createActivity success");
 								query2={$set:{"positions":positions}};
-								collection.update(query1,query2,{safe:true},function(err){
+								collection.update(query1,query2,function(err){
 									if(err) console.warn(err.message);
 									else {
 										console.log("createActivity success");
@@ -617,7 +617,7 @@ Tracerule.createActivity = function createActivity(user,id,activityname,activity
 
 
 
-Tracerule.createUseCase = function createUseCase(user,id,usecasename,usecasedescription,positions,callback){
+Tracerule.createUseCase = function createUseCase(user,id,usecasename,usecasedescription,startname,endname,positions,callback){
 	// 存入 Mongodb 的文檔
 	mongodb.open(function(err, db) {
 		if (err) {
@@ -662,7 +662,28 @@ Tracerule.createUseCase = function createUseCase(user,id,usecasename,usecasedesc
 					elements[elementDescription]=usecasedescription;
 					elements[elementType]="usecase";		
 					elements[elementTime]=new Date();
+
+				var StartelementName="elements."+startname+".name";
+				var StartelementDescription="elements."+startname+".description";
+				var StartelementType="elements."+startname+".type";
+				var StartelementTime="elements."+startname+".time";
+				var Startelements={};
 					
+					Startelements[StartelementName]=startname;
+					Startelements[StartelementDescription]="use case start";
+					Startelements[StartelementType]="activity";		
+					Startelements[StartelementTime]=new Date();
+
+				var EndelementName="elements."+endname+".name";
+				var EndelementDescription="elements."+endname+".description";
+				var EndelementType="elements."+endname+".type";
+				var EndelementTime="elements."+endname+".time";
+				var Endelements={};
+					
+					Endelements[EndelementName]=endname;
+					Endelements[EndelementDescription]="use case end";
+					Endelements[EndelementType]="activity";		
+					Endelements[EndelementTime]=new Date();	
 			
 				query2={
 					"$set":
@@ -671,21 +692,29 @@ Tracerule.createUseCase = function createUseCase(user,id,usecasename,usecasedesc
 							//elements:elements[activityname]
 						
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else {
-						console.log("createUseCase success");
+						//console.log("createUseCase success");
 						query2={"$set":elements}
-						collection.update(query1,query2,{safe:true},function(err){
+						collection.update(query1,query2,function(err){
 							if(err) console.warn(err.message);
 							else {
-								console.log("createUseCase success");
+								//console.log("createUseCase success");
 								query2={$set:{"positions":positions}};
-									collection.update(query1,query2,{safe:true},function(err){
+									collection.update(query1,query2,function(err){
 										if(err) console.warn(err.message);
 										else {
-											console.log("createUseCase success");
-											
+											//console.log("createUseCase success");
+						query2={"$set":Startelements}
+						collection.update(query1,query2,function(err){
+							if(err) console.warn(err.message);
+							else {
+								query2={"$set":Endelements}
+								collection.update(query1,query2,function(err){
+									if(err) console.warn(err.message);
+									else {
+
 											var query = {};
 											if (id) {
 				
@@ -711,16 +740,19 @@ Tracerule.createUseCase = function createUseCase(user,id,usecasename,usecasedesc
 
 												callback(null, tracerules);
 											});
+										   }
+										 })
 										}
 								});
 							}
 						});
 					}
 				});
-				
+			}	
 		});
 	});
-}
+  })
+};
 
 Tracerule.createDecision = function createActivity(user,id,decisionname,decisiondescription,decisionexecutor,positions,callback){
 	// 存入 Mongodb 的文檔
@@ -775,20 +807,20 @@ Tracerule.createDecision = function createActivity(user,id,decisionname,decision
 							//elements:elements[activityname]
 						
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else {
-						console.log("create Decision success");
+						//console.log("create Decision success");
 						query2={"$set":elements}
-						collection.update(query1,query2,{safe:true},function(err){
+						collection.update(query1,query2,function(err){
 							if(err) console.warn(err.message);
 							else {
-								console.log("create Decision success");
+								//console.log("create Decision success");
 								query2={$set:{"positions":positions}};
-								collection.update(query1,query2,{safe:true},function(err){
+								collection.update(query1,query2,function(err){
 									if(err) console.warn(err.message);
 									else {
-										console.log("create Decision success");
+										//console.log("create Decision success");
 
 										var query = {};
 										if (id) {
@@ -884,27 +916,21 @@ Tracerule.createCondition = function createCondition(user,id,conditionname,condi
 					
 			
 				query2={
-					"$set":
-							operations
-							//infor.dir:activityname,
-							//elements:elements[activityname]
-						
+					"$set":operations
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
-					else console.log("createCondition success");
-				});
-				query2={"$set":elements}
-				collection.update(query1,query2,{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("createCondition success");
-				});
-
-				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("createCondition success");
-				});
+					else {
+						
+						query2={"$set":elements}
+						collection.update(query1,query2,function(err){
+							if(err) console.warn(err.message);
+							else {
+						
+								query2={$set:{"positions":positions}};
+								collection.update(query1,query2,function(err){
+									if(err) console.warn(err.message);
+									else {
 
 			var query = {};
 			if (id) {
@@ -931,6 +957,16 @@ Tracerule.createCondition = function createCondition(user,id,conditionname,condi
 
 				callback(null, tracerules);
 			});
+									}
+								});
+							}
+						});
+					}
+				});
+				
+
+				
+
 		});
 	});
 }
@@ -982,17 +1018,14 @@ Tracerule.saveInsertBetween = function saveInsertBetween(user,id,TarAct,PreAct,P
 				query2={
 					"$set":
 							operations
-							//infor.dir:activityname,
-							//elements:elements[activityname]
-						
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("createCondition success");
 				});
 
 				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("createCondition success");
 				});
@@ -1055,6 +1088,15 @@ Tracerule.saveInsertActAfterPre = function saveInsertActAfterPre(user,id,TarAct,
 				var TargetActivity=TarAct.split('_');
 				var PreActivity=PreAct.split('_');
 				var Usecase=UseCase.split('_');
+				if(TargetActivity[2]=="Start"||TargetActivity[2]=="End"){
+					TargetActivity[1]=TargetActivity[1]+"_"+TargetActivity[2];
+				}
+				if(PreActivity[2]=="Start"||PreActivity[2]=="End"){
+					PreActivity[1]=PreActivity[1]+"_"+PreActivity[2];
+				}
+				if(Usecase[2]=="Start"||Usecase[2]=="End"){
+					Usecase[1]=Usecase[1]+"_"+Usecase[2];
+				}
 				var keyValue="Insert "+TargetActivity[1]+" after "+PreActivity[1]+" in "+Usecase[1];
 				//console.log(keyValue);
 				var operationName="operations."+keyValue+".name";
@@ -1080,13 +1122,13 @@ Tracerule.saveInsertActAfterPre = function saveInsertActAfterPre(user,id,TarAct,
 							//elements:elements[activityname]
 						
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("createCondition success");
 				});
 
 				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("createCondition success");
 				});
@@ -1148,6 +1190,15 @@ Tracerule.saveInsertActBeforePost = function saveInsertActBeforePost(user,id,Tar
 				var TargetActivity=TarAct.split('_');
 				var PostActivity=PostAct.split('_');
 				var Usecase=UseCase.split('_');
+				if(TargetActivity[2]=="Start"||TargetActivity[2]=="End"){
+					TargetActivity[1]=TargetActivity[1]+"_"+TargetActivity[2];
+				}
+				if(PostActivity[2]=="Start"||PostActivity[2]=="End"){
+					PostActivity[1]=PostActivity[1]+"_"+PostActivity[2];
+				}
+				if(Usecase[2]=="Start"||Usecase[2]=="End"){
+					Usecase[1]=Usecase[1]+"_"+Usecase[2];
+				}
 				var keyValue="Insert "+TargetActivity[1]+" before "+PostActivity[1]+" in "+Usecase[1];
 				//console.log(keyValue);
 				var operationName="operations."+keyValue+".name";
@@ -1173,13 +1224,13 @@ Tracerule.saveInsertActBeforePost = function saveInsertActBeforePost(user,id,Tar
 							//elements:elements[activityname]
 						
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("createCondition success");
 				});
 
 				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("createCondition success");
 				});
@@ -1244,6 +1295,9 @@ Tracerule.saveInsertActAfterDecCon = function saveInsertActAfterDecCon(user,id,T
 				var TheCondition=Condition.split('_');
 				var TheDecision=Decision.split('_');
 				var Usecase=UseCase.split('_');
+				if(TargetActivity[2]=="Start"||TargetActivity[2]=="End"){
+					TargetActivity[1]=TargetActivity[1]+"_"+TargetActivity[2];
+				}
 				var keyValue="Insert "+TargetActivity[1]+" after "+TheDecision[1]+" , "+TheCondition[1]+" in "+Usecase[1];
 				//console.log(keyValue);
 				var operationName="operations."+keyValue+".name";
@@ -1271,13 +1325,13 @@ Tracerule.saveInsertActAfterDecCon = function saveInsertActAfterDecCon(user,id,T
 							//elements:elements[activityname]
 						
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("InsertActAfterDecCon success");
 				});
 
 				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("InsertActAfterDecCon success");
 				});
@@ -1341,6 +1395,9 @@ Tracerule.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(user,id
 				var TheCondition=Condition.split('_');
 				var PostActivity=PostAct.split('_');
 				var Usecase=UseCase.split('_');
+				if(TargetActivity[2]=="Start"||TargetActivity[2]=="End"){
+					TargetActivity[1]=TargetActivity[1]+"_"+TargetActivity[2];
+				}
 				var keyValue="Insert "+TargetActivity[1]+" before "+PostActivity[1]+" , "+TheCondition[1]+" in "+Usecase[1];
 				//console.log(keyValue);
 				var operationName="operations."+keyValue+".name";
@@ -1368,13 +1425,13 @@ Tracerule.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(user,id
 							//elements:elements[activityname]
 						
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("InsertActBeforeActCon success");
 				});
 
 				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("InsertActBeforeActCon success");
 				});
@@ -1444,6 +1501,15 @@ Tracerule.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,id,T
 				var InserActivity=InserAct.split('_');
 				var TargetActivity=TargetAct.split('_');
 				var Usecase=UseCase.split('_');
+				if(PreActivity[2]=="Start"||PreActivity[2]=="End"){
+					PreActivity[1]=PreActivity[1]+"_"+PreActivity[2];
+				}
+				if(InserActivity[2]=="Start"||InserActivity[2]=="End"){
+					InserActivity[1]=InserActivity[1]+"_"+InserActivity[2];
+				}
+				if(TargetActivity[2]=="Start"||TargetActivity[2]=="End"){
+					TargetActivity[1]=TargetActivity[1]+"_"+TargetActivity[2];
+				}
 				var keyValue="Insert "+TargetDecision[1]+" after "+PreActivity[1]+" with ( "+MainBranchCondition[1]+" ),( "+SupBranchCondition[1]+" , ";
 					if(InserActivity[0]!="none")
 						keyValue=keyValue+InserActivity[1]+" , ";
@@ -1484,13 +1550,13 @@ Tracerule.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,id,T
 							//elements:elements[activityname]
 						
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("saveInsertDecAfterActCon success");
 				});
 
 				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("saveInsertDecAfterActCon success");
 				});
@@ -1562,6 +1628,10 @@ Tracerule.saveInsertDecAfterDecCon = function saveInsertDecAfterDecCon(user,id,T
 				var InserActivity=InserAct.split('_');
 				var TargetDecisions=TargetDec.split('_');
 				var Usecase=UseCase.split('_');
+				if(InserActivity[2]=="Start"||InserActivity[2]=="End"){
+					InserActivity[1]=InserActivity[1]+"_"+InserActivity[2];
+				}
+
 				var keyValue="Insert "+TargetDecision[1]+" after ( "+InsertDecison[1]+" , "+InsertConditon[1]+" ) with ( "+MainBranchCondition[1]+" ),( "+SupBranchCondition[1]+" , "+InserActivity[1]+" , "+TargetDecisions[1]+" ) in "+Usecase[1];
 				//console.log(keyValue);
 				var operationName="operations."+keyValue+".name";
@@ -1598,13 +1668,13 @@ Tracerule.saveInsertDecAfterDecCon = function saveInsertDecAfterDecCon(user,id,T
 							//elements:elements[activityname]
 						
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("saveInsertDecAfterDecCon success");
 				});
 
 				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("saveInsertDecAfterDecCon success");
 				});
@@ -1674,6 +1744,16 @@ Tracerule.saveInsertDecBeforeAct = function saveInsertDecBeforeAct(user,id,TarDe
 				var Condition2=Con2.split('_');
 				var Target2=Tar2.split('_');
 				var Usecase=UseCase.split('_');
+				if(PostActivity[2]=="Start"||PostActivity[2]=="End"){
+					PostActivity[1]=PostActivity[1]+PostActivity[2];
+				}
+				if(Target1[2]=="Start"||Target1[2]=="End"){
+					Target1[1]=Target1[1]+"_"+Target1[2];
+				}
+				if(Target2[2]=="Start"||Target2[2]=="End"){
+					Target2[1]=Target2[1]+"_"+Target2[2];
+				}
+
 				var keyValue="Insert "+TargetDecision[1]+" before "+PostActivity[1]+" with ( "+Condition1[1]+" , "+Target1[1]+" ),( "+Condition2[1]+" , "+Target2[1]+" ) in "+Usecase[1];
 				
 				//console.log(keyValue);
@@ -1709,13 +1789,13 @@ Tracerule.saveInsertDecBeforeAct = function saveInsertDecBeforeAct(user,id,TarDe
 							//elements:elements[activityname]
 						
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("saveInsertDecBeforeAct success");
 				});
 
 				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("saveInsertDecBeforeAct success");
 				});
@@ -1785,6 +1865,12 @@ Tracerule.saveInsertDecBeforeActWith = function saveInsertDecBeforeActWith(user,
 				var InserActivity=InserAct.split('_');
 				var TargetDecisions=TargetDec.split('_');
 				var Usecase=UseCase.split('_');
+				if(PostActivity[2]=="Start"||PostActivity[2]=="End"){
+					PostActivity[1]=PostActivity[1]+"_"+PostActivity[2];
+				}
+				if(InserActivity[2]=="Start"||InserActivity[2]=="End"){
+					InserActivity[1]=InserActivity[1]+"_"+InserActivity[2];
+				}
 				var keyValue="Insert "+TargetDecision[1]+" before "+PostActivity[1]+" with ( "+MainBranchCondition[1]+" ),( "+SupBranchCondition[1]+" , ";
 					if(InserActivity[0]!="none")
 						keyValue=keyValue+InserActivity[1]+" , ";
@@ -1825,13 +1911,13 @@ Tracerule.saveInsertDecBeforeActWith = function saveInsertDecBeforeActWith(user,
 							//elements:elements[activityname]
 						
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("saveInsertDecAfterActCon success");
 				});
 
 				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("saveInsertDecAfterActCon success");
 				});
@@ -1903,6 +1989,12 @@ Tracerule.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(user,id
 				var InserActivity=InserAct.split('_');
 				var TargetDecisions=TargetDec.split('_');
 				var Usecase=UseCase.split('_');
+				if(PostActivity[2]=="Start"||PostActivity[2]=="End"){
+					PostActivity[1]=PostActivity[1]+"_"+PostActivity[2];
+				}
+				if(InserActivity[2]=="Start"||InserActivity[2]=="End"){
+					InserActivity[1]=InserActivity[1]+"_"+InserActivity[2];
+				}
 				var keyValue="Insert "+TargetDecision[1]+" before ( "+PostActivity[1]+" , "+InsertConditon[1]+" ) with ( "+MainBranchCondition[1]+" ),( "+SupBranchCondition[1]+" , "+InserActivity[1]+" , "+TargetDecisions[1]+" ) in "+Usecase[1];
 				//console.log(keyValue);
 				var operationName="operations."+keyValue+".name";
@@ -1939,13 +2031,13 @@ Tracerule.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(user,id
 							//elements:elements[activityname]
 						
 					};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("saveInsertDecAfterDecCon success");
 				});
 
 				query2={$set:{"positions":positions}};
-				collection.update(query1,query2,{safe:true},function(err){
+				collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("saveInsertDecAfterDecCon success");
 				});
@@ -1996,7 +2088,7 @@ Tracerule.deleteActivity = function deleteActivity(user,id,operation_name,positi
 			var query1 = {};
 			var query2 = {};
 			
-				query1={"user":user,"_id":ObjectID(id)};
+			query1={"user":user,"_id":ObjectID(id)};
 			var name=operation_name.split(" ");
 			var length=name.length;
 			length=length-1;
@@ -2019,7 +2111,7 @@ Tracerule.deleteActivity = function deleteActivity(user,id,operation_name,positi
 
 
 			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete Activity success");
 				});
@@ -2099,7 +2191,7 @@ Tracerule.deleteDecision = function deleteDecision(user,id,operation_name,positi
 
 
 			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
@@ -2179,7 +2271,7 @@ Tracerule.deleteCondition = function deleteCondition(user,id,operation_name,posi
 
 
 			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
@@ -2244,7 +2336,16 @@ Tracerule.deleteUseCase = function deleteUseCase(user,id,operation_name,position
 			console.log(operation_name+"#"+name[length]);
 			var elementName="elements."+name[length];
 			var elements={};
-			     elements[elementName]=name[length];
+			elements[elementName]=name[length];
+
+			var StartelementName="elements."+name[length]+"_Start";
+			var Startelements={};
+			Startelements[StartelementName]=name[length]+"_Start";
+
+			var EndelementName="elements."+name[length]+"_End";
+			var Endelements={};
+			Endelements[EndelementName]=name[length]+"_End"; 
+
 			collection.update(query1,{"$unset":elements},function(err){
 					if(err) 
 					{
@@ -2253,6 +2354,24 @@ Tracerule.deleteUseCase = function deleteUseCase(user,id,operation_name,position
 					}
 					else 
 					{
+
+						collection.update(query1,{"$unset":Startelements},function(err){
+							if(err) 
+							{
+								console.warn(err.message);
+
+							}
+							else 
+							{
+								collection.update(query1,{"$unset":Endelements},function(err){
+									if(err) 
+									{
+										console.warn(err.message);
+
+									}
+									else 
+									{
+
 						console.log("delete element success");
 						var operationName="operations."+operation_name;
 						var operations={};
@@ -2266,7 +2385,7 @@ Tracerule.deleteUseCase = function deleteUseCase(user,id,operation_name,position
 
 								query2={$set:{"positions":positions}};
 							
-								collection.update(query1,query2,{safe:true},function(err){
+								collection.update(query1,query2,function(err){
 									if(err) console.warn(err.message);
 									else {
 										console.log("delete Decision success");
@@ -2301,8 +2420,12 @@ Tracerule.deleteUseCase = function deleteUseCase(user,id,operation_name,position
 			
 							}
 						});
+					  }
+					  });
+					 }
+					 });//end Startelements
 					}
-				});
+				}); //end elements
 
 			
 		});
@@ -2338,7 +2461,7 @@ Tracerule.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,id,ope
 
 
 			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
@@ -2407,7 +2530,7 @@ Tracerule.deleteInsertActBeforePost = function deleteInsertActBeforePost(user,id
 
 
 			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
@@ -2476,7 +2599,7 @@ Tracerule.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(user,
 
 
 			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
@@ -2545,7 +2668,7 @@ Tracerule.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCon(use
 
 
 			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
@@ -2615,7 +2738,7 @@ Tracerule.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,id,ope
 
 
 			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
@@ -2684,7 +2807,7 @@ Tracerule.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(user,
 
 
 			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
@@ -2753,7 +2876,7 @@ Tracerule.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user,id,o
 
 
 			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
@@ -2823,7 +2946,7 @@ Tracerule.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActWith(u
 
 
 			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
@@ -2893,7 +3016,7 @@ Tracerule.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCon(use
 
 
 			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else console.log("delete Decision success");
 				});
@@ -2952,7 +3075,6 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 				mongodb.close();
 				return callback(err);
 			}
-
 			//查找user属性为username的文档，如果username为null则匹配全部
 
 			var query = {};
@@ -2964,7 +3086,6 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 			collection.find(query).toArray(function(err, docs) {
 
 				if (err) {
-					console.log("#33");
 					callback(err, null);
 				}
 
@@ -2973,50 +3094,52 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 				  docs.forEach(function(doc, index) {
 					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 				    var ObjectID = require("mongodb").ObjectID;
-				  
+				    console.log("doc._id:"+doc._id+" id:"+id);
 					if(doc._id==id)
 				    {
 						query2={$set:{"positions":positions}};
-							collection.update({"user":user,"_id":ObjectID(id)},query2,{safe:true},function(err){
-							if(err) console.warn(err.message);
-							else console.log("yes");
-						});
-
-					for(key in doc.elements)
-					{
-						
-						if(doc.elements[key].name==oldnames)
-						{
+							collection.update({"user":user,"_id":ObjectID(id)},query2,function(err){
+							  if(err){ console.warn(err.message);}
+							  else { console.log("here!");
+								
+							  }
+							  console.log("#444");
+							  for(key in doc.elements)
+								{
 							
+									if(doc.elements[key].name==oldnames)
+									{
 							
-							
-							var elementName="elements."+doc.elements[key].name;
-							var element={};
-			     			element[elementName]=doc.elements[key].name;
-			     			var ObjectID = require("mongodb").ObjectID;
+										var elementName="elements."+doc.elements[key].name;
+										var element={};
+			     						element[elementName]=doc.elements[key].name;
+			     						var ObjectID = require("mongodb").ObjectID;
 			     			
-							collection.update({"user":doc.user,"_id":doc._id},{"$unset":element},function(err){
+										collection.update({"user":doc.user,"_id":doc._id},{"$unset":element},function(err){
+											console.log("usecasedescription!!!:"+usecasedescription);
+											elementName="elements."+newnames+".name";
+											elementDescription="elements."+newnames+".description";
+											elementType="elements."+newnames+".type";
+											elementTime="elements."+newnames+".time";
+											element={};
+			     							element[elementName]=newnames;
+			     							element[elementDescription]=usecasedescription;
+			     							element[elementType]="usecase";
+			     							element[elementTime]=new Date();
+											collection.update({"user":doc.user,"_id":doc._id},{"$set":element},function(err){
 							
-								elementName="elements."+newnames+".name";
-								elementDescription="elements."+newnames+".description";
-								elementType="elements."+newnames+".type";
-								elementTime="elements."+newnames+".time";
-								element={};
-			     				element[elementName]=newnames;
-			     				element[elementDescription]=usecasedescription;
-			     				element[elementType]="usecase";
-			     				element[elementTime]=new Date();
-								collection.update({"user":doc.user,"_id":doc._id},{"$set":element},function(err){
-							
+											});
+										});
+					  				}
+								}
 								});
-						});
-					  }
-					}
+
+					
 				}else{
 					//bug 4
 
 					var newpositions=doc.positions.replace(new RegExp(oldname,"gm"),newname);
-						collection.update({"user":user,"_id":doc._id},{"$set":{"positions":newpositions}},{safe:true},function(err){
+						collection.update({"user":user,"_id":doc._id},{"$set":{"positions":newpositions}},function(err){
 							if(err) console.warn(err.message);
 							else console.log("yes");
 						});
@@ -3112,6 +3235,7 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 
 Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,descriptionMark,oldactivitydescription,activitydescription,executorMark,oldactivityexecutor,activityexecutor,positions,hidden_field,projectID,callback)
 {
+
 	var Oldname=hidden_field+".element."+oldname;
 	var Newname=hidden_field+".element."+newname;
 	var oldnames=oldname;
@@ -3150,11 +3274,11 @@ Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,
 				    var ObjectID = require("mongodb").ObjectID;
 				    
 					if(doc._id==id)
-					{
+					{   console.log("doc.name:"+doc.name);
 						console.log("edit4");
 						query2={$set:{"positions":positions}};
 						console.log("positions: "+positions);
-						collection.update({"user":user,"_id":ObjectID(id)},query2,{safe:true},function(err){
+						collection.update({"user":user,"_id":ObjectID(id)},query2,function(err){
 							console.log("edit the elements");
 							if(err) console.warn(err.message);
 							else 
@@ -3200,7 +3324,7 @@ Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,
 
 						var newpositions=doc.positions.replace(new RegExp(oldname,"gm"),newname);
 
-						collection.update({"user":user,"_id":doc._id},{"$set":{"positions":newpositions}},{safe:true},function(err){
+						collection.update({"user":user,"_id":doc._id},{"$set":{"positions":newpositions}},function(err){
 							if(err) console.warn(err.message);
 							else console.log("yes");
 						});
@@ -3339,16 +3463,14 @@ Tracerule.editDecision = function editDecision(user,id,nameMark,oldname,newname,
 					if(doc._id==id)
 				{
 						query2={$set:{"positions":positions}};
-							collection.update({"user":user,"_id":ObjectID(id)},query2,{safe:true},function(err){
+							collection.update({"user":user,"_id":ObjectID(id)},query2,function(err){
 							if(err) console.warn(err.message);
-							else console.log("yes");
-						});
-
-					for(key in doc.elements)
-					{
+							else {
+								for(key in doc.elements)
+							{
 						
-						if(doc.elements[key].name==oldnames)
-						{
+								if(doc.elements[key].name==oldnames)
+								{
 							
 							
 							
@@ -3358,30 +3480,34 @@ Tracerule.editDecision = function editDecision(user,id,nameMark,oldname,newname,
 			     			var ObjectID = require("mongodb").ObjectID;
 			     			
 							collection.update({"user":doc.user,"_id":doc._id},{"$unset":element},function(err){
+									elementName="elements."+newnames+".name";
+									elementDescription="elements."+newnames+".description";
+									elementExecutor="elements."+newnames+".executor";
+									elementType="elements."+newnames+".type";
+									elementTime="elements."+newnames+".time";
+									element={};
+			     					element[elementName]=newnames;
+			     					element[elementDescription]=decisiondescription;
+			     					element[elementExecutor]=decisionexecutor;
+			     					element[elementType]="decision";
+			     					element[elementTime]=new Date();
+									collection.update({"user":doc.user,"_id":doc._id},{"$set":element},function(err){
 							
+									});
 							});
-								elementName="elements."+newnames+".name";
-								elementDescription="elements."+newnames+".description";
-								elementExecutor="elements."+newnames+".executor";
-								elementType="elements."+newnames+".type";
-								elementTime="elements."+newnames+".time";
-								element={};
-			     				element[elementName]=newnames;
-			     				element[elementDescription]=decisiondescription;
-			     				element[elementExecutor]=decisionexecutor;
-			     				element[elementType]="decision";
-			     				element[elementTime]=new Date();
-								collection.update({"user":doc.user,"_id":doc._id},{"$set":element},function(err){
-							
-								});
-					  }
-					}
+									
+					  			}
+							}
+
+							}
+						});
+
 				}else{
 					//bug 4
 
 					var newpositions=doc.positions.replace(new RegExp(oldname,"gm"),newname);
 					
-						collection.update({"user":user,"_id":doc._id},{"$set":{"positions":newpositions}},{safe:true},function(err){
+						collection.update({"user":user,"_id":doc._id},{"$set":{"positions":newpositions}},function(err){
 							if(err) console.warn(err.message);
 							else console.log("yes");
 						});
@@ -3427,14 +3553,14 @@ Tracerule.editDecision = function editDecision(user,id,nameMark,oldname,newname,
 								
 								var ObjectID = require("mongodb").ObjectID;
 								collection.update({"user":doc.user,"_id":doc._id},{"$set":newOpe},function(err){
-									
-								});
 									var oldOpe={};
 									var oldstring="operations."+doc.operations[key].name;
 									oldOpe[oldstring]=doc.operations[key].name;
 									
 									collection.update({"user":doc.user,"_id":doc._id},{"$unset":oldOpe},function(err){
 									})
+								});
+									
 							}
 					}
 				
@@ -3476,13 +3602,15 @@ Tracerule.editDecision = function editDecision(user,id,nameMark,oldname,newname,
 	});
 }
 
-Tracerule.editCondition = function editCondition(user,id,nameMark,oldname,newname,descriptionMark,oldconditiondescription,conditiondescription,positions,hidden_field,callback)
+Tracerule.editCondition = function editCondition(user,id,projectID,nameMark,oldname,newname,descriptionMark,oldconditiondescription,conditiondescription,positions,hidden_field,callback)
 {
 	var Oldname=hidden_field+".element."+oldname;
 	var Newname=hidden_field+".element."+newname;
 	var oldnames=oldname;
 	var newnames=newname;
 	var refer_num;
+	console.log("editCondition:");
+	console.log("id:"+id+" nameMark:"+nameMark+" oldname:"+oldnames+" newname:"+newnames+" descriptionMark:"+descriptionMark+" oldconditiondescription:"+oldconditiondescription+" conditiondescription:"+conditiondescription+" projectID:"+projectID);
 	mongodb.open(function(err, db) {
 		if (err) {
 			console.log("#11");
@@ -3501,8 +3629,7 @@ Tracerule.editCondition = function editCondition(user,id,nameMark,oldname,newnam
 			var query = {};
 			var ObjectID = require("mongodb").ObjectID;
 			if (user) {
-				
-				query={"user":user};
+				query={"user":user,"projectID":projectID};
 			}
 			collection.find(query).toArray(function(err, docs) {
 
@@ -3510,56 +3637,61 @@ Tracerule.editCondition = function editCondition(user,id,nameMark,oldname,newnam
 					console.log("#33");
 					callback(err, null);
 				}
-
-			
-				
+	
 				  docs.forEach(function(doc, index) {
 					var tracerule = new Tracerule(doc.user, doc.name,doc.selfname,doc.time,doc.operations,doc.elements,doc.positions,doc.projectID,doc._id);
 				    var ObjectID = require("mongodb").ObjectID;
 				  
 					if(doc._id==id)
-					{
+					{   
 						query2={$set:{"positions":positions}};
-							collection.update({"user":user,"_id":ObjectID(id)},query2,{safe:true},function(err){
-							if(err) console.warn(err.message);
-							else console.log("yes");
-						});
-
-					for(key in doc.elements)
-					{
+							var newpositions=doc.positions.replace(new RegExp(oldname,"gm"),newname);
 						
-						if(doc.elements[key].name==oldnames)
-						{
+							collection.update({"user":user,"_id":ObjectID(id)},{"$set":{"positions":newpositions}},function(err){
+								
+								if(err) {
+									console.log("here!!!!");
+									console.warn(err.message);}
+								else{  console.log("hello");
+									for(key in doc.elements)
+					  				{
+										
+										if(doc.elements[key].name==oldnames)
+										{
 							
-							
-							
-							var elementName="elements."+doc.elements[key].name;
-							var element={};
-			     			element[elementName]=doc.elements[key].name;
-			     			var ObjectID = require("mongodb").ObjectID;
-			     			
-							collection.update({"user":doc.user,"_id":doc._id},{"$unset":element});
-								elementName="elements."+newnames+".name";
-								elementDescription="elements."+newnames+".description";
-								elementType="elements."+newnames+".type";
-								elementTime="elements."+newnames+".time";
-								element={};
-			     				element[elementName]=newnames;
-			     				element[elementDescription]=conditiondescription;
-			     				element[elementType]="condition";
-			     				element[elementTime]=new Date();
-								collection.update({"user":doc.user,"_id":doc._id},{"$set":element});
-					  }
-					}
-				}else{
-					//bug 4
+											var elementName="elements."+doc.elements[key].name;
+											var element={};
+			     							element[elementName]=doc.elements[key].name;
+			     							var ObjectID = require("mongodb").ObjectID;
+			     							console.log("conditiondescription:::"+conditiondescription);
+											collection.update({"user":doc.user,"_id":doc._id},{"$unset":element});
+											elementName="elements."+newnames+".name";
+											elementDescription="elements."+newnames+".description";
+											elementType="elements."+newnames+".type";
+											elementTime="elements."+newnames+".time";
+											element={};
+			     							element[elementName]=newnames;
+			     							element[elementDescription]=conditiondescription;
+			     							element[elementType]="condition";
+			     							element[elementTime]=new Date();
+											collection.update({"user":doc.user,"_id":doc._id},{"$set":element});
+					   					}
+					  				}
+								 }
+							});
 
-					var newpositions=doc.positions.replace(new RegExp(oldname,"gm"),newname);
-						collection.update({"user":user,"_id":doc._id},{"$set":{"positions":newpositions}},{safe:true},function(err){
-							if(err) console.warn(err.message);
-							else console.log("yes");
-						});
-				}
+					  
+					}else{
+					//bug 4
+					console.log("doc._id!=id");
+					   if(nameMark){
+							var newpositions=doc.positions.replace(new RegExp(oldname,"gm"),newname);
+							collection.update({"user":user,"_id":doc._id},{"$set":{"positions":newpositions}},function(err){
+								if(err) console.warn(err.message);
+								else console.log("yes");
+							});
+						}
+					}
 				
 					for(key in doc.operations)
 					{
@@ -3613,14 +3745,14 @@ Tracerule.editCondition = function editCondition(user,id,nameMark,oldname,newnam
 				
 				
 			});
-				
+			console.log("what??");
 			query = {};
 			if (id) {
 				
-				query={"user":user,"_id":ObjectID(id)};
+				query={"user":user,"_id":ObjectID(id),"projectID":projectID};
 			}
 			else{
-				query={"user":user};
+				query={"user":user,"projectID":projectID};
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
@@ -3668,7 +3800,7 @@ Tracerule.savePositions=function savePositions(user,id,positions,callback){
 
 
 			query2={$set:{"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else {mongodb.close();console.log("Update positions success");callback(err);}
 				});
@@ -3699,7 +3831,7 @@ Tracerule.editTraceRuleGuardSelfname=function editTraceRuleGuardSelfname(user,id
 
 
 			query2={$set:{"name":guardname,"selfname":selfname,"positions":positions}};
-			collection.update(query1,query2,{safe:true},function(err){
+			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
 					else {
 						collection.find(query1).sort({_id: 1}).toArray(function(err, docs) {

@@ -9,8 +9,8 @@
             <select style="width:60%;margin-left:20px" id="InterPostTar">
                <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
-                if(elementdepencys[key].type=="activity"&&elementdepencys[key].dependee==current_guard){
-                   var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                if(elementdepencys[key].type=="activity"&&elementdepencys[key].dependee==current_guard&&elementdepencys[key].element.indexOf("_Start")==-1&&elementdepencys[key].element.indexOf("_End")==-1){
+                   var elementPath=elementdepencys[key].dependee+"."+elementdepencys[key].element;
                   %>
                 <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
               <%}
@@ -24,8 +24,8 @@
             <select style="width:60%;margin-left:50px" id="InterPostPost">
                 <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
-                    if(elementdepencys[key].type=="activity"){
-                      var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;
+                    if(elementdepencys[key].type=="activity"&&elementdepencys[key].element.indexOf("_Start")==-1){
+                      var elementPath=elementdepencys[key].dependee+"."+elementdepencys[key].element;
                       %>
                 <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
               <%}
@@ -40,7 +40,7 @@
                 <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
                   if(elementdepencys[key].type=="UseCase"){
-                     var elementPath=elementdepencys[key].dependee+"_"+elementdepencys[key].element;%>
+                     var elementPath=elementdepencys[key].dependee+"."+elementdepencys[key].element;%>
                 <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>
               <%}
             }%>

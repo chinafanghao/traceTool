@@ -168,6 +168,7 @@ app.post('/DeleteConfiguration',routes.deleteConfiguration);
 app.post('/EditConfigName',routes.EditConfigName);
 app.post('/EditConfig',routes.EditConfig);
 app.post('/GenerateUseCase',routes.GenerateUseCase);
+app.post('/GetUseCase',routes.GetUseCase);
 
 app.get('/newProject/:content',routes.newProject);
 app.get('/DeleteProject/:content',routes.DeleteProject);

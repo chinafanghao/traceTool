@@ -4,10 +4,10 @@
 <link rel='stylesheet' href='/stylesheets/david-bootstrap.css' />
 
 <style type="text/css">
-      body {
+    body {
         padding-top: 60px;
         padding-bottom: 40px;
-      }
+    }
 
     div.c{padding-left:1%}
     div.left{float:left;width:15%;margin:6px;border:1px solid #c3c3c3;border-radius: 10px;}
@@ -88,16 +88,15 @@
   var $current_configuration_id;
   $(function(){
 
-      
-
       $(".myInsides").mouseover(function(){
           $(this).children().show();
       })
+
       $(".myInsides").mouseout(function(){
           $(this).children().hide();
       })
 
-       $(".icon-remove").mouseover(function(){
+      $(".icon-remove").mouseover(function(){
         $(this).addClass("getFocus");
       })
 
@@ -115,7 +114,7 @@
         event.stopPropagation();
       })
 
-       $( "#confirmDelete" ).dialog({
+      $( "#confirmDelete" ).dialog({
           autoOpen: false,
           width: 450,
           modal: true,
@@ -146,23 +145,19 @@
               });
               $( this ).dialog( "close" );
           
-        },
-      },
-      close: function() {
-        
-      }
-    });
-
-
+            },
+          },
+        close: function() {}
+      });
 
       $(".myInsideA").mouseover(function(){
           $(this).children().show();
           $(this).find(".icon-chevron-right").hide();
       })
+
       $(".myInsideA").mouseout(function(){
           $(this).children().hide();
           $(this).find(".icon-chevron-right").show();
-        
       })
 
       $(".myInsideA").click(function(){
@@ -178,6 +173,7 @@
       $(".icon-pencil").mouseout(function(){
         $(this).removeClass("getFocus");
       })
+
       var $edit_id;
       $(".icon-pencil.GuardListStyle").click(function(event){
         $edit_id=$(this).parent().attr('name');
@@ -185,8 +181,8 @@
         $( "#editConfigName" ).dialog( "open" );
         event.stopPropagation(); 
       })
-      var $configname;
 
+      var $configname;
       $( "#editConfigName" ).dialog({
           autoOpen: false,
           width: 450,
@@ -197,15 +193,13 @@
               $configname=$("#configname").val();
 
               $( this ).dialog( "close" );
-
-          
-        },
-      },
+            },
+          },
       close: function() {
         if($configname!="")
         {
          
-           var aname=document.getElementsByName($edit_id);
+          var aname=document.getElementsByName($edit_id);
            
           var $markblank;
           var $content=aname[0].innerHTML;
@@ -241,7 +235,7 @@
       
         $("#newConfigurationName").dialog("open");
 
-      });
+    });
 
 
     
@@ -259,12 +253,12 @@
         if($current_configuration_ids.length<10){
               alert("Please choose one configuration");
         }else{
-          var boxs=document.getElementsByName("box");
+              var boxs=document.getElementsByName("box");
                 
-                  for(var $i=0;$i<boxs.length;$i++){
-                    boxs[$i].disabled=false;
-                  }
-          $(this).css("display","none");
+              for(var $i=0;$i<boxs.length;$i++){
+                  boxs[$i].disabled=false;
+              }
+         $(this).css("display","none");
          $(this).siblings().show();
         }
         
@@ -287,8 +281,8 @@
         $(this).removeClass("getFocus");
       })
 
-       $(".icon-repeat").click(function(){
-        $current_configuration_id="<%=current_configuration_id%>";
+      $(".icon-repeat").click(function(){
+            $current_configuration_id="<%=current_configuration_id%>";
             if($current_configuration_id.length>9){
               var $contents=$("#hidden_elementSelect").val();
 
@@ -318,32 +312,33 @@
             alert("Please save the configuration before generating use case");
           }else{
             $current_configuration_id=$(".myInsideA.focusBgColor").attr("name");
-            
+            $projectID=$("#hidden_project_id").val();
             $.ajax({
             type: "POST",
             url: "/GenerateUseCase",
             data: {
-              current_configuration_id:$current_configuration_id
+              current_configuration_id:$current_configuration_id,
+              projectID:$projectID
            },
             dataType:'json',
             success:function(Object){
              //console.log(Object);
              for(key in Object)
               console.log(typeof(Object[key]));
-             var showResults=document.getElementById("showResult");
-             var $str="";
+              var showResults=document.getElementById("showResult");
+              var $str="";
 
-             for(key in Object)
+              for(key in Object)
                 { 
                   $str+=Object[key];
                 }
                 //console.log($str);
-                var $printStr="";
-                var process;
-                var temp;
-                var map = {};
-                if($str.length>0)
-                 {
+              var $printStr="";
+              var process;
+              var temp;
+              var map = {};
+              if($str.length>0)
+              {
                   process=$str.split("<br>");
                   temp=$str.split("<br>");
                   for(keyss in temp){
@@ -357,7 +352,7 @@
                     }
                   }
                   //console.log(map);
-                }
+              }
                 var $usecasenums=0;
                  for(keys in process){
                   
@@ -369,7 +364,7 @@
                       }
                          $usecasenums++;
                     //$printStr+=process[keys]+"<br>";
-                    $printStr+="<h4 align=\"center\" class=\"myFont\"></h4><div style=\"overflow:auto;text-align:center\"><table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr style=\"border-left:0;border-bottom: black;\"><td colspan=\"4\" style=\"border-right: black;\"><p style=\"text-align:center\">USER</p></td><td colspan=\"4\"><p style=\"text-align:center\">SYSTEM</p></td></tr><tr style=\"border-left:0;\"><td style=\"width:6%;\"><p align=\"center\">ID</p></td><td style=\"width:33%;\"><p align=\"center\">Description</p></td><td style=\"width:5%;\"><p align=\"center\">Value</p></td><td style=\"width:6%;border-right:black;\"><p align=\"center\">Target</p></td><td style=\"width:6%;\"><p align=\"center\">ID</p></td><td style=\"width:33%;\"><p align=\"center\">Description</p></td><td style=\"width:5%;\"><p align=\"center\">Value</p></td><td style=\"width:6%;\"><p align=\"center\">Target</p></td></tr>";
+                    $printStr+="<h4 align=\"center\" class=\"myFont\"></h4><div id=\"usecaseseq"+$usecasenums+"\" style=\"overflow:auto;text-align:center\"><table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr style=\"border-left:0;border-bottom: black;\"><td colspan=\"4\" style=\"border-right: black;\"><p style=\"text-align:center\">USER</p></td><td colspan=\"4\"><p style=\"text-align:center\">SYSTEM</p></td></tr><tr style=\"border-left:0;\"><td style=\"width:6%;\"><p align=\"center\">ID</p></td><td style=\"width:33%;\"><p align=\"center\">Description</p></td><td style=\"width:5%;\"><p align=\"center\">Value</p></td><td style=\"width:6%;border-right:black;\"><p align=\"center\">Target</p></td><td style=\"width:6%;\"><p align=\"center\">ID</p></td><td style=\"width:33%;\"><p align=\"center\">Description</p></td><td style=\"width:5%;\"><p align=\"center\">Value</p></td><td style=\"width:6%;\"><p align=\"center\">Target</p></td></tr>";
                     }else{
                       $printStr+="<tr style=\"border-left:0;\">";
                       console.log(process[keys]);
@@ -388,7 +383,6 @@
                           if(map[tempOp[1]].indexOf("yes")>-1){
                             con1="Yes";
                             con2="No";
-                           
                           }else{
                             con1="No";
                             con2="Yes";
@@ -400,14 +394,14 @@
                           }
                           if(tar2=="undefined")
                             tar2="End";
-                          $printStr+="<td rowspan=\"2\" style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td rowspan=\"2\" style=\"width:33%;\"><p style=\"text-align:left\">"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>"+con1+"</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tar1+"\">"+tar1+"</p></td><td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:33%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:5%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td></tr><tr><td style=\"width:5%;\"><p>"+con2+"</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tar2+"\">"+tar2+"</p></td>"
+                            $printStr+="<td rowspan=\"2\" style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td rowspan=\"2\" style=\"width:33%;\"><p style=\"text-align:left\">"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>"+con1+"</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tar1+"\">"+tar1+"</p></td><td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:33%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:5%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td></tr><tr><td style=\"width:5%;\"><p>"+con2+"</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tar2+"\">"+tar2+"</p></td>"
 
                         }else{
                           
                           if(tempOp[0]!="yes"&&tempOp[0]!="no"){
                             if(tempOp[1]==undefined)
                               tempOp[1]="End";
-                            $printStr+=" <td style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td style=\"width:33%;\"><p>"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tempOp[1]+"\" style=\"cursor: pointer;\">"+tempOp[1]+"</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td><td style=\"width:33%;\"><p>&nbsp;</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td>";
+                              $printStr+=" <td style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td style=\"width:33%;\"><p>"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tempOp[1]+"\" style=\"cursor: pointer;\">"+tempOp[1]+"</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td><td style=\"width:33%;\"><p>&nbsp;</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td>";
                           }
                         }
                         
@@ -416,7 +410,6 @@
 
                       if(process[keys].indexOf("System:")>-1&&process[keys].length>0){
 
-                        
                         process[keys]=process[keys].replace("System:","");
                    
                         //console.log(process[keys]);
@@ -426,18 +419,16 @@
                         var tempOp=process[keys].split("$");
                         //console.log("length:"+tempOp.length);
                         if(tempOp.length>2){
-                           $printStr+=" <td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:33%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:5%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:6%;border-right: black;\"><p>&nbsp;</p></td>";
+                          $printStr+="<td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:33%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:5%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:6%;border-right: black;\"><p>&nbsp;</p></td>";
                           var con1,con2,tar1,tar2;
                           if(map[tempOp[1]].indexOf("yes")>-1){
                             con1="Yes";
                             con2="No";
-                            
                           }else{
                             con1="No";
                             con2="Yes";
-                            
                           }
-                           tar1=map[tempOp[1]].split("$")[1];
+                          tar1=map[tempOp[1]].split("$")[1];
                           tar2=map[tempOp[2]].split("$")[1];
                           if(tar1=="undefined"){
                             tar1="End";
@@ -451,8 +442,8 @@
                           if(tempOp[0]!="yes"&&tempOp[0]!="no"){
                             if(tempOp[1]==undefined)
                               tempOp[1]="End";
-                             $printStr+=" <td style=\"width:6%;\"><p>&nbsp;</p></td><td style=\"width:33%;\"><p>&nbsp;</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;border-right:black\"><p>&nbsp;</p></td>";
-                            $printStr+=" <td style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td style=\"width:33%;\"><p>"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;\"><p class=\"clickfindnext\" value=\""+tempOp[1]+"\" style=\"cursor: pointer;\">"+tempOp[1]+"</p></td>";
+                              $printStr+=" <td style=\"width:6%;\"><p>&nbsp;</p></td><td style=\"width:33%;\"><p>&nbsp;</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;border-right:black\"><p>&nbsp;</p></td>";
+                              $printStr+=" <td style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td style=\"width:33%;\"><p>"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;\"><p class=\"clickfindnext\" value=\""+tempOp[1]+"\" style=\"cursor: pointer;\">"+tempOp[1]+"</p></td>";
                           }
                         }
                         
@@ -463,10 +454,24 @@
                   }  
                 }
                  if("usecasenum>0")
-                $printStr+=" </table></div>";
+                $printStr+="</table></div>";
                             //console.log($printStr);
-              showResults.innerHTML=$printStr;
-              $("#clickfindnext").on("click",function(){
+                showResults.innerHTML=$printStr;
+
+                var checkValue=$("#chooseusecase").val();
+                var markid=1;
+                while(markid<=$usecasenums){
+                  console.log(markid+":"+(checkValue));
+                  if(markid!=checkValue)
+                  {
+                    var $aimID="#usecaseseq"+markid;
+                    console.log("hide:"+$aimID);
+                    $($aimID).hide();
+                  }
+                  markid++;
+                }
+
+                $("#clickfindnext").on("click",function(){
                   alert("hi");
                 })
 
@@ -510,7 +515,7 @@
                         $selectedElement+=selectedID[3];
                     }
                 }
-            $current_configuration_id=$(".myInsideA.focusBgColor").attr("name");
+           $current_configuration_id=$(".myInsideA.focusBgColor").attr("name");
            $.ajax({
             type: "POST",
             url: "/EditConfig",
@@ -520,8 +525,7 @@
            },
             dataType:'json',
             success:function(Object){
-             
-
+      
             },
             error:function(){
 
@@ -603,7 +607,7 @@
         $( "#newConfigurationName" ).dialog( "open" );
       })
 
-       $( "#confirmDeleteCon" ).dialog({
+      $( "#confirmDeleteCon" ).dialog({
           autoOpen: false,
           width: 450,
           modal: true,
@@ -619,12 +623,13 @@
               }
               $( this ).dialog( "close" );
           
-        },
-      },
-      close: function() {
+            },
+          },
+
+          close: function() {
         
-      }
-    });
+          }
+      });
 
       $(".btn.btn-small.btn-primary.Delete").click(function(){
           $( "#confirmDeleteCon" ).dialog( "open" );
@@ -633,20 +638,18 @@
 
 </script>
       <%
-  configurations.forEach(function(configuration, index) {
+        configurations.forEach(function(configuration, index) {
 
-    if(configuration._id==current_configuration_id){
+          if(configuration._id==current_configuration_id){
       
-%>
-          
-      <input type="hidden" id="hidden_elementSelect" value="<%= configuration.configuration%>">
-
-<%
+      %>   
+            <input type="hidden" id="hidden_elementSelect" value="<%= configuration.configuration%>">
+      <%
          
-    }
+          }
 
-  })
-%>
+        })
+      %>
 
 
 <div class="container-fluid">
@@ -685,7 +688,6 @@
 
         </div>
       </div>
-
     </div>
 
     <div class="center">
@@ -705,23 +707,23 @@
             if (document.getElementById) {
               var tree = new FMTree('root', 'It is the root feature.', null, null, 'root_old_father');
 
-            $.ajax({
-              type:"POST",
-              url: "/loadFeatureModel",
-              data: {
-                  projectID:$("#hidden_project_id").val()
+              $.ajax({
+                type:"POST",
+                url: "/loadFeatureModel",
+                data: {
+                    projectID:$("#hidden_project_id").val()
                 },
-              success: function(data) {
-                  data.features.forEach(function(feature, index) {
-                    var node = new FMTreeItem(feature.text, feature.description, feature.optionality, feature.VP, feature._id);       
-                    var parent = FMTreeHandler.idPrefix + feature.parent_id;
-                    FMTreeHandler.all[parent].add(node);
-                  });
-              },
-            });
+                success: function(data) {
+                    data.features.forEach(function(feature, index) {
+                      var node = new FMTreeItem(feature.text, feature.description, feature.optionality, feature.VP, feature._id);       
+                      var parent = FMTreeHandler.idPrefix + feature.parent_id;
+                      FMTreeHandler.all[parent].add(node);
+                    });
+                },
+              });
  
-            document.write(tree);
-          }
+              document.write(tree);
+            }
            </script>
           </form>
 
@@ -731,8 +733,7 @@
     <script type="text/javascript">
        setTimeout('load()',100);
        function load(){
-               
-              $current_configuration_id="<%=current_configuration_id%>";
+            $current_configuration_id="<%=current_configuration_id%>";
             if($current_configuration_id.length>9){
               var $contents=$("#hidden_elementSelect").val();
               if($contents!="")
@@ -748,203 +749,233 @@
                 for(var $i=0;$i<boxs.length;$i++){
                     boxs[$i].disabled=true;
                   }
-              }
             }
+       }
     </script>
     <div class="right">
-      
+        <script type="text/javascript">
+        var $usecasenums;
+                  setTimeout('usecaseload()',100);
+                  function usecaseload(){
+                   
+            $current_configuration_id=$(".myInsideA.focusBgColor").attr("name");
+            $projectID=$("#hidden_project_id").val();
+
+            $.ajax({
+            type: "POST",
+            url: "/GetUseCase",
+            data: {
+              current_configuration_id:$current_configuration_id,
+              projectID:$projectID
+            },
+            dataType:'json',
+            success:function(Object){
+             //console.log(Object);
+             for(key in Object)
+              
+              var showResults=document.getElementById("showResult");
+              var $str="";
+
+              for(key in Object)
+                { 
+                  $str+=Object[key];
+                }
+                //console.log($str);
+              var $printStr="";
+              var process;
+              var temp;
+              var $usecasenums;
+              var map = {};
+              if($str.length>0)
+              {
+                  process=$str.split("<br>");
+                  temp=$str.split("<br>");
+                  for(keyss in temp){
+                    if(temp[keyss].indexOf("Use case:")==-1){
+                      if(temp[keyss].indexOf("User:")>-1)
+                        temp[keyss]=temp[keyss].replace("User:","");
+                      if(temp[keyss].indexOf("System:")>-1)
+                        temp[keyss]=temp[keyss].replace("System:","");
+                      var indexofmaohao=temp[keyss].indexOf(":");
+                      map[temp[keyss].substring(0,indexofmaohao)]=temp[keyss].substring(indexofmaohao+1,temp[keyss].length);
+                    }
+                  }
+                  //console.log(map);
+              }
+                $usecasenums=0;
+                 for(keys in process){
+                  
+                    if(process[keys].indexOf("Use case:")>-1){
+
+                      if($usecasenums>0)
+                      {
+                        $printStr+="</table></div>";
+                      }
+                         $usecasenums++;
+                    //$printStr+=process[keys]+"<br>";
+                    $printStr+="<h4 align=\"center\" class=\"myFont\"></h4><div id=\"usecaseseq"+$usecasenums+"\" style=\"overflow:auto;text-align:center\"><table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr style=\"border-left:0;border-bottom: black;\"><td colspan=\"4\" style=\"border-right: black;\"><p style=\"text-align:center\">USER</p></td><td colspan=\"4\"><p style=\"text-align:center\">SYSTEM</p></td></tr><tr style=\"border-left:0;\"><td style=\"width:6%;\"><p align=\"center\">ID</p></td><td style=\"width:33%;\"><p align=\"center\">Description</p></td><td style=\"width:5%;\"><p align=\"center\">Value</p></td><td style=\"width:6%;border-right:black;\"><p align=\"center\">Target</p></td><td style=\"width:6%;\"><p align=\"center\">ID</p></td><td style=\"width:33%;\"><p align=\"center\">Description</p></td><td style=\"width:5%;\"><p align=\"center\">Value</p></td><td style=\"width:6%;\"><p align=\"center\">Target</p></td></tr>";
+                    }else{
+                      $printStr+="<tr style=\"border-left:0;\">";
+                      //console.log(process[keys]);
+                      //console.log(process[keys].indexOf("User:"));
+                      if(process[keys].indexOf("User:")>-1&&process[keys].length>0){
+                        
+                        process[keys]=process[keys].replace("User:","");
+                        //console.log(process[keys]);
+                        var theID=process[keys].substring(0,process[keys].indexOf(":"));
+                        //console.log("theID:"+theID);
+                        process[keys]=process[keys].substring(process[keys].indexOf(":")+1,process[keys].length);
+                        var tempOp=process[keys].split("$");
+                        //console.log("length:"+tempOp.length);
+                        if(tempOp.length>2){
+                          var con1,con2,tar1,tar2;
+                          if(map[tempOp[1]].indexOf("yes")>-1){
+                            con1="Yes";
+                            con2="No";
+                          }else{
+                            con1="No";
+                            con2="Yes";
+                          }
+                           tar1=map[tempOp[1]].split("$")[1];
+                           tar2=map[tempOp[2]].split("$")[1];
+                          if(tar1=="undefined"){
+                            tar1="End";
+                          }
+                          if(tar2=="undefined")
+                            tar2="End";
+                            $printStr+="<td rowspan=\"2\" style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td rowspan=\"2\" style=\"width:33%;\"><p style=\"text-align:left\">"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>"+con1+"</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tar1+"\">"+tar1+"</p></td><td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:33%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:5%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td></tr><tr><td style=\"width:5%;\"><p>"+con2+"</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tar2+"\">"+tar2+"</p></td>"
+
+                        }else{
+                          
+                          if(tempOp[0]!="yes"&&tempOp[0]!="no"){
+                            if(tempOp[1]==undefined)
+                              tempOp[1]="End";
+                              $printStr+=" <td style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td style=\"width:33%;\"><p>"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tempOp[1]+"\" style=\"cursor: pointer;\">"+tempOp[1]+"</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td><td style=\"width:33%;\"><p>&nbsp;</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td>";
+                          }
+                        }
+                        
+                       
+                      }else{
+
+                      if(process[keys].indexOf("System:")>-1&&process[keys].length>0){
+
+                        process[keys]=process[keys].replace("System:","");
+                   
+                        //console.log(process[keys]);
+                        var theID=process[keys].substring(0,process[keys].indexOf(":"));
+                        //console.log("theID:"+theID);
+                        process[keys]=process[keys].substring(process[keys].indexOf(":")+1,process[keys].length);
+                        var tempOp=process[keys].split("$");
+                        //console.log("length:"+tempOp.length);
+                        if(tempOp.length>2){
+                          $printStr+="<td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:33%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:5%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:6%;border-right: black;\"><p>&nbsp;</p></td>";
+                          var con1,con2,tar1,tar2;
+                          if(map[tempOp[1]].indexOf("yes")>-1){
+                            con1="Yes";
+                            con2="No";
+                          }else{
+                            con1="No";
+                            con2="Yes";
+                          }
+                          tar1=map[tempOp[1]].split("$")[1];
+                          tar2=map[tempOp[2]].split("$")[1];
+                          if(tar1=="undefined"){
+                            tar1="End";
+                          }
+                          if(tar2=="undefined")
+                            tar2="End";
+                          $printStr+="<td rowspan=\"2\" style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td rowspan=\"2\" style=\"width:33%;\"><p style=\"text-align:left\">"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>"+con1+"</p></td><td style=\"width:6%;\"><p class=\"clickfindnext\" value=\""+tar1+"\">"+tar1+"</p></td></tr><tr><td style=\"width:5%;\"><p>"+con2+"</p></td><td style=\"width:6%;\"><p class=\"clickfindnext\" value=\""+tar2+"\">"+tar2+"</p></td>"
+
+                        }else{
+                          
+                          if(tempOp[0]!="yes"&&tempOp[0]!="no"){
+                            if(tempOp[1]==undefined)
+                              tempOp[1]="End";
+                              $printStr+=" <td style=\"width:6%;\"><p>&nbsp;</p></td><td style=\"width:33%;\"><p>&nbsp;</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;border-right:black\"><p>&nbsp;</p></td>";
+                              $printStr+=" <td style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td style=\"width:33%;\"><p>"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;\"><p class=\"clickfindnext\" value=\""+tempOp[1]+"\" style=\"cursor: pointer;\">"+tempOp[1]+"</p></td>";
+                          }
+                        }
+                        
+                       
+                      }
+                    }
+                      $printStr+="</tr>";
+                  }  
+                }
+                 if($usecasenums>0)
+                $printStr+="</table></div>";
+                            //console.log($printStr);
+                showResults.innerHTML=$printStr;
+                var checkValue=$("#chooseusecase").val();
+                var markid=1;
+                while(markid<=$usecasenums){
+                  //console.log(markid+":"+(checkValue));
+                  if(markid!=checkValue)
+                  {
+                    var $aimID="#usecaseseq"+markid;
+                    //console.log("hide:"+$aimID);
+                    $($aimID).hide();
+                  }
+                  markid++;
+                }
+                $("#clickfindnext").on("click",function(){
+                  alert("hi");
+                })
+
+            },
+            error:function(){
+              console.log("errrrrrrrrrrr");
+            }
+           });
+          }
+        
+            var lastIndex,lastValue;
+
+            function saveLast(){
+              var selectTheOne = $("#chooseusecase").val();
+              lastValue=selectTheOne;
+            }
+
+            function changeForm(val){
+              console.log("changeForm");
+                var markid=1;
+                var checkValue=$("#chooseusecase").val();
+                console.log(checkValue+":"+$usecasenums);
+                var usecaselength=document.getElementById("chooseusecase").options.length;
+                while(markid<=usecaselength){
+                  console.log(markid+":"+checkValue);
+                  if(markid!=checkValue)
+                  {
+                    var $aimID="#usecaseseq"+markid;
+                    console.log("hide:"+$aimID);
+                    $($aimID).hide();
+                  }else{
+                    var $aimID="#usecaseseq"+markid;
+                    console.log("show:"+$aimID);
+                    $($aimID).show();
+                  }
+                  markid++;
+                }
+
+            }
+
+            </script>
         <div class="BorderGuard">
           <h4 align="center" class="myFont"> Use Case
           </h4>
-    
-        <div style="margin-top:8px">
-          <ul class="nav" id="guardlist" style="margin-bottom:0px">
-            <li class="myInsidePlus" style="text-align:left;margin-bottom:0px;vertical-align:middle;font-size:120%"><font style="margin-left:20px">Use Case Name: </font>
-                <select style="width:50%;margin-left:20px;height:25px;margin-top:5px">
-                  <option>UC1</option>
+          <div style="margin-top:8px">
+            <ul class="nav" id="guardlist" style="margin-bottom:0px">
+              <li class="myInsidePlus" style="text-align:left;margin-bottom:0px;vertical-align:middle;font-size:120%"><font style="margin-left:20px">Use Case Name: </font>
+                <select style="width:50%;margin-left:20px;height:25px;margin-top:5px" id="chooseusecase" onclick="saveLast()" onchange="changeForm()">
+                  
               <!--    <option>Editor</option>
                   <option>Show Picture</option>-->
-                  
+                  <%- partial('UsecaseShow', {configurations:configurations}) %>
                 </select>
-            </li>
-          </ul>
-
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
-
-      <!--
-        <h4 align="center" class="myFont"></h4>
-        <div style="overflow:auto;text-align:center">
-          <table border="1" cellpadding="0" cellspacing="0" width="100%">
-              <tr style="border-left:0">
-                <td colspan="4">
-                  <p style="text-align:center">USER</p>
-                </td>
-                <td colspan="4">
-                  <p style="text-align:center">SYSTEM</p>
-                </td>
-              </tr>
-              <tr>
-                <td style="width:6%;">
-                  <p align="center">ID</p>
-                </td>
-                <td style="width:33%;">
-                  <p align="center">Description</p>
-                </td>
-                <td style="width:5%;">
-                  <p align="center">Val</p>
-                </td>
-                <td style="width:6%;">
-                  <p align="center">Tgt.</p>
-                </td>
-                <td style="width:6%;">
-                  <p align="center">ID</p>
-                </td>
-                <td style="width:33%;">
-                  <p align="center">Description</p>
-                </td>
-                <td style="width:5%;">
-                  <p align="center">Val</p>
-                </td>
-                <td style="width:6%;">
-                  <p align="center">Tgt.</p>
-                </td>
-              </tr>
-              
-              <tr>
-                <td rowspan="2" style="width:6%;">
-                  <p class="FontColor" value="A1">A1</p>
-                </td>
-                <td rowspan="2" style="width:33%;">
-                  <p>Press the 'sign in' button</p>
-                </td>
-                <td rowspan="2" style="width:5%;">
-                  <p>&nbsp;</p>
-                </td>
-                <td rowspan="2" style="width:6%;">
-                  <p class="click" value="D2">D2</p>
-                </td>
-                <td rowspan="2" style="width:6%;">
-                  <p value="D2">D2</p>
-                </td>
-                <td rowspan="2" style="width:33%;">
-                  <p style="text-align:left">Has the user set on automatic login?</p>
-                </td>
-                <td style="width:5%;">
-                  <p>No</p>
-                </td>
-                <td style="width:6%;">
-                  <p class="click" value="A4">A4</p>
-                  </td>
-              </tr>
-              <tr>
-                <td style="width:5%;">
-                  <p>Yes</p>
-                </td>
-                <td style="width:6%;">
-                  <p class="click" value="A23">A23</p>
-                </td>
-              </tr>
-              <tr>
-                <td style="width:6%;">
-                  <p value="A4">A4</p>
-                </td>
-                <td style="width:33%;">
-                  <p>Input username.</p>
-                </td>
-                <td style="width:5%;">
-                  <p>&nbsp;</p>
-                </td>
-                <td style="width:6%">
-                  <p class="click" value="A5">A5</p>
-                </td>
-                <td style="width:6%;">
-                  <p>&nbsp;</p>
-                </td>
-                <td style="width:33%;">
-                  <p>&nbsp;</p>
-                </td>
-                <td style="width:5%;">
-                  <p>&nbsp;</p>
-                </td>
-                <td style="width:33%;">
-                  <p>&nbsp;</p>
-                </td>
-              </tr>
-              <tr>
-                <td style="width:6%;">
-                  <p value="A5">A5</p>
-                </td>
-                <td style="width:33%;">
-                  <p>Input password with keyborad.</p>
-                </td>
-                <td style="width:5%;">
-                  <p>&nbsp;</p>
-                </td>
-                <td style="width:6%">
-                  <p class="click" value="A6">A6</p>
-                </td>
-                <td style="width:6%;">
-                  <p Value="A6">A6</p>
-                </td>
-                <td style="width:33%;">
-                  <p>Display the input username, display the input password with asterisks.</p>
-                </td>
-                <td style="width:5%;">
-                  <p>&nbsp;</p>
-                </td>
-                <td style="width:6%;">
-                  <p class="click" value="D9">D9</p>
-                </td>
-              </tr>
-              <tr>
-                <td rowspan="2" style="width:6%;">
-                  <p value="D9">D9</p>
-                </td>
-                <td  rowspan="2" style="width:33%;">
-                  <p>Is the image clear?</p>
-                </td>
-                <td style="width:5%;">
-                  <p>Yes</p>
-                </td>
-                <td style="width:6%;">
-                  <p class="click" value="A7">A7</p>
-                </td>
-                <td style="width:6%;">
-                  <p>&nbsp;</p>
-                </td>
-                <td style="width:33%;">
-                  <p style="text-align:left">&nbsp;</p>
-                </td>
-                <td style="width:5%;">
-                  <p>&nbsp;</p>
-                </td>
-                <td style="width:6%;">
-                  <p class="click">&nbsp</p>
-                  </td>
-              </tr>
-              <tr>
-                <td style="width:5%;">
-                  <p>No</p>
-                </td>
-                <td style="width:6%;">
-                  <p class="click" value="A24">A24</p>
-                </td>
-                <td style="width:6%;">
-                  <p>&nbsp;</p>
-                </td>
-                <td style="width:33%;">
-                  <p>&nbsp;</p>
-                </td>
-                <td style="width:5%;">
-                  <p>&nbsp;</p>
-                </td>
-                <td style="width:6%;">
-                  <p class="click">&nbsp;</p>
-                </td>
-              </tr>
-          </table>
-        </div>-->
         
         <div id="showResult">
 
@@ -958,7 +989,7 @@
   
   <form>
     <fieldset id="dialog-exchange">
-       <label class="control-label" for="configurationname">Configuration Name：</label>
+        <label class="control-label" for="configurationname">Configuration Name：</label>
         <input type="text" class="input-xlarge" id="configurationname" name="configurationname">
     </fieldset>
   </form>
@@ -969,8 +1000,7 @@
   
   <form>
     <fieldset id="dialog-exchange">
-       <label class="control-label" > Confirm Delete? </label>
-        
+       <label class="control-label" > Confirm Delete? </label>       
     </fieldset>
   </form>
 
@@ -993,8 +1023,7 @@
   
   <form>
     <fieldset id="dialog-exchange">
-       <label class="control-label" > Confirm Delete? </label>
-        
+       <label class="control-label" > Confirm Delete? </label>   
     </fieldset>
   </form>
 

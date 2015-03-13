@@ -1,6 +1,6 @@
 var mongodb = require('./db');
 
-function Configuration(username,name,time,configuration,usecase,projectID,_id) { //post means refinements list
+function Configuration(username,name,time,configuration,usecasename,usecase,projectID,_id) { //post means refinements list
 	this.user = username;
 	this.name=name;
 	if (time) {
@@ -9,6 +9,7 @@ function Configuration(username,name,time,configuration,usecase,projectID,_id) {
 		this.time = new Date();
 	}
 	this.configuration=configuration;
+	this.usecasename=usecasename;
 	this.usecase=usecase;
 	this.projectID=projectID;
 	this._id=_id;
@@ -22,6 +23,7 @@ Configuration.prototype.save = function save(callback) {
 		name:this.name,
 		time: this.time,
 		configuration:this.configuration,
+		usecasename:this.usecasename,
 		usecase:this.usecase,
 		projectID:this.projectID
 	};
@@ -52,6 +54,7 @@ Configuration.addNewConfiguration = function addNewConfiguration(username,projec
 				user: username,
 				name:name,
 				configuration:"",
+				usecasename:"",
 				usecase:{},
 				projectID:projectID
 			};
@@ -92,7 +95,7 @@ Configuration.addNewConfiguration = function addNewConfiguration(username,projec
 							var configurations = [];
 							var $newConfigurationID;
 							docs.forEach(function(doc, index) {
-								var configuration = new Configuration(doc.user, doc.name,doc.time,doc.configuration,doc.usecase,doc.projectID,doc._id);
+								var configuration = new Configuration(doc.user, doc.name,doc.time,doc.configuration,doc.usecasename,doc.usecase,doc.projectID,doc._id);
 								configurations.push(configuration);
 								if(doc.name==name){
 									$newConfigurationID=doc._id;
@@ -146,7 +149,7 @@ Configuration.get = function get(username,projectID,id,callback) {
 							var configurations = [];
 				
 							docs.forEach(function(doc, index) {
-								var configuration = new Configuration(doc.user, doc.name,doc.time,doc.configuration,doc.usecase,doc.projectID,doc._id);
+								var configuration = new Configuration(doc.user, doc.name,doc.time,doc.configuration,doc.usecasename,doc.usecase,doc.projectID,doc._id);
 								configurations.push(configuration);
 							});
 
@@ -155,6 +158,39 @@ Configuration.get = function get(username,projectID,id,callback) {
 		});
 	});
 };
+
+Configuration.getUseCase = function getUseCase(username,projectID,id,callback) {
+	
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('configuration', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query = {};
+				
+				query={"user":username,"projectID":projectID,"_id":ObjectID(id)};
+				collection.findOne(query, function(err, doc) {
+					mongodb.close();
+					if (doc) {
+						console.log("doc:"+doc.usecase);
+						
+						
+						callback(null, doc.usecase);
+					} else {
+						callback(err, null);
+					}
+			});
+		});
+	});
+};
+
 
 Configuration.removeConfiguration = function removeConfiguration(user,deleteID,callback){
 	mongodb.open(function(err, db) {
@@ -196,7 +232,7 @@ Configuration.removeConfiguration = function removeConfiguration(user,deleteID,c
 										var configurations = [];
 										
 										docs.forEach(function(doc, index) {
-											var configuration = new Configuration(doc.user, doc.name,doc.time,doc.configuration,doc.usecase,doc._id);
+											var configuration = new Configuration(doc.user, doc.name,doc.time,doc.configuration,doc.usecasename,doc.usecase,doc._id);
 											configurations.push(configuration);
 										
 										});
@@ -254,6 +290,34 @@ Configuration.editConfig = function editConfig(user,editID,config,callback){
 			query1={"user":user,"_id":ObjectID(editID)};
 			query2={$set:{"configuration":config}};
 			collection.update(query1,query2,{safe:true},function(err){mongodb.close()});
+				
+		});
+	});
+}
+
+Configuration.saveUsecase=function saveUsecase(user,projectID,current_configuration_id,casename,result,callback){
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+	
+		db.collection('configuration', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var ObjectID = require("mongodb").ObjectID;
+			//查找user属性为username的文档，如果username为null则匹配全部
+			var query1 = {};
+			var query2 = {};
+			
+			
+			query1={"user":user,"_id":ObjectID(current_configuration_id),"projectID":projectID};
+			query2={$set:{"usecasename":casename,"usecase":result}};
+			collection.update(query1,query2,{safe:true},function(err){
+				mongodb.close();
+				callback(null,result);
+			});
 				
 		});
 	});
@@ -425,9 +489,10 @@ Configuration.postdec=function postdec(post, tail, uc_index)       // tail 是de
 
 Configuration.printusecase=function printusecase(ele,tracerules)
 {
-	
+	//console.log("hahaha!!!"+ele);
 	var $returnWord="";
 	num++;
+
 	//console.log("printusecase: "+tracerules);
 	if(ele != -2)
 	{	
@@ -436,14 +501,16 @@ Configuration.printusecase=function printusecase(ele,tracerules)
 			var elePath=ele.split(".");
 			
 			var element;
-			for(traceruleElement in tracerules){
+			for(traceruleElement in tracerules){ 
+				//console.log(tracerules[traceruleElement]._id+":"+elePath[0]);
 				if(tracerules[traceruleElement]._id==elePath[0])
 				{
+					//console.log("lalala:"+tracerules[traceruleElement].name);
 					element=tracerules[traceruleElement];
 					break;
 				}
 			}
-			
+			//console.log(element);
 			var thisElement=element.elements[elePath[2]];
 			//console.log(thisElement);
 			
@@ -571,9 +638,10 @@ Configuration.printusecase=function printusecase(ele,tracerules)
 
 
 Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elementdepencys,features,configurations,callback){
-	console.log(configurations[0]);
+	console.log("generateUseCase Start______________");
 	var map = {};
 	var mapguard_ID={};
+	ucList=[];
 	for(key in features){
 		mapguard_ID[features[key].text]=features[key]._id;
 		console.log(features[key].text+":"+mapguard_ID[features[key].text]);
@@ -589,12 +657,13 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 		}
 	}
 	var selectedElement=configurations[0].configuration.split("$");
+	console.log("~~~~~~~~~");
 	for(key in selectedElement){
-
 		fmc[map[selectedElement[key]]]=true;
 		console.log(selectedElement[key]+":"+map[selectedElement[key]]);
 	}
-	//console.log("fmc:"+fmc);
+	console.log("~~~~~~~~~");
+	console.log("fmc:"+fmc);
 
 	var filtered_Traceability = [];
 	//console.log("length:"+tracerules.length+" _____________________");
@@ -610,24 +679,23 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 			if( g[j][0]=='¬' ){
 				g[j]=g[j].substr(1,g[j].length-1);
 				guardvalue = guardvalue && !fmc[map[mapguard_ID[g[j]]]];
-			}
-			else
+			}else{
 				guardvalue = guardvalue && fmc[map[mapguard_ID[g[j]]]];
+			}
 		}
 		if(guardvalue)
 			filtered_Traceability[key] = true;
 		else
 			filtered_Traceability[key] = false;
-		//console.log(key+":"+filtered_Traceability[key]);
-		}
-	//console.log(filtered_Traceability);
+		console.log(key+":"+tracerules[key].name+":"+filtered_Traceability[key]);
+	}
 
 	var filtered_DList = [];
-	//console.log("elementdepencys[i].depender_______________________");
+	console.log("--------------elementdepencys[i].depender-----------------");
 
 	for(i=0;i<elementdepencys.length;i++)  
 	{
-
+		console.log("element name:"+elementdepencys[i].element);
 		var tr_index = elementdepencys[i].dependee;
 
 		if ( filtered_Traceability[traceruleID_key[tr_index]] )     //要是dependendee没有保留，后面的depender也不用改
@@ -640,26 +708,29 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 
 			for(key in elementdepencys[i].depender)
 			{
+				console.log("elementdepencys.key:"+key);
 				var dependPath=key.split("_");
 				if( filtered_Traceability[ traceruleID_key[dependPath[0]] ] )	
 					dependency.depender.push(dependPath[0]);
 			}
 			filtered_DList.push( dependency );
 
-/*
+
 			for (j=0; j<elementdepencys[i].depender.length; j++ )
 			{
 				if( filtered_Traceability[ DependencyList[i].depender[j] ] )
 					dependency.depender.push( DependencyList[i].depender[j] );
 			};
 
-			
-*/
 		}	
 		
 	}
+
 	console.log("elementdepencys:_________________");
-	//console.log(filtered_DList);
+	console.log("filtered_DList:");
+	for(mm in filtered_DList){
+		console.log(filtered_DList[mm]);
+	}
 
 	var Graph = [];
 
@@ -707,11 +778,13 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 			}	
 		console.log("\n\n");
 	}
-	console.log("this is test Graph OVer");
+	console.log("this is test Graph Over");
 
-	var size = Graph.length;	
+	var size = Graph.length;
+	var tempSize;	
 	while( temporder.length != size )
 	{
+		tempSize=temporder.length;
 		//console.log(temporder.length+":"+size);
 		for(var i=0; i<Graph.length; i++)
 		{	
@@ -743,8 +816,15 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 			}
 		}
 
+		if(tempSize==temporder.length&&temporder.length!=size){
+			err="configuration wrong";
+			callback(err,printStr);
+			break;
+		}
+
 	}
 
+	console.log("temporder:");
 	console.log(temporder);
 	resultorder = temporder;
 	//console.log("resultorder:"+resultorder+"\n");
@@ -760,10 +840,10 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 		for(keys in pos)                       //j
 		{
 			//console.log(content);
-			//console.log("keys:"+pos[keys]);
+			console.log("keys:"+pos[keys]);
 			var op=ops[pos[keys]];
 			var type = ops[pos[keys]].type;
-			//console.log("op:    "+op.type);
+			console.log("op type:    "+op.type);
 			//type=type+"s";
 			switch (type)
 			{
@@ -774,18 +854,49 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 				    	name : usecasename[2],
 				    	usecase_id : ops[pos[keys]].element,
 				    }
-				    uc.start = 
-				    {
-				    	next : -2
-				    }
-				    uc.end = 
-				    {
-				    	before : [-1],
-				    	beforesize : 0
-				    }
-					console.log("uc_usecase_id:"+uc.usecase_id);
-				    ucList.push(uc);  
-				       
+				   
+				  console.log("usecasename:"+uc.name+" usecase_id:"+ops[pos[keys]].element);
+					
+				    
+				    var ele;
+							ele = 
+							{
+								
+								next : [-2],
+								beforesize : 0,
+								nextsize : 0
+							}	
+							ele.id = usecasename[0]+"."+usecasename[1]+"."+usecasename[2]+"_Start";
+							var elementList=op.element.split(".");
+							ele.description=tr.elements[elementList[2]].description;
+							//ele.description = ElementList[ op.element ].description; 
+							content[ ele.id ] = ele;  //放入content中	
+							 uc.start = 
+				    		{
+				    			next : ele
+				    		}
+
+
+							ele = 
+							{
+								before : [uc.start],
+								beforesize : 0,
+								nextsize : 0
+							}	
+							ele.id = usecasename[0]+"."+usecasename[1]+"."+usecasename[2]+"_End";
+							elementList=op.element.split(".");
+							ele.description=tr.elements[elementList[2]].description;
+							//ele.description = ElementList[ op.element ].description; 
+							content[ ele.id ] = ele;  //放入content中	
+							  uc.end = 
+				    		 {
+				    				before : [ele],
+				    				beforesize : 0
+				    		 }
+				    		 console.log("uc_usecase_id:"+uc.usecase_id);
+
+				    		 ucList.push(uc);  
+
 					break;
 
 				case "C2":
@@ -798,6 +909,7 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 								nextsize : 0
 							}	
 							ele.id = op.element;
+
 							var elementList=op.element.split(".");
 							ele.description=tr.elements[elementList[2]].description;
 							//ele.description = ElementList[ op.element ].description; 
@@ -843,13 +955,18 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 
 					var uc_index = 0;
 					while( ucList[uc_index].usecase_id != op.usecaseElement )     //先确定是哪个uc当中的
-						uc_index++;                
-					
+					{
+							console.log("usecase_id:"+uc_index);
+							uc_index++;  
+					}              
+					console.log("usecase_id:"+uc_index);
+					console.log("op.preElement:"+op.preElement);
 					var pre = op.preElement;
 					
-
 					var post;
 					
+					console.log("content[pre].next[0]:"+content[pre].next[0]);
+
 					if(content[pre].next[0]==-2)
 						post=-2;
 					else{
@@ -860,6 +977,7 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 
 					var head = op.element;
 					var tail = op.element;
+
 					
 					Configuration.singlepre(pre, head, uc_index);
 					
@@ -1230,15 +1348,21 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 		}
 	}
 	num=0;
+	console.log("what-----------------------"+ucList.length);
+	printStr="";
+	theusecasename="";
 	for(var i=0; i<ucList.length; i++)
 	{
+		console.log("No."+i);
 		var uc = ucList[i];
-		var ele = uc.start.next;
-		
+		//var ele = uc.start.next;
+		var ele = uc.start.next.id;
+		//console.log("ele:"+uc.start);
 		var seq=0;
 		var first;
 		for(key in content)
 		{		
+			//console.log("content["+key+"]:"+content[key]);
 			if(seq==0){
 					first=content[key].id;
 					seq++;
@@ -1246,10 +1370,14 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 				print[key] = false;
 				
 		}
-		ele=first;
+		//ele=first;
 
 		console.log("\n\n\n\nUse case: "+ uc.name);
-		printStr="Use case: "+ uc.name+"<br>";
+		console.log("Use Case start:"+ele);
+		printStr+="Use case: "+ uc.name+"<br>";
+		if(i!=0)
+			theusecasename+="$";
+		theusecasename+=uc.name;
 		console.log("----------------------------------");
 		printStr+=Configuration.printusecase(ele,tracerules);
 		console.log("----------------------------------");
@@ -1326,8 +1454,10 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 	var s2="";
 	printStr=printStr.replace(new RegExp(s1,"gm"),s2);
 
-	//console.log(printStr);
-	callback(null,printStr);
+	console.log("---------printStr---------");
+	console.log(printStr);
+	console.log("--------------------------");
+	callback(null,printStr,theusecasename);
 
 
 }

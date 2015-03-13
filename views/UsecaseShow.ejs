@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+           
+            <% 
+              
+               console.log(configurations[0].usecasename);
+               console.log("haha");
+
+               var usecaselist=configurations[0].usecasename.split("$");
+               var usecaselistnum=1;
+               for(key in usecaselist){
+                if(usecaselistnum==1){
+            %>
+                <option value="<%=usecaselistnum%>" selected = "selected"><%=usecaselist[key]%></option>
+            <%
+                }else{
+            %>
+                <option value="<%=usecaselistnum%>"><%=usecaselist[key]%></option>
+            <%  }
+                usecaselistnum++;
+               }
+            %>

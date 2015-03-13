@@ -613,21 +613,33 @@ exports.createUseCase = function(req, res){
 	  		if (err) {
 			req.flash('error', err);
 			return res.redirect('/T/'+current_guard_id);
-		}else{
+			}else{
 
 	  ElementDepency.saveDependee(req.session.user.name,usecasename,current_guard_id,type,projectID,function(err,elementdepencys){
 	  		if(err){
 	  			elementdepencys=[];
 	  		}
+	  		var $startname=usecasename+"_Start";
+	  		var $endname=usecasename+"_End";
+	  		type="activity";
+	  	ElementDepency.saveDependee(req.session.user.name,$startname,current_guard_id,type,projectID,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
 
-			Tracerule.createUseCase(req.session.user.name,current_guard_id,usecasename,usecasedescription,positions, function(err, tracerules) {
+	  	  ElementDepency.saveDependee(req.session.user.name,$endname,current_guard_id,type,projectID,function(err,elementdepencys){
+	  		if(err){
+	  			elementdepencys=[];
+	  		}
+			Tracerule.createUseCase(req.session.user.name,current_guard_id,usecasename,usecasedescription,$startname,$endname,positions, function(err, tracerules) {
 			if (err) {
 				tracerules = [];
 			}
 				
 				res.send({"createusecase":1});
 			});
-		
+		});
+	  });
 	});
 
  	}
@@ -793,7 +805,7 @@ exports.insertActAfterPre = function(req, res){
 	 var UseCase=req.body.UseCase;
 	 var positions=req.body.operation_position;
 	 var current_guard_id=id;
-
+     
 	  ElementDepency.saveInsertActAfterPre(req.session.user.name,TarAct,PreAct,UseCase,current_guard_id,function(err,elementdepencys){
 	  		if(err){
 	  			elementdepencys=[];
@@ -1309,6 +1321,65 @@ exports.deleteActivity = function(req, res){
 
  	 			}
  	 		}
+
+
+ 	 	var $dependernum=0;
+ 	 	flag=false;
+ 	 	for(key in dependencyElement[0].insidetodepen)
+ 	 		{
+ 	 			
+ 	 			if($dependernum==0)
+ 	 			{
+ 	 			   if(err!="")
+ 	 				err=err+"\n";
+ 	 				err=err+"Some elements of this tracerule are dependent on this activity:";
+ 	 			}
+ 	 			$dependernum++;
+ 	 			if(flag){
+ 	 				err=err+", ";
+ 	 			}
+ 	 			var keys=key.split("_");
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
+
+ 	 	var $dependernum=0;
+ 	 	flag=false;
+ 	 	for(key in dependencyElement[0].insidedepender)
+ 	 		{
+ 	 			
+ 	 			if($dependernum==0)
+ 	 			{
+ 	 			   if(err!="")
+ 	 				err=err+"\n";
+ 	 				err=err+"This activity is dependent on these elements of this tracerule:";
+ 	 			}
+ 	 			$dependernum++;
+ 	 			if(flag){
+ 	 				err=err+", ";
+ 	 			}
+ 	 			var keys=key.split("_");
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
  	 	
  	 	if (err) {
  	 		/*var $now_ID=projectID+"_"+current_guard_id;
@@ -1397,6 +1468,64 @@ exports.deleteDecision = function(req, res){
  	 			for(keyss in guardlists)
  	 			{
  	 				console.log("haha:"+guardlists[keyss].selfname+" "+guardlists[keyss]._id+" "+keys[0]);
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
+
+ 	 	var $dependernum=0;
+ 	 	flag=false;
+ 	 	for(key in dependencyElement[0].insidetodepen)
+ 	 		{
+ 	 			
+ 	 			if($dependernum==0)
+ 	 			{
+ 	 			   if(err!="")
+ 	 				err=err+"\n";
+ 	 				err=err+"Some elements are dependent on this decision:";
+ 	 			}
+ 	 			$dependernum++;
+ 	 			if(flag){
+ 	 				err=err+", ";
+ 	 			}
+ 	 			var keys=key.split("_");
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
+
+ 	 	var $dependernum=0;
+ 	 	flag=false;
+ 	 	for(key in dependencyElement[0].insidedepender)
+ 	 		{
+ 	 			
+ 	 			if($dependernum==0)
+ 	 			{
+ 	 			   if(err!="")
+ 	 				err=err+"\n";
+ 	 				err=err+"This decision is dependent on these elements of this tracerule:";
+ 	 			}
+ 	 			$dependernum++;
+ 	 			if(flag){
+ 	 				err=err+", ";
+ 	 			}
+ 	 			var keys=key.split("_");
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
  	 				if(guardlists[keyss].trace_rule_id==keys[0])
  	 					err=err+guardlists[keyss].selfname;
  	 			}
@@ -1503,6 +1632,65 @@ exports.deleteCondition = function(req, res){
 
  	 			}
  	 		}
+
+ 	 	var $dependernum=0;
+ 	 	flag=false;
+ 	 	for(key in dependencyElement[0].insidetodepen)
+ 	 		{
+ 	 			
+ 	 			if($dependernum==0)
+ 	 			{
+ 	 			   if(err!="")
+ 	 				err=err+"\n";
+ 	 				err=err+"Some elements of this tracerule are dependent on this condition:";
+ 	 			}
+ 	 			$dependernum++;
+ 	 			if(flag){
+ 	 				err=err+", ";
+ 	 			}
+ 	 			var keys=key.split("_");
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
+
+ 	 	var $dependernum=0;
+ 	 	flag=false;
+ 	 	for(key in dependencyElement[0].insidedepender)
+ 	 		{
+ 	 			
+ 	 			if($dependernum==0)
+ 	 			{
+ 	 			   if(err!="")
+ 	 				err=err+"\n";
+ 	 				err=err+"This condition of this tracerule is dependent on these elements of this tracerule:";
+ 	 			}
+ 	 			$dependernum++;
+ 	 			if(flag){
+ 	 				err=err+", ";
+ 	 			}
+ 	 			var keys=key.split("_");
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
+
  	 		if (err) {
 			res.send({"errs":err});
 		}
@@ -1602,6 +1790,65 @@ exports.deleteUseCase = function(req, res){
  	 			}
  	 		}
 
+ 	 	var $dependernum=0;
+ 	 	flag=false;
+ 	 	for(key in dependencyElement[0].insidetodepen)
+ 	 		{
+ 	 			
+ 	 			if($dependernum==0)
+ 	 			{
+ 	 			   if(err!="")
+ 	 				err=err+"\n";
+ 	 				err=err+"Some elements of this tracerule are dependent on this use case element:";
+ 	 			}
+ 	 			$dependernum++;
+ 	 			if(flag){
+ 	 				err=err+", ";
+ 	 			}
+ 	 			var keys=key.split("_");
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
+
+ 	 	var $dependernum=0;
+ 	 	flag=false;
+ 	 	for(key in dependencyElement[0].insidedepender)
+ 	 		{
+ 	 			
+ 	 			if($dependernum==0)
+ 	 			{
+ 	 			   if(err!="")
+ 	 				err=err+"\n";
+ 	 				err=err+"This use case element is dependent on these elements of this tracerule:";
+ 	 			}
+ 	 			$dependernum++;
+ 	 			if(flag){
+ 	 				err=err+", ";
+ 	 			}
+ 	 			var keys=key.split("_");
+ 	 			err=err+" "+keys[1]+"∈";
+ 	 			for(keyss in guardlists)
+ 	 			{
+ 	 				if(guardlists[keyss].trace_rule_id==keys[0])
+ 	 					err=err+guardlists[keyss].selfname;
+ 	 			}
+ 	 			if(!flag)
+ 	 			{
+ 	 				flag=true;
+
+ 	 			}
+ 	 		}
+
+
  	 	if (err) {
 			res.send({"errs":err});
 		}
@@ -1614,7 +1861,7 @@ exports.deleteUseCase = function(req, res){
 	  		if(err){
 	  			elementdepencys=[];
 	  		}
-	  	
+	  		
 			Tracerule.deleteUseCase(req.session.user.name,id,operation_name,positions, function(err, tracerules) {
 			if (err) {
 				tracerules = [];
@@ -1906,7 +2153,8 @@ exports.editUseCase=function(req,res){
 	 var hidden_fields=req.body.hidden_fields;
 	 var projectID=req.body.projectID;
 	 console.log(oldusecasename+" "+usecasename+" "+hidden_fields);
-	 if(nameMark || descriptionMark){
+	 console.log("nameMark:"+nameMark+" descriptionMark:"+descriptionMark+" oldusecasedescription:"+oldusecasedescription+" usecasedescription:"+usecasedescription);
+	 if(nameMark){
 
 	  ElementDepency.replaceDependKeyName(req.session.user.name,oldusecasename,usecasename,hidden_fields,function(err,elementdepencys){
 	  		if(err){
@@ -1926,6 +2174,14 @@ exports.editUseCase=function(req,res){
 	  	  });
 
 		});
+  }else{
+  	Tracerule.editUseCase(req.session.user.name,id,nameMark,oldusecasename,usecasename,descriptionMark,oldusecasedescription,usecasedescription,positions,hidden_fields,projectID,function(err,tracerules){
+				res.send(
+						
+						{elementdepencys:elementdepencys}
+	
+				);	
+			});
   }  
 }
 
@@ -1947,7 +2203,7 @@ exports.editActivity=function(req,res){
 	 var type="activity";
 	 var hidden_fields=req.body.hidden_fields;
 	 var projectID=req.body.projectID;
-	 console.log(oldactivityname+" "+activityname+" "+hidden_fields);
+	 console.log(oldactivityname+" "+activityname+" hidden_fields:"+hidden_fields+" projectID:"+projectID);
 	 if(nameMark || descriptionMark){
 
 	
@@ -2022,15 +2278,15 @@ exports.editCondition=function(req,res){
 	 var type="condition";
 	 var hidden_fields=req.body.hidden_fields;
 	 var projectID=req.body.projectID;
-	 console.log(oldconditionname+" "+conditionname+" "+hidden_fields);
+	 console.log("nameMark:"+nameMark+" descriptionMark:"+descriptionMark+" oldconditionname:"+oldconditionname+" conditionname:"+conditionname+" conditiondescription:"+conditiondescription+" oldconditiondescription:"+oldconditiondescription+" hidden_fields:"+hidden_fields+" positions:"+positions);
+	 
 	 if(nameMark || descriptionMark){
-
-
+      if(nameMark){
 	  ElementDepency.replaceDependKeyName(req.session.user.name,oldconditionname,conditionname,hidden_fields,function(err,elementdepencys){
 	  		if(err){
 	  			elementdepencys=[];
 	  		}	
-	  		Tracerule.editCondition(req.session.user.name,id,nameMark,oldconditionname,conditionname,descriptionMark,oldconditiondescription,conditiondescription,positions,hidden_fields,function(err,tracerules){
+	  		Tracerule.editCondition(req.session.user.name,id,projectID,nameMark,oldconditionname,conditionname,descriptionMark,oldconditiondescription,conditiondescription,positions,hidden_fields,function(err,tracerules){
 				res.send(
 						
 						{elementdepencys:elementdepencys}
@@ -2040,7 +2296,15 @@ exports.editCondition=function(req,res){
 	  	 
 
 		});
+	  }else{
+	  	Tracerule.editCondition(req.session.user.name,id,projectID,nameMark,oldconditionname,conditionname,descriptionMark,oldconditiondescription,conditiondescription,positions,hidden_fields,function(err,tracerules){
+				res.send(
+						
+						{elementdepencys:elementdepencys}
 	
+				);	
+			});
+	  }
   }  
 }
 
@@ -2062,6 +2326,7 @@ exports.editInsertActAfterPre=function(req,res){
 
 	  operation_name="Insert "+oldTarAct.split(".")[1]+" after "+oldPreAct.split(".")[1]+" in "+oldUseCase.split(".")[1];
 	  //console.log("user:"+user+" id:"+id+" editTartAct:"+editTartAct+" editPreAct:"+editPreAct+" editUseCase:"+editUseCase+" positions:"+positions+" current_guard_id:"+current_guard_id+" hidden_fields:"+hidden_fields+" projectID:"+projectID+" operation_name:"+operation_name);
+	  console.log("id:"+id+" editTartAct:"+editTartAct+" editPreAct"+editPreAct+" editUseCase"+editUseCase+" oldTarAct:"+oldTarAct+" oldPreAct:"+oldPreAct+" oldUseCase:"+oldUseCase+" current_guard_id:"+current_guard_id+" hidden_fields:"+hidden_fields+" projectID:"+projectID+" operation_name:"+operation_name);
 	  ElementDepency.deleteInsertActAfterPre(req.session.user.name,id,operation_name,hidden_fields,function(err,elementdepencys){	  		
 	  	if(err){
 	  		elementdepencys=[];
@@ -3292,32 +3557,52 @@ exports.EditConfig=function(req,res){
 }
 
 exports.GenerateUseCase=function(req,res){
-	console.log(req.body.current_configuration_id);
-	Tracerule.get(req.session.user.name,null, function(err, tracerules) {
+	console.log("############GenerateUseCase:#################");
+	console.log("current_configuration_id:"+req.body.current_configuration_id);
+	console.log("projectID:"+req.body.projectID);
+	Tracerule.get(req.session.user.name,req.body.projectID,null, function(err, tracerules) {
 			if (err) {
 				tracerules = [];
 			}
-			ElementDepency.get(req.session.user.name,function(err,elementdepencys){
+			
+			ElementDepency.get(req.session.user.name,req.body.projectID,function(err,elementdepencys){
 	  			if(err){
 	  				elementdepencys=[];
 	  			}
-	  			Feature.getAll(function(err, features) {
+	  			Feature.getByProject(req.body.projectID,function(err, features) {
 					if (err) {
 						return res.redirect('/C');
 						}
-					Configuration.get(req.session.user.name,req.body.current_configuration_id,function(err,configurations){
-						Configuration.generateUseCase(req.session.user.name,req.body.current_guard_id,tracerules,elementdepencys,features,configurations,function(err,result){
+					Configuration.get(req.session.user.name,req.body.projectID,req.body.current_configuration_id,function(err,configurations){
+						Configuration.generateUseCase(req.session.user.name,req.body.current_guard_id,tracerules,elementdepencys,features,configurations,function(err,result,casename){
 						console.log("Generate Use Case");
-						var results=new Array();
-						for(key in result)
-							results[key]=result[key];
-			
-
-						res.send(results);
+						console.log("case seq:"+casename);
+						console.log("lalala");
+						if(err){
+							res.send(err);
+						}else{
+							Configuration.saveUsecase(req.session.user.name,req.body.projectID,req.body.current_configuration_id,casename,result,function(err,theresult){
+								var results=new Array();
+								for(key in theresult)
+									results[key]=theresult[key];
+								res.send(results);
+							})
+						}
 					});
 				});
 			});	
 	  	})
+	})
+}
+
+exports.GetUseCase=function(req,res){
+	console.log("projectID:"+req.body.projectID+" id:"+req.body.current_configuration_id);
+	Configuration.getUseCase(req.session.user.name,req.body.projectID,req.body.current_configuration_id,function(err,usecase){
+								var results=new Array();
+								console.log("usecase:"+usecase);
+								for(key in usecase)
+									results[key]=usecase[key];
+								res.send(results);
 	})
 }
 
