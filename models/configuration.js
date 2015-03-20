@@ -1382,74 +1382,7 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 		printStr+=Configuration.printusecase(ele,tracerules);
 		console.log("----------------------------------");
 	}
-		
-  /*
-				var num=0;
-			printStr="";
-			for(var i=0; i<ucList.length; i++)
-		{		
-			var uc = ucList[i];
-			var ele = uc.start.next;
-			var print = [];
-			for(var j=0; j<content.length; j++)
-				print[j] = false;
 
-			printStr+="\n\n\n\nUse case: "+ uc.name;
-			
-			num++;
-			
-			
-			if(ele != -2)
-			{
-				if( print[ele]==false )
-				{
-					if( ElementList[ele].type == "activity" || ElementList[ele].type == "decision")
-					{
-						if(ElementList[ele].type == "decision")
-						{
-							if( ElementList[ele].executor =="user" )						
-								console.log( " 【decision "+num+" 】");
-							else
-						//console.log( "                            "+ElementList[ele].description+"\n");
-						printStr+="                            【decision "+num+" 】";
-				}
-					
-				if( ElementList[ele].executor =="user" )
-					printStr+=ElementList[ele].description+"\n";
-				else
-					printStr+="                            "+ElementList[ele].description+"\n";
-			}
-			else
-			{
-				if( ElementList[content[ele].before[0]].executor == "user")				
-					printStr+=ElementList[ele].description+"\n";
-				else
-					printStr+="                            "+ElementList[ele].description+"\n";
-
-			}
-			print[ele] = true;
-
-			for(var k=0; k<content[ele].nextsize; k++)
-			{	
-				if (content[ele].nextsize>1 && k>0)
-				{
-					if( ElementList[content[ele].next[k]].executor == "user")				
-					printStr+="【decision "+num+"'s other branches】";
-					else
-					printStr+= "                            "+"【decision "+num+"'s other branches】";
-				}
-								
-				//printusecase(content[ele].next[k]);
-			}
-				
-		}
-	}
-	num--;
-
-		}
-		*/
-	
-	//console.log(content);
 	var s1="undefined";
 	var s2="";
 	printStr=printStr.replace(new RegExp(s1,"gm"),s2);
