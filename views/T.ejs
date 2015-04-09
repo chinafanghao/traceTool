@@ -696,6 +696,7 @@
             success:function(Object){
               elementdepencyss=Object.elementdepencys;
               console.log(elementdepencyss);
+              console.log("edit condition");
 
             },
             error:function(a){
@@ -1384,7 +1385,10 @@
           }
            
         })
-        var $tempname="Insert "+$EditTarDec.split(".")[1]+" after "+$EditPreAct.split(".")[1]+" with ( "+$EditMainCon.split(".")[1]+" ),( "+$EditSBCon.split(".")[1]+" , "+$EditInsertAct.split(".")[1]+" , "+$EditInsertTarAct.split(".")[1]+" ) in "+$EditUseCase.split(".")[1];
+        var $tempname="Insert "+$EditTarDec.split(".")[1]+" after "+$EditPreAct.split(".")[1]+" with ( "+$EditMainCon.split(".")[1]+" ),( "+$EditSBCon.split(".")[1]+" , ";
+          if($EditInsertAct!="0")
+           $tempname=$tempname+$EditInsertAct.split(".")[1]+" , "
+          $tempname=$tempname+$EditInsertTarAct.split(".")[1]+" ) in "+$EditUseCase.split(".")[1];
         $(this).parent().parent().parent().parent().parent().parent().attr("id",$tempname);
 
           $operation_position="";
@@ -3508,7 +3512,8 @@
           var $MainBranchConditon=$("#InsertDecAfterActMainCon").find("option:selected").val().split('.');
           var $SupBranchCondition=$("#InsertDecAfterActSBCon").find("option:selected").val().split('.');
           var $markInserAct=false;
-          if($InserAct!="none"){
+          console.log("$InserAct:"+$InserAct);
+          if($InserAct!="0"){
             $markInserAct=true;
             var $InserActivity=$("#InsertDecAfterActInserAct").find("option:selected").val().split('.');
           }
@@ -3964,6 +3969,7 @@ var $isAddOrEdit;
           buttons: {
             
             "Confirm": function() {
+              $hidden_fields="";
               $current_guard_id=$(".myInsideA.focusBgColor").attr("name");
               $addTraceRule_selfname=$("#guardselfname").val();
               $addTraceRule_guardname=$("#hidden_guardselfname").val();
@@ -3985,6 +3991,9 @@ var $isAddOrEdit;
                         })
                     if($isAddOrEdit){
                      // window.location.href="/addTraceRule/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$addTraceRule_selfname+"分"+$addTraceRule_guardname+"分"+$operation_position+"分"+$current_guard_id;
+                     console.log("hidden_fields-----------------------------");
+                     console.log($hidden_fields);
+                     console.log("hidden_fields-----------------------------");
                       $.ajax({
                         type: "POST",
                         url: "/addTraceRule",
@@ -4224,6 +4233,8 @@ var $isAddOrEdit;
           
        
           if($CheckBoxGuard.checked==true){
+            console.log("$GuardShow.innerHTML:"+$GuardShow);
+            console.log("length:"+$GuardShow.length);
             if($GuardShow.innerHTML.length>21){
                 $temp="∨<a onclick=\"changeState(\'"+check_id+"\')\" style=\"cursor:pointer\" name=\"a_"+check_id+"\" onmouseover=\"showTips()\" onmouseout=\"hideTips()\"><font color=\"blue\">"+check_id+"</font></a>";
                 $("#hidden_guardselfname")[0].value=$("#hidden_guardselfname").attr("value")+"∨"+check_id;

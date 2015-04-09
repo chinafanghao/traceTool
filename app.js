@@ -41,7 +41,7 @@ app.configure(function(){
 	app.use(express.session({
 		secret : settings.cookie_secret,
 		cookie : {
-			maxAge : 60000 * 200	//20 minutes
+			maxAge : 7*24*60*60*1000	
 		},
 		store : sessionStore
 	}));
@@ -178,6 +178,13 @@ app.post('/EditProject',routes.editProject);
 
 http.createServer(app).listen(app.get('port'), function(){
 	console.log("Express server listening on port " + app.get('port'));
+});
+
+var db = require('./models/db.js');
+var mongodb = new db();
+
+mongodb.trueBase(function(err,db){
+    //console.log("DB.inited");
 });
 
 

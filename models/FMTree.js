@@ -1,4 +1,5 @@
-var mongodb = require('./db');
+var db = require('./db');
+var mongodb = new db();
 
 function FMTree(id_no, text, parent) {
   this.id_no = id_no;
@@ -14,36 +15,27 @@ FMTree.prototype.save = function save(callback) {
     text: this.text,
     parent.this.parent,
   };
-  mongodb.open(function(err,db) {
-    if(err) {
-      returen callback(err)
+  mongodb.collection('fmtree', function(err, collection) {
+    if (err) {
+      //mongodb.close();
+      return callback(err);
     }
-    db.collection('fmtree', function(err, collection) {
-      if (err) {
-        mongodb.close();
-        return callback(err);
-      }
       collection.insert(fmtree, {safe:true}, function(err, fmtree) {
-        mongodb.close();
+        //mongodb.close();
         callback(err, fmtree);
       });
     });
-  });
 };
 
 
 FMTree.getall = function getall(callback) {
-  mongodb.open(function(err,db) {
-  	if (err) {
-  	  return;
-  	}
-  	db.collection('fmtree', function(err, collection) {
-  	  if (err) {
-  	  	mongodb.close();
-  	  	return;
-  	  }
+    mongodb.collection('fmtree', function(err, collection) {
+    if (err) {
+      //mongodb.close();
+      return callback(err);
+    }
   	  collection.find().sort().toArray(function(err, docs) {
-  	  	mongodb.close();
+  	  	//mongodb.close();
   	  	if (err) {}
   	  	var fmtree = [];
   	    docs.forEach(function(doc, index) {
@@ -53,5 +45,4 @@ FMTree.getall = function getall(callback) {
   	    callback(fmtree);
   	  });
   	});
-  });
 };

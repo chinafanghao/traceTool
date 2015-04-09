@@ -1,4 +1,5 @@
-var mongodb = require('./db');
+var db = require('./db');
+var mongodb = new db();
 var Feature = require('./feature');
 var ObjectID = require('mongodb').ObjectID;
 var async = require('async'); 
@@ -19,11 +20,7 @@ Constraint.prototype.save = function save(callback){
 		right    : this.right    ,
 		projectID: this.projectID,
   };
-  mongodb.collection('constraints', function(err, collection) {
-    if (err) {
-      mongodb.close();
-      return callback(err);
-    }
+ mongodb.getCollection('constraints',function(collection){
     //collection.ensureIndex('id', {unique: true});
     collection.insert(constraint, {safe:true}, function(err, constraint) {
       //mongodb.close();
@@ -34,11 +31,9 @@ Constraint.prototype.save = function save(callback){
 };
 
 Constraint.get = function get(constraint, callback){
-	mongodb.collection('constraints', function(err, collection) {
-		if (err) {
-			mongodb.close();
-			return callback(err);
-		}
+
+	mongodb.getCollection('constraints',function(collection){
+		
 		var query = {};
 		if (constraint) {
 			query.left = constraint.left;
@@ -58,11 +53,7 @@ Constraint.get = function get(constraint, callback){
 };
 
 Constraint.getAll = function getAll(callback) {
-	mongodb.collection('constraints', function(err,collection) {
-		if(err){
-			mongodb.close();
-			return callback(err);
-		}
+	mongodb.getCollection('constraints',function(collection){
 		var query = {};
 		collection.find(query).sort({relation: 1}).toArray(function(err, docs) {
 			if (err) {
@@ -135,11 +126,8 @@ Constraint.getAll = function getAll(callback) {
 };
 
 Constraint.getById = function getById(projectID,callback) {
-	mongodb.collection('constraints', function(err,collection) {
-		if(err){
-			mongodb.close();
-			return callback(err);
-		}
+	
+	mongodb.getCollection('constraints',function(collection){
 		var query = {};
 		query={"projectID":projectID};
 		collection.find(query).sort({relation: 1}).toArray(function(err, docs) {
@@ -214,11 +202,7 @@ Constraint.getById = function getById(projectID,callback) {
 
 
 Constraint.remove = function remove(constraint_id, callback){
-	mongodb.collection('constraints', function(err,collection) {
-		if(err){
-			mongodb.close();
-			return callback(err);
-		}
+	mongodb.getCollection('constraints',function(collection){
 		var query = {};
 		query._id = ObjectID(constraint_id);
 		collection.remove(query, function (err) {

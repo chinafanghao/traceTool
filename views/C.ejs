@@ -816,6 +816,7 @@
                     //$printStr+=process[keys]+"<br>";
                     $printStr+="<h4 align=\"center\" class=\"myFont\"></h4><div id=\"usecaseseq"+$usecasenums+"\" style=\"overflow:auto;text-align:center\"><table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr style=\"border-left:0;border-bottom: black;\"><td colspan=\"4\" style=\"border-right: black;\"><p style=\"text-align:center\">USER</p></td><td colspan=\"4\"><p style=\"text-align:center\">SYSTEM</p></td></tr><tr style=\"border-left:0;\"><td style=\"width:6%;\"><p align=\"center\">ID</p></td><td style=\"width:33%;\"><p align=\"center\">Description</p></td><td style=\"width:5%;\"><p align=\"center\">Value</p></td><td style=\"width:6%;border-right:black;\"><p align=\"center\">Target</p></td><td style=\"width:6%;\"><p align=\"center\">ID</p></td><td style=\"width:33%;\"><p align=\"center\">Description</p></td><td style=\"width:5%;\"><p align=\"center\">Value</p></td><td style=\"width:6%;\"><p align=\"center\">Target</p></td></tr>";
                     }else{
+                      //console.log("hahahaahahhahaahhahahahahaahahahahahah############");
                       $printStr+="<tr style=\"border-left:0;\">";
                       //console.log(process[keys]);
                       //console.log(process[keys].indexOf("User:"));
@@ -828,9 +829,12 @@
                         process[keys]=process[keys].substring(process[keys].indexOf(":")+1,process[keys].length);
                         var tempOp=process[keys].split("$");
                         //console.log("length:"+tempOp.length);
+                      
                         if(tempOp.length>2){
                           var con1,con2,tar1,tar2;
-                          if(map[tempOp[1]].indexOf("yes")>-1){
+                         
+                          if(map[tempOp[1]].indexOf("Yes")>-1){
+                            console.log("here");
                             con1="Yes";
                             con2="No";
                           }else{
@@ -848,7 +852,7 @@
 
                         }else{
                           
-                          if(tempOp[0]!="yes"&&tempOp[0]!="no"){
+                          if(tempOp[0]!="Yes"&&tempOp[0]!="No"){
                             if(tempOp[1]==undefined)
                               tempOp[1]="End";
                               $printStr+=" <td style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td style=\"width:33%;\"><p>"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tempOp[1]+"\" style=\"cursor: pointer;\">"+tempOp[1]+"</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td><td style=\"width:33%;\"><p>&nbsp;</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td>";
@@ -871,7 +875,7 @@
                         if(tempOp.length>2){
                           $printStr+="<td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:33%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:5%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:6%;border-right: black;\"><p>&nbsp;</p></td>";
                           var con1,con2,tar1,tar2;
-                          if(map[tempOp[1]].indexOf("yes")>-1){
+                          if(map[tempOp[1]].indexOf("Yes")>-1){
                             con1="Yes";
                             con2="No";
                           }else{

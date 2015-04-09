@@ -1,4 +1,5 @@
-var mongodb = require('./db');
+var db = require('./db');
+var mongodb = new db();
 var ObjectID = require('mongodb').ObjectID;
 function Feature(feature) {
   this.text        = feature.text        ;
@@ -26,13 +27,8 @@ Feature.prototype.save = function save(callback){
 		level       : this.level       ,
 		projectID   : this.projectID   ,
   };
-  console.log('HELLO');
-  mongodb.collection('fmtree', function(err, collection) {
-    if (err) {
-      mongodb.close();
-      return callback(err);
-    }
-    console.log("WHAT THE FUCK IS GOING ON?");
+
+ mongodb.getCollection('fmtree', function (collection) {
     //collection.ensureIndex('id', {unique: true});
     collection.insert(feature, {safe:true}, function(err, feature) {
       //mongodb.close();
@@ -43,16 +39,13 @@ Feature.prototype.save = function save(callback){
 };
 
 Feature.getById = function getById(feature_id, callback) {
-  mongodb.collection('fmtree', function(err, collection) {
-		if (err) {
-			mongodb.close();
-			return callback(err);
-		}
+  mongodb.getCollection('fmtree', function (collection) {
 		var query = {};
 		if (feature_id) {
 			query._id = ObjectID(feature_id);
 		}
 		collection.findOne(query, function(err, doc) {
+			//mongodb.close();
 			if (doc) {
 				var feature = new Feature(doc);
 				callback(err, feature);
@@ -65,18 +58,21 @@ Feature.getById = function getById(feature_id, callback) {
 
 
 
-Feature.getByTextAndRoot = function getByTextAndRoot(feature_text, feature_root, callback) {
-	mongodb.collection('fmtree', function(err, collection) {
-		if (err) {
-			mongodb.close();
-			return callback(err);
-		}
+Feature.getByTextAndRoot = function getByTextAndRoot(feature_text, feature_root,projectID,parent_id, callback) {
+	console.log("getByTextAndRoot:");
+	console.log("projectID:"+projectID);
+	console.log("feature_text:"+feature_text);
+	console.log("feature_root:"+feature_root);
+	mongodb.getCollection('fmtree', function (collection) {
 		var query = {};
 		if (feature_text && feature_root) {
 			query.text = feature_text;
 			query.root = feature_root;
+			query.projectID=projectID;
+			query.parent_id=parent_id;
 		}
 		collection.findOne(query, function(err, doc) {
+			//mongodb.close();
 			if (doc) {
 				var feature = new Feature(doc);
 				callback(err, feature);
@@ -88,11 +84,7 @@ Feature.getByTextAndRoot = function getByTextAndRoot(feature_text, feature_root,
 };
 	
 Feature.getAll = function getAll(callback) {
-  mongodb.collection('fmtree', function (err, collection) {
-		if (err) {
-			mongodb.close();
-			return callback(err);
-		}
+  mongodb.getCollection('fmtree', function (collection) {
 		var query = {};
 		collection.find(query).sort({level: 1, text:1}).toArray(function(err, docs) {
 			//mongodb.close();
@@ -111,14 +103,14 @@ Feature.getAll = function getAll(callback) {
 };
 
 
-Feature.getByProject = function getByProject(projectID,callback) {
-	console.log("getByProject");
-  mongodb.collection('fmtree', function (err, collection) {
-		if (err) {
-			mongodb.close();
-			return callback(err);
-		}
-		var query = {"projectID":projectID};
+Feature.getByProject = function getByProject(projectIDs,callback) {
+	console.log("getByProject~~");
+    mongodb.getCollection('fmtree', function (collection) {
+    	console.log("getCollection");
+    
+
+		var query = {"projectID":projectIDs};
+		console.log("projectIDs:"+projectIDs);
 		collection.find(query).sort({level: 1, text:1}).toArray(function(err, docs) {
 			//mongodb.close();
 			if (err) {
@@ -128,6 +120,7 @@ Feature.getByProject = function getByProject(projectID,callback) {
 			var features = [];
 			docs.forEach(function(doc, index) {
 				var feature = new Feature(doc);
+				console.log(feature);
 				features.push(feature);
 			});
 			callback(null, features);
@@ -137,11 +130,8 @@ Feature.getByProject = function getByProject(projectID,callback) {
 
 
 Feature.remove = function remove(feature_id, callback) {
-	mongodb.collection('fmtree', function (err, collection) {
-		if (err) {
-			mongodb.close();
-			return callback(err);
-		}
+	mongodb.getCollection('fmtree', function (collection) {
+		
 		var query = {};
 		query._id = ObjectID(feature_id);
 		collection.remove(query, function (err) {
@@ -152,13 +142,10 @@ Feature.remove = function remove(feature_id, callback) {
 };
 
 Feature.removeSubtree = function removeSubtree(feature_id, callback) {
-	mongodb.collection('fmtree', function (err, collection) {
-		if (err) {
-			mongodb.close();
-			return callback(err);
-		}
+	mongodb.getCollection('fmtree', function (collection) {
 		console.log("这是根remove，即将开始移除" + feature_id + "及其子树"+feature_id.length+"\n");
 		Feature._removeSubtree(collection, feature_id);
+		//mongodb.close();
 		callback(err);
 	});
 };
@@ -186,6 +173,7 @@ Feature._removeSubtree = function _removeSubtree (collection, feature_id) {
 	query._id = ObjectID(feature_id);
 	console.log("即将开始移除" + feature_id + "自己\n");
 	collection.remove(query, function (err) {
+		//mongodb.close();
 		if(err)
 			console.log("移除" + feature_id + "时出错："+err + "\n");
 		else
@@ -194,11 +182,7 @@ Feature._removeSubtree = function _removeSubtree (collection, feature_id) {
 }
 
 Feature.updateText = function updateText(feature_id, newText, callback) {
-		mongodb.collection('fmtree', function (err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('fmtree', function (collection) {
 			var query = {};
 			query._id = ObjectID(feature_id);
 			var newFeature = {};
@@ -211,11 +195,7 @@ Feature.updateText = function updateText(feature_id, newText, callback) {
 };
 
 Feature.updateDescription = function updateDescription(feature_id, newDescription, callback) {
-		mongodb.collection('fmtree', function (err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('fmtree', function (collection) {
 			var query = {};
 			query._id = ObjectID(feature_id);
 			var newFeature = {};
@@ -228,11 +208,7 @@ Feature.updateDescription = function updateDescription(feature_id, newDescriptio
 };
 
 Feature.updateOptionality = function updateOptionality(feature_id, newOptionality, callback) {
-	mongodb.collection('fmtree', function (err, collection) {
-		if (err) {
-			mongodb.close();
-			return callback(err);
-		}
+	mongodb.getCollection('fmtree', function (collection) {
 		var query = {};
 		query._id = ObjectID(feature_id);
 		var newFeature = {};
@@ -245,11 +221,7 @@ Feature.updateOptionality = function updateOptionality(feature_id, newOptionalit
 };
 
 Feature.updateParent_id = function updateParent_id(feature_id, newParent_id, callback) {
-	mongodb.collection('fmtree', function (err, collection) {
-		if (err) {
-			mongodb.close();
-			return callback(err);
-		}
+	mongodb.getCollection('fmtree', function (collection) {
 		console.log("CURRENT　FEATURE IS: "+feature_id);
 		console.log("NEW PARENT IS: "+newParent_id);
 		var query = {};
@@ -279,6 +251,7 @@ Feature.updateLevel = function updateLevel(collection, feature_id, newLevel) {
 	var query2 = {};
 	query2.parent_id = feature_id
 	collection.find(query2).sort({level: 1, text:1}).toArray(function(err, docs) {
+		//mongodb.close();
 		if (err) {
 			//callback(err, null);
 		}
@@ -292,11 +265,7 @@ Feature.updateLevel = function updateLevel(collection, feature_id, newLevel) {
 }
 
 Feature.updateVP = function updateVP(feature_id, newVP, callback) {
-	mongodb.collection('fmtree', function (err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('fmtree', function (collection) {
 			var query = {};
 			query._id = ObjectID(feature_id);
 			var newFeature = {};

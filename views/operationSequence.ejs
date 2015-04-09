@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 
-<% tracerules.forEach(function(trace,index){
-   if(trace._id==current_guard){
+<% 
+  tracerules.forEach(function(trace,index){
+    if(trace._id==current_guard){
 
   %>
 
@@ -725,10 +726,10 @@
                               var target3=trace.operations[positions[key]].maincondition.split('.');
                               var target4=trace.operations[positions[key]].supcondition.split('.');
                               var target5;
-                              if(trace.operations[positions[key]].insertactivity!="")
+                              if(trace.operations[positions[key]].insertactivity!="0")
                                 target5=trace.operations[positions[key]].insertactivity.split('.');
                               else
-                                target5="";
+                                target5="0";
                               var target6=trace.operations[positions[key]].targetactivity.split('.');
                               var target7=trace.operations[positions[key]].usecaseElement.split('.');
                     %>
@@ -737,7 +738,7 @@
                             <h4>
                               Insert <b><%=target1[2]%></b> after <b><%=target2[2]%></b> with ( <b><%=target3[2]%></b> ),( <b><%=target4[2]%></b> ,  
                               <%
-                                if(target5!=""){
+                                if(target5!="0"){
                               %>
                                 <b><%=target5[2]%></b> ,
                               <%
@@ -852,9 +853,13 @@
                                   <div style="margin-top:20px">
                                     Inserted Activity(optional):
                                     <select style="width:60%;margin-left:7px" class="InsertDecAfterActInserAct" disabled=true>
-               
+                                      
                                       <% 
-                                      if(target5!=""){
+                                      if(target5!="0"){
+                                      %>
+                                      <option value="0">
+                                              no inserted activity</option>
+                                      <%
                                         for(keyss in elementdepencys){
                                           if(elementdepencys[keyss].type=="activity"){
                                             var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
@@ -866,15 +871,19 @@
                                           }
                                             }
                                               }
-                                            }else{
+                                            }
+                                          else{
+                                            %>
+                                             <option value="0" selected="selected">
+                                              no inserted activity</option>
+                                            <%
                                               for(keyss in elementdepencys){
                                           if(elementdepencys[keyss].type=="activity"){
                                             var Id=elementdepencys[keyss].dependee+"."+elementdepencys[keyss].element;
                                           if(elementdepencys[keyss].element!=""){%>
                                             <option value="<%= Id%>"><%= elementdepencys[keyss].element%></option>
                                        <%}else{%>
-                                            <option value="none" selected="selected">
-                                              no inserted activity</option>
+                                           
                                         <%
                                           }
                                             }
@@ -887,7 +896,7 @@
 
                                   <div style="margin-top:20px">
                                     Inserted Activity:
-                                    <select style="width:60%;margin-left:96px" class="InsertDecAfterActTarAct" disabled=true>
+                                    <select style="width:60%;margin-left:82px" class="InsertDecAfterActTarAct" disabled=true>
                
                                       <% for(keyss in elementdepencys){
                                         if(elementdepencys[keyss].type=="activity"){

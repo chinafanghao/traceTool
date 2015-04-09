@@ -1,4 +1,5 @@
-var mongodb = require('./db');
+var db = require('./db');
+var mongodb = new db();
 
 function Configuration(username,name,time,configuration,usecasename,usecase,projectID,_id) { //post means refinements list
 	this.user = username;
@@ -28,23 +29,12 @@ Configuration.prototype.save = function save(callback) {
 		projectID:this.projectID
 	};
 
-	mongodb.open(function(err, db) {
-		if (err) {
-		  return callback(err);
-		}
-		
-		db.collection('configuration', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
-			
+	mongodb.getCollection('configuration',function(collection){
 			collection.insert(configuration, {safe: true}, function(err, configuration) {
-				mongodb.close();
+				
 				callback(err, configuration);
 			});
 		});
-	});
 };
 
 Configuration.addNewConfiguration = function addNewConfiguration(username,projectID,name,callback) {
@@ -58,23 +48,13 @@ Configuration.addNewConfiguration = function addNewConfiguration(username,projec
 				usecase:{},
 				projectID:projectID
 			};
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	   
-	   db.collection('configuration', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('configuration',function(collection){
 			
 			collection.ensureIndex('user');
 			collection.insert(newConfiguration, {safe: true},function(err){
 					if(err) {
 						console.warn(err.message);
-						mongodb.close();
+						//mongodb.close();
 					}
 					else {
 						console.log("insert new configuration success");
@@ -86,8 +66,7 @@ Configuration.addNewConfiguration = function addNewConfiguration(username,projec
 						}
 						collection.ensureIndex('user');
 						collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-							mongodb.close();
-
+							
 							if (err) {
 								callback(err, null,null);
 							}
@@ -111,23 +90,12 @@ Configuration.addNewConfiguration = function addNewConfiguration(username,projec
 			
 
 		  });
-		
-	});
 };
 
 
 
 Configuration.get = function get(username,projectID,id,callback) {
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('configuration', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('configuration',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
@@ -140,7 +108,7 @@ Configuration.get = function get(username,projectID,id,callback) {
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-							mongodb.close();
+							
 
 							if (err) {
 								callback(err, null);
@@ -156,28 +124,18 @@ Configuration.get = function get(username,projectID,id,callback) {
 							callback(null, configurations);
 						});
 		});
-	});
 };
 
 Configuration.getUseCase = function getUseCase(username,projectID,id,callback) {
 	
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('configuration', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('configuration',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
 				
 				query={"user":username,"projectID":projectID,"_id":ObjectID(id)};
 				collection.findOne(query, function(err, doc) {
-					mongodb.close();
+					
 					if (doc) {
 						console.log("doc:"+doc.usecase);
 						
@@ -188,21 +146,11 @@ Configuration.getUseCase = function getUseCase(username,projectID,id,callback) {
 					}
 			});
 		});
-	});
 };
 
 
 Configuration.removeConfiguration = function removeConfiguration(user,deleteID,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('configuration', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('configuration',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
@@ -212,7 +160,7 @@ Configuration.removeConfiguration = function removeConfiguration(user,deleteID,c
 			}
 			collection.remove(query,function(err){
 								if(err) {console.warn(err.message);
-										mongodb.close();}
+										}
 								else {
 									console.log("delete element success");
 									
@@ -223,8 +171,7 @@ Configuration.removeConfiguration = function removeConfiguration(user,deleteID,c
 									}
 									collection.ensureIndex('user');
 									collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-										mongodb.close();
-
+										
 										if (err) {
 											callback(err, null);
 										}
@@ -242,20 +189,10 @@ Configuration.removeConfiguration = function removeConfiguration(user,deleteID,c
 									}
 							});
 		});
-	});
 }
 
 Configuration.editConfigName = function editConfigName(user,configname,editID,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('configuration', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('configuration',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -264,23 +201,14 @@ Configuration.editConfigName = function editConfigName(user,configname,editID,ca
 			console.log("hahahahahhahahaha");
 			query1={"user":user,"_id":ObjectID(editID)};
 			query2={$set:{"name":configname}};
-			collection.update(query1,query2,{safe:true},function(err){mongodb.close()});
+			collection.update(query1,query2,{safe:true},function(err){});
 				
 		});
-	});
+	
 }
 
 Configuration.editConfig = function editConfig(user,editID,config,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('configuration', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('configuration',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -289,23 +217,13 @@ Configuration.editConfig = function editConfig(user,editID,config,callback){
 			
 			query1={"user":user,"_id":ObjectID(editID)};
 			query2={$set:{"configuration":config}};
-			collection.update(query1,query2,{safe:true},function(err){mongodb.close()});
+			collection.update(query1,query2,{safe:true},function(err){});
 				
 		});
-	});
 }
 
 Configuration.saveUsecase=function saveUsecase(user,projectID,current_configuration_id,casename,result,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('configuration', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('configuration',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -315,12 +233,11 @@ Configuration.saveUsecase=function saveUsecase(user,projectID,current_configurat
 			query1={"user":user,"_id":ObjectID(current_configuration_id),"projectID":projectID};
 			query2={$set:{"usecasename":casename,"usecase":result}};
 			collection.update(query1,query2,{safe:true},function(err){
-				mongodb.close();
+				
 				callback(null,result);
 			});
 				
 		});
-	});
 }
 
 	var ucList = [];  
@@ -348,6 +265,9 @@ Configuration.singlepre=function singlepre(pre, head, uc_index)            // pr
 Configuration.multipre=function multipre(post, head, uc_index)            // pre是通过post给出，这样pre有可能是多个  multi使用反方向检索
 {
 	var beforesize;
+	console.log("post:"+post+" content[post]:"+content[post]);
+	console.log("head:"+head+" content[head]:"+content[head]);
+	console.log("uc_index:"+uc_index+" content[uc_index]:"+content[uc_index]);
 	if(post == -2)
 		beforesize = ucList[uc_index].end.beforesize;
 	else 
@@ -965,7 +885,10 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 					
 					var post;
 					
-					console.log("content[pre].next[0]:"+content[pre].next[0]);
+					console.log("pre:"+pre);
+					console.log("content[pre]:"+content[pre]);
+
+					//console.log("content[pre].next[0]:"+content[pre].next[0]);
 
 					if(content[pre].next[0]==-2)
 						post=-2;
@@ -1208,9 +1131,10 @@ Configuration.generateUseCase = function generateUseCase(user,ID,tracerules,elem
 					content[op.target1].next[0]=post;
 					content[op.target1].nextsize++;
 
-					content[op.postactivity].next[0]=op.target1;
+					
+					content[op.postactivity].before[0]=op.element;
 					content[op.postactivity].beforesize=1;
-
+					
 
 					content[op.condition2].before=op.element;
 					content[op.condition2].next=[];

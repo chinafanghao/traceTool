@@ -1,4 +1,5 @@
-var mongodb = require('./db');
+var db = require('./db');
+var mongodb = new db();
 
 function Post(username, featurename,descriptions,optionality,post,level,parents,time,types,contents,_id) { //post means refinements list
 	this.user = username;
@@ -35,24 +36,14 @@ Post.prototype.save = function save(callback) {
 		contents: this.contents
 	};
 
-	mongodb.open(function(err, db) {
-		if (err) {
-		  return callback(err);
-		}
-		
-		db.collection('posts', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('posts',function(collection){
 			collection.ensureIndex('user');
 			
 			collection.insert(post, {safe: true}, function(err, post) {
-				mongodb.close();
+				//mongodb.close();
 				callback(err, post);
 			});
 		});
-	});
 };
 /*
 Post.get = function get(username, callback) {
@@ -95,16 +86,9 @@ Post.get = function get(username, callback) {
 */
 
 Post.get = function get(username, callback) {
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
+	console.log("Post.get");
 	
-		db.collection('posts', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('posts',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
@@ -113,7 +97,7 @@ Post.get = function get(username, callback) {
 			}
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -129,20 +113,10 @@ Post.get = function get(username, callback) {
 				callback(null, posts);
 			});
 		});
-	});
 };
 
 Post.getChild = function get(featurename, callback) {
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('posts', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('posts',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
@@ -152,7 +126,7 @@ Post.getChild = function get(featurename, callback) {
 			}
 
 			collection.find(query, {limit:9}).sort({time: -1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -168,103 +142,11 @@ Post.getChild = function get(featurename, callback) {
 				callback(null, posts);
 			});
 		});
-	});
 };
 
-/*
-Post.getChild= function get(featurename, callback) {
-	var posts = [];
-	var postss=[];
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('posts', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
-
-			//查找user属性为username的文档，如果username为null则匹配全部
-			var query = {};
-			featurename="On-line activity diagram editor";
-			if (featurename) {
-				query.featurename = featurename;
-				//query.level="0";
-			}
-		
-			collection.find(query, {limit:9}).sort({time: -1}).toArray(function(err, docs) {
-				mongodb.close();
-
-				if (err) {
-					callback(err, null);
-				}
-				console.log("&"+docs);
-				docs.forEach(function(doc, index) {
-					var post = new Post(doc.user, doc.featurename,doc.descriptions,doc.optionality,doc.post,doc.level,doc.parents, doc.time);
-					
-					postss.push(post);
-				});
-
-			//	callback(null, posts);
-			if (err) {
-			return callback(err);
-		}
-		
-		db.collection('posts', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
-
-			//查找user属性为username的文档，如果username为null则匹配全部
-			postss.forEach(function(pos,ind){
-				var query = {};
-			if (pos.post) {
-				var myArray=pos.post.split(',');
-				console.log(myArray);
-				myArray=['Login','Move figure'];
-				var ind;
-				for(ind=0;ind<myArray.length;ind++)
-				{
-					query.featurename = myArray[ind];console.log("$"+query.featurename);
-					//console.log(collection.find(query));
-					collection.find(query).toArray(function(err, docs) {
-				mongodb.close();
-
-				if (err) {
-					callback(err, null);
-				}
-
-				console.log(docs);	 
-					var post = new Post(docs.user, docs.featurename,docs.descriptions,docs.optionality,docs.post,docs.level,docs.parents, docs.time);
-					posts[ind]=post;
-				
-				})	
-			}
-			callback(null, posts);
-		}})
-			
-		});
-		//
-			});
-		});
-	});
-};
-*/
 Post.del = function del(username, featurename,types,callback) {
 	console.log(username+" "+featurename+" "+types+"#");
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('posts', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('posts',function(collection){
 			
 			//查找user属性为username的文档，如果username为null则匹配全部
 			
@@ -280,7 +162,7 @@ Post.del = function del(username, featurename,types,callback) {
 			}
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -296,20 +178,10 @@ Post.del = function del(username, featurename,types,callback) {
 				callback(null, posts);
 			});
 		});
-	});
 };
 
 Post.prototype.update = function update() {
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('posts', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('posts',function(collection){
 			collection.update({_id:this._id},{$set:{username:this.username}});
 			collection.update({_id:this._id},{$set:{featurename:this.featurename}});
 			collection.update({_id:this._id},{$set:{descriptions:this.descriptions}});
@@ -322,5 +194,5 @@ Post.prototype.update = function update() {
 			collection.update({_id:this._id},{$set:{contents:this.contents}});
 			collection.update({_id:this._id},{$set:{_id:this._id}});
 		});
-	});
+	
 };

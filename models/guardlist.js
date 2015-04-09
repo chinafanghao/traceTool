@@ -1,4 +1,5 @@
-var mongodb = require('./db');
+var db = require('./db');
+var mongodb = new db();
 
 function Guardlist(username, selfname,trace_rule_id,time,projectID,_id) { //post means refinements list
 	this.user = username;
@@ -24,24 +25,14 @@ Guardlist.prototype.save = function save(callback) {
 		projectID: this.projectID,
 	};
 
-	mongodb.open(function(err, db) {
-		if (err) {
-		  return callback(err);
-		}
-		
-		db.collection('guardlist', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('guardlist',function(collection){
 			collection.ensureIndex('user');
 			
 			collection.insert(guardlist, {safe: true}, function(err, guardlist) {
-				mongodb.close();
+				//mongodb.close();
 				callback(err, guardlist);
 			});
 		});
-	});
 };
 
 Guardlist.addNewGuardList = function addNewGuardList(username,selfname,trace_rule_id,projectID,callback) {
@@ -54,17 +45,7 @@ Guardlist.addNewGuardList = function addNewGuardList(username,selfname,trace_rul
 				trace_rule_id:trace_rule_id,
 				projectID:projectID
 			};
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	   
-	   db.collection('guardlist', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('guardlist',function(collection){
 			
 			collection.ensureIndex('user');
 			collection.insert(newGuardList, {safe: true},function(err){
@@ -80,7 +61,7 @@ Guardlist.addNewGuardList = function addNewGuardList(username,selfname,trace_rul
 			collection.ensureIndex('user');
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -97,22 +78,11 @@ Guardlist.addNewGuardList = function addNewGuardList(username,selfname,trace_rul
 			});
 
 		  });
-		
-	});
 };
 
 Guardlist.get = function get(user, projectID,callback) {
 	console.log(user+"#");
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('guardlist', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('guardlist',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 
@@ -123,7 +93,7 @@ Guardlist.get = function get(user, projectID,callback) {
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -139,22 +109,12 @@ Guardlist.get = function get(user, projectID,callback) {
 				callback(null, guardlists);
 			});
 		});
-	});
 };
 
 
 Guardlist.del = function del(username, guard,callback) {
 	console.log(username+" "+guard);
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('guardlist', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('guardlist',function(collection){
 			
 			//查找user属性为username的文档，如果username为null则匹配全部
 			
@@ -170,7 +130,7 @@ Guardlist.del = function del(username, guard,callback) {
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -186,22 +146,12 @@ Guardlist.del = function del(username, guard,callback) {
 				callback(null, guardlists);
 			});
 		});
-	});
 };
 
 
 Guardlist.updateSelfname = function updateSelfname(user,id,selfname, callback) {
 	console.log("updateSelfname:"+user+" id:"+id+" selfname:"+selfname);
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('guardlist', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('guardlist',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 			
@@ -219,7 +169,7 @@ Guardlist.updateSelfname = function updateSelfname(user,id,selfname, callback) {
 					query={"user":user};
 				}
 				collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -240,21 +190,11 @@ Guardlist.updateSelfname = function updateSelfname(user,id,selfname, callback) {
 
 			
 		});
-	});
 };
 
 Guardlist.removeTraceRule = function removeTraceRule(user,deleteID, callback) {
 	
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('guardlist', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('guardlist',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 			
@@ -267,7 +207,8 @@ Guardlist.removeTraceRule = function removeTraceRule(user,deleteID, callback) {
 
 			collection.remove(query1,function(err){
 								if(err) {console.warn(err.message);
-												mongodb.close();}
+												//mongodb.close();
+											}
 								else {
 										console.log("delete element success");
 										var query = {};
@@ -276,7 +217,7 @@ Guardlist.removeTraceRule = function removeTraceRule(user,deleteID, callback) {
 											query={"user":user};
 										}
 										collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-											mongodb.close();
+											//mongodb.close();
 
 											if (err) {
 												callback(err, null);
@@ -295,5 +236,4 @@ Guardlist.removeTraceRule = function removeTraceRule(user,deleteID, callback) {
 								});
 			
 		});
-	});
 };

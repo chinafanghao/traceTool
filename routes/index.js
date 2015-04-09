@@ -17,7 +17,9 @@ var Project = require('../models/project.js')
 
 exports.index = function(req, res){
 	console.log("user:"+req.session.user);
+	console.log("exports.index");
 	Post.get(null, function(err, posts) {
+		console.log("start");
 		if (err) {
 			posts = [];
 		}
@@ -702,6 +704,7 @@ exports.createDecision = function(req, res){
 exports.createCondition = function(req, res){
 	 //console.log("Condition:"+req.params.content);
  	 //var param=req.params.content.split("分");
+ 	 console.log("createCondition");
  	 var user=req.session.user.name;
  	 var id=req.body.current_guard_id;
  	 var conditionname=req.body.conditionname;
@@ -724,11 +727,12 @@ exports.createCondition = function(req, res){
 	  			}
 	  		}
 	  		if (err) {
+	  			console.log("err");
 			req.flash('error', err);
 			return res.redirect('/T/'+current_guard_id);
 		}else{
 
-
+      console.log("here");
 	  ElementDepency.saveDependee(req.session.user.name,conditionname,current_guard_id,type,projectID,function(err,elementdepencys){
 	  		if(err){
 	  			elementdepencys=[];
@@ -901,7 +905,8 @@ exports.insertActBeforeActCon = function(req, res){
 
 exports.insertDecAfterAct = function(req, res){
 	 
- 	
+ 	console.log("insertDecAfterAct");
+
  	 var user=req.session.user.name;
  	 var id=req.body.current_guard_id;
  	 var TarDec=req.body.TartDec;
@@ -913,6 +918,8 @@ exports.insertDecAfterAct = function(req, res){
 	 var UseCase=req.body.UC;
 	 var positions=req.body.operation_position;
 	 var current_guard_id=id;
+
+	 console.log(user+" "+id+" "+TarDec+" "+PreAct+" "+MainBranchCon+" "+SupBranchCon+" "+InserAct+" "+TargetAct+" "+UseCase+" "+positions+" "+current_guard_id);
 
 	  ElementDepency.saveInsertDecAfterActCon(req.session.user.name,TarDec,PreAct,MainBranchCon,SupBranchCon,InserAct,TargetAct,UseCase,current_guard_id,function(err,elementdepencys){
 	  		if(err){
@@ -2281,7 +2288,9 @@ exports.editCondition=function(req,res){
 	 console.log("nameMark:"+nameMark+" descriptionMark:"+descriptionMark+" oldconditionname:"+oldconditionname+" conditionname:"+conditionname+" conditiondescription:"+conditiondescription+" oldconditiondescription:"+oldconditiondescription+" hidden_fields:"+hidden_fields+" positions:"+positions);
 	 
 	 if(nameMark || descriptionMark){
-      if(nameMark){
+	 	console.log("nameMark:"+nameMark);
+      if(nameMark==true){
+      	
 	  ElementDepency.replaceDependKeyName(req.session.user.name,oldconditionname,conditionname,hidden_fields,function(err,elementdepencys){
 	  		if(err){
 	  			elementdepencys=[];
@@ -2297,10 +2306,11 @@ exports.editCondition=function(req,res){
 
 		});
 	  }else{
+	  	
 	  	Tracerule.editCondition(req.session.user.name,id,projectID,nameMark,oldconditionname,conditionname,descriptionMark,oldconditiondescription,conditiondescription,positions,hidden_fields,function(err,tracerules){
 				res.send(
 						
-						{elementdepencys:elementdepencys}
+						{tracerules:tracerules}
 	
 				);	
 			});
@@ -2521,7 +2531,10 @@ exports.editInsertDecAfterAct = function(req,res){
 	 var hidden_fields=req.body.hidden_fields;
 	 var projectID=req.body.projectID;
 	 //console.log("EditTarDec:"+EditTarDec+" EditPreAct:"+EditPreAct+" EditMainCon:"+EditMainCon+" EditSBCon:"+EditSBCon+" EditInsertAct:"+EditInsertAct+" EditInsertTarAct:"+EditInsertTarAct+" EditUseCase:"+EditUseCase+" OldTarDec:"+OldTarDec+" OldPreAct:"+OldPreAct+" OldMainCon:"+OldMainCon+" OldSBCon:"+OldSBCon+" OldInsertAct:"+OldInsertAct+" OldInsertTarAct:"+OldInsertTarAct+" OldUseCase:"+OldUseCase);
-	  operation_name="Insert "+OldTarDec.split(".")[1]+" after "+OldPreAct.split(".")[1]+" with ( "+OldMainCon.split(".")[1]+" ),( "+OldSBCon.split(".")[1]+" , "+OldInsertAct.split(".")[1]+" , "+OldInsertTarAct.split(".")[1]+" ) in "+OldUseCase.split(".")[1];
+	  operation_name="Insert "+OldTarDec.split(".")[1]+" after "+OldPreAct.split(".")[1]+" with ( "+OldMainCon.split(".")[1]+" ),( "+OldSBCon.split(".")[1]+" , ";
+	  	if(OldInsertAct.split!="0")
+	  	operation_name=operation_name+OldInsertAct.split(".")[1]+" , "
+	  	operation_name=operation_name+OldInsertTarAct.split(".")[1]+" ) in "+OldUseCase.split(".")[1];
 	  //console.log("user:"+user+" id:"+id+" editTartAct:"+editTartAct+" editPreAct:"+editPreAct+" editUseCase:"+editUseCase+" positions:"+positions+" current_guard_id:"+current_guard_id+" hidden_fields:"+hidden_fields+" projectID:"+projectID+" operation_name:"+operation_name);
 	  console.log("####################:"+operation_name);
 	  ElementDepency.deleteInsertDecAfterAct(req.session.user.name,id,operation_name,hidden_fields,function(err,elementdepencys){
@@ -3001,7 +3014,7 @@ exports.addNewFeature = function(req,res){
 		projectID   : req.body.projectID,
   });
 
-  Feature.getByTextAndRoot(newFeature.text, newFeature.root, function(err, feature) {
+Feature.getByTextAndRoot(newFeature.text, newFeature.root,req.body.projectID,req.body.parent_id, function(err, feature) {
   	console.log("haha"+newFeature.text);
   	if (feature)
   	  err = 'Feature already exists.';
@@ -3015,8 +3028,8 @@ exports.addNewFeature = function(req,res){
   			req.flash('error', err);
   			return res.redirect('/');
   		}
-  		console.log("FUCKing No ERR");
- 			Feature.getByTextAndRoot(newFeature.text, newFeature.root, function(err, thefeature) {
+  		
+ 			Feature.getByTextAndRoot(newFeature.text, newFeature.root,req.body.projectID,req.body.parent_id, function(err, thefeature) {
  				if (!thefeature)
  					err = 'Feature has not be inserted.';
  				if (err) {
@@ -3033,14 +3046,17 @@ exports.addNewFeature = function(req,res){
 
 exports.loadFeatureModel = function(req,res){
 	console.log("START \"loadFeatureModel\"");
-	//console.log(req.body.projectID);
-	Feature.getByProject(req.body.projectID,function(err, features) {
+	console.log(req.body.projectID);
+	Feature.getByProject(req.body.projectID,function(err, Features) {
+		/*
 		if (err) {
 			console.log("LOAD FEATURE MODLE: FAIL");
 			req.flash('error', err);
 			return res.redirect('/F/'+req.body.projectID);
 		}
-		res.send({'features': features});
+		*/
+		console.log(Features);
+		res.send({'features': Features});
 		
 		console.log("FINISH SENDING")
 	});
@@ -3190,13 +3206,13 @@ exports.getFeatureById = function(req, res) {
 exports.loadConstraints = function(req,res) {
 	var $projectID=req.body.projectID;
 	console.log("START \"loadConstraints\"");
-	Constraint.getById($projectID,function(err,constraints){
+	Constraint.getById($projectID,function(err,Constraints){
 		if (err) {
 			console.log("LOAD CONSTRAINT: FAIL");
 			req.flash('error', err);
 			return res.redirect('/');
 		}
-		res.send({'constraints': constraints});
+		res.send({'constraints': Constraints});
 		console.log("FINISH SENDING");
 	})
 };

@@ -1,8 +1,7 @@
 <!DOCTYPE html>
            
             <% 
-               console.log(configurations);
-               console.log("haha");
+               if(configurations.length!=0){
                if(configurations[0].usecasename!=undefined){
 
                var usecaselist=configurations[0].usecasename.split("$");
@@ -19,4 +18,5 @@
                 usecaselistnum++;
                }
              }
+           }
             %>

@@ -99,7 +99,7 @@
             <select style="width:50%;margin-left:90px" id="InsertDecAfterDecConTarDec">
                 <option value="-1">Chooce the element</option>
               <% for(key in elementdepencys){
-                    if(elementdepencys[key].type=="decision"){
+                    if(elementdepencys[key].type=="decision"||elementdepencys[key].type=="activity"){
                       var elementPath=elementdepencys[key].dependee+"."+elementdepencys[key].element;
                       %>
                 <option value="<%= elementPath%>"><%= elementdepencys[key].element%></option>

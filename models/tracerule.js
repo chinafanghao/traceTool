@@ -1,4 +1,5 @@
-var mongodb = require('./db');
+var db = require('./db');
+var mongodb = new db();
 var async = require('async');  
 
 function Tracerule(username,name,selfname,time,operations,elements,positions,projectID,_id) { //post means refinements list
@@ -31,23 +32,15 @@ Tracerule.prototype.save = function save(callback) {
 		projectID:this.projectID
 	};
 
-	mongodb.open(function(err, db) {
-		if (err) {
-		  return callback(err);
-		}
-		
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+
+		mongodb.getCollection('tracerule',function(collection){
 			
 			collection.insert(tracelist, {safe: true}, function(err, tracelist) {
-				mongodb.close();
+			
 				callback(err, tracelist);
 			});
 		});
-	});
+	
 };
 
 Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname,projectID,callback) {
@@ -62,17 +55,8 @@ Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname
 				elements:{},
 				projectID:projectID
 			};
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
 	   
-	   db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 			
 			collection.ensureIndex('user');
 			collection.insert(newTraceRule, {safe: true},function(err){
@@ -86,7 +70,7 @@ Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname
 						}
 							collection.ensureIndex('user');
 							collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-								mongodb.close();
+								
 
 								if (err) {
 									callback(err, null);
@@ -104,24 +88,14 @@ Tracerule.addNewTraceRule = function addNewTraceRule(username,guardname,selfname
 					}
 				});
 		  });
-		
-	});
 };
 
 
 
 Tracerule.get = function get(username, projectID,guard_id,callback) {
 	
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
+
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
@@ -134,7 +108,7 @@ Tracerule.get = function get(username, projectID,guard_id,callback) {
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				
 
 				if (err) {
 					callback(err, null);
@@ -150,21 +124,12 @@ Tracerule.get = function get(username, projectID,guard_id,callback) {
 				callback(null, tracerules);
 			});
 		});
-	});
+
 };
 
 Tracerule.getByName = function getByName(usernames, projectID,guardnames ,callback) {
 	console.log(usernames+"###"+guardnames+"#####");
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 			
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
@@ -172,7 +137,7 @@ Tracerule.getByName = function getByName(usernames, projectID,guardnames ,callba
 				query={"user":usernames,"name":guardnames,"projectID":projectID};
 		
 				collection.findOne(query, function(err, doc) {
-				mongodb.close();
+				
 				if (doc) {
 					var tracerule = new Tracerule(doc);
 					console.log("hahahahha "+doc._id);
@@ -183,21 +148,11 @@ Tracerule.getByName = function getByName(usernames, projectID,guardnames ,callba
 			});
 			
 		});
-	});
 };
 
 Tracerule.returnIDByName = function returnIDByName(usernames, projectID,guardnames ,callback) {
 	console.log(usernames+"###"+guardnames+"#####");
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 			
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
@@ -205,7 +160,7 @@ Tracerule.returnIDByName = function returnIDByName(usernames, projectID,guardnam
 				query={"user":usernames,"projectID":projectID,"name":guardnames};
 		
 				collection.findOne(query, function(err, doc) {
-				mongodb.close();
+				
 				if (doc) {
 					var tracerule = new Tracerule(doc);
 					
@@ -216,21 +171,11 @@ Tracerule.returnIDByName = function returnIDByName(usernames, projectID,guardnam
 			});
 			
 		});
-	});
 };
 
 Tracerule.returnElements = function returnElements(username, deleteID ,callback) {
 
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
@@ -238,7 +183,7 @@ Tracerule.returnElements = function returnElements(username, deleteID ,callback)
 				query={"user":username,"_id":ObjectID(deleteID)};
 		
 				collection.findOne(query, function(err, doc) {
-				mongodb.close();
+				
 				if (doc) {
 					
 					callback(null, doc.elements);
@@ -248,21 +193,12 @@ Tracerule.returnElements = function returnElements(username, deleteID ,callback)
 			});
 			
 		});
-	});
-};
+	};
 
 
 Tracerule.getBySelfName = function getBySelfName(username, projectID,selfname ,callback) {
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+
+	mongodb.getCollection('tracerule',function(collection){
 			
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
@@ -271,7 +207,7 @@ Tracerule.getBySelfName = function getBySelfName(username, projectID,selfname ,c
 		
 
 			collection.findOne(query, function(err, doc) {
-				mongodb.close();
+				
 				if (doc) {
 					var tracerule = new Tracerule(doc);
 					callback(err, tracerule);
@@ -280,22 +216,12 @@ Tracerule.getBySelfName = function getBySelfName(username, projectID,selfname ,c
 				}
 			});
 		});
-	});
 };
 
 
 Tracerule.del = function del(username, operation_name,callback) {
 	console.log(username+" "+operation_name+"#");
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 			
 			//查找user属性为username的文档，如果username为null则匹配全部
 			
@@ -311,7 +237,7 @@ Tracerule.del = function del(username, operation_name,callback) {
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				
 
 				if (err) {
 					callback(err, null);
@@ -327,22 +253,13 @@ Tracerule.del = function del(username, operation_name,callback) {
 				callback(null, tracerules);
 			});
 		});
-	});
 };
 
 
 Tracerule.updateSelfname = function updateSelfname(selfname, user,id,callback) {
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
+
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -363,8 +280,7 @@ Tracerule.updateSelfname = function updateSelfname(selfname, user,id,callback) {
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
+				
 				if (err) {
 					callback(err, null);
 				}
@@ -379,21 +295,13 @@ Tracerule.updateSelfname = function updateSelfname(selfname, user,id,callback) {
 				callback(null, tracerules);
 			});
 		});
-	});
+
 };
 
 Tracerule.SavePositions = function SavePositions(user,id,positions,callback) {
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
+
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -414,7 +322,7 @@ Tracerule.SavePositions = function SavePositions(user,id,positions,callback) {
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				
 
 				if (err) {
 					callback(err, null);
@@ -430,21 +338,11 @@ Tracerule.SavePositions = function SavePositions(user,id,positions,callback) {
 				callback(null, tracerules);
 			});
 		});
-	});
 };
 
 
 Tracerule.removeTraceRule = function removeTraceRule(user,deleteID,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query = {};
@@ -454,12 +352,12 @@ Tracerule.removeTraceRule = function removeTraceRule(user,deleteID,callback){
 			}
 			collection.remove(query,function(err){
 								if(err) {console.warn(err.message);
-										mongodb.close();}
+									}
 								else {
 									console.log("delete element success");
 									query={"user":user};
 									collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-										mongodb.close();
+										
 
 										if (err) {
 											callback(err, null);
@@ -477,21 +375,12 @@ Tracerule.removeTraceRule = function removeTraceRule(user,deleteID,callback){
 									}
 							});
 		});
-	});
 }
 
 Tracerule.createActivity = function createActivity(user,id,activityname,activitydescription,activityexecutor,current_accordion,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
+
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -578,7 +467,7 @@ Tracerule.createActivity = function createActivity(user,id,activityname,activity
 										}
 
 										collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-											mongodb.close();
+											
 
 											if (err) {
 												callback(err, null);
@@ -611,7 +500,7 @@ Tracerule.createActivity = function createActivity(user,id,activityname,activity
 			//collection.update(query1,query2);
 
 		});
-	});
+	
 }
 
 
@@ -619,16 +508,8 @@ Tracerule.createActivity = function createActivity(user,id,activityname,activity
 
 Tracerule.createUseCase = function createUseCase(user,id,usecasename,usecasedescription,startname,endname,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
+
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -725,7 +606,7 @@ Tracerule.createUseCase = function createUseCase(user,id,usecasename,usecasedesc
 											}
 
 											collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-												mongodb.close();
+												
 
 												if (err) {
 													callback(err, null);
@@ -751,22 +632,14 @@ Tracerule.createUseCase = function createUseCase(user,id,usecasename,usecasedesc
 			}	
 		});
 	});
-  })
+
 };
 
 Tracerule.createDecision = function createActivity(user,id,decisionname,decisiondescription,decisionexecutor,positions,callback){
 	// 存入 Mongodb 的文檔
 	console.log("create Decision");
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
+
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -832,7 +705,7 @@ Tracerule.createDecision = function createActivity(user,id,decisionname,decision
 										}
 
 										collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-											mongodb.close();
+											//mongodb.close();
 
 											if (err) {
 												callback(err, null);
@@ -865,21 +738,14 @@ Tracerule.createDecision = function createActivity(user,id,decisionname,decision
 			//collection.update(query1,query2);
 
 		});
-	});
 }
 
 Tracerule.createCondition = function createCondition(user,id,conditionname,conditiondescription,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	console.log("createCondition");
+	console.log(user+" "+id+" "+conditionname+" "+positions);
+	mongodb.getCollection('tracerule',function(collection){
+
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -942,7 +808,7 @@ Tracerule.createCondition = function createCondition(user,id,conditionname,condi
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				
 
 				if (err) {
 					callback(err, null);
@@ -968,21 +834,13 @@ Tracerule.createCondition = function createCondition(user,id,conditionname,condi
 				
 
 		});
-	});
+	
 }
 
 Tracerule.saveInsertBetween = function saveInsertBetween(user,id,TarAct,PreAct,PostAct,UseCase,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
+
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -1040,7 +898,7 @@ Tracerule.saveInsertBetween = function saveInsertBetween(user,id,TarAct,PreAct,P
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -1056,7 +914,7 @@ Tracerule.saveInsertBetween = function saveInsertBetween(user,id,TarAct,PreAct,P
 				callback(null, tracerules);
 			});
 		});
-	});
+	
 }
 
 Tracerule.saveInsertActAfterPre = function saveInsertActAfterPre(user,id,TarAct,PreAct,UseCase,positions,callback){
@@ -1074,7 +932,7 @@ Tracerule.saveInsertActAfterPre = function saveInsertActAfterPre(user,id,TarAct,
 	
 		db.collection('tracerule', function(err, collection) {
 			if (err) {
-				mongodb.close();
+				//mongodb.close();
 				return callback(err);
 			}
 			var ObjectID = require("mongodb").ObjectID;
@@ -1143,8 +1001,7 @@ Tracerule.saveInsertActAfterPre = function saveInsertActAfterPre(user,id,TarAct,
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
+				
 				if (err) {
 					callback(err, null);
 				}
@@ -1169,16 +1026,8 @@ Tracerule.saveInsertActBeforePost = function saveInsertActBeforePost(user,id,Tar
 			PostAct=PostAct.split(".")[0]+"_"+PostAct.split(".")[1];
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
+
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -1245,7 +1094,6 @@ Tracerule.saveInsertActBeforePost = function saveInsertActBeforePost(user,id,Tar
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -1261,7 +1109,7 @@ Tracerule.saveInsertActBeforePost = function saveInsertActBeforePost(user,id,Tar
 				callback(null, tracerules);
 			});
 		});
-	});
+	
 }
 
 Tracerule.saveInsertActAfterDecCon = function saveInsertActAfterDecCon(user,id,TarAct,Decision,Condition,UseCase,positions,callback){
@@ -1273,16 +1121,8 @@ Tracerule.saveInsertActAfterDecCon = function saveInsertActAfterDecCon(user,id,T
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
 		console.log("saveInsertActAfterDecCon:"+TarAct+" "+Decision+" "+Condition+" "+UseCase);
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
+
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -1346,7 +1186,6 @@ Tracerule.saveInsertActAfterDecCon = function saveInsertActAfterDecCon(user,id,T
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -1362,7 +1201,6 @@ Tracerule.saveInsertActAfterDecCon = function saveInsertActAfterDecCon(user,id,T
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 Tracerule.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(user,id,TarAct,PostAct,Condition,UseCase,positions,callback){
@@ -1373,16 +1211,8 @@ Tracerule.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(user,id
 			Condition=Condition.split(".")[0]+"_"+Condition.split(".")[1];
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
+
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -1446,7 +1276,6 @@ Tracerule.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(user,id
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -1462,7 +1291,6 @@ Tracerule.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(user,id
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 Tracerule.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,id,TarDec,PreAct,MainBranchCon,SupBranchCon,InserAct,TargetAct,UseCase,positions,callback){
@@ -1471,21 +1299,14 @@ Tracerule.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,id,T
 			PreAct=PreAct.split(".")[0]+"_"+PreAct.split(".")[1];
 			MainBranchCon=MainBranchCon.split(".")[0]+"_"+MainBranchCon.split(".")[1];
 			SupBranchCon=SupBranchCon.split(".")[0]+"_"+SupBranchCon.split(".")[1];
-			InserAct=InserAct.split(".")[0]+"_"+InserAct.split(".")[1];
+			if(InserAct!="0")
+				InserAct=InserAct.split(".")[0]+"_"+InserAct.split(".")[1];
 			TargetAct=TargetAct.split(".")[0]+"_"+TargetAct.split(".")[1];
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
+
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -1498,20 +1319,25 @@ Tracerule.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,id,T
 				var PreActivity=PreAct.split('_');
 				var MainBranchCondition=MainBranchCon.split('_');
 				var SupBranchCondition=SupBranchCon.split('_');
-				var InserActivity=InserAct.split('_');
+				var InserActivity;
+				if(InserAct!="0") 
+				  InserActivity=InserAct.split('_');
 				var TargetActivity=TargetAct.split('_');
 				var Usecase=UseCase.split('_');
 				if(PreActivity[2]=="Start"||PreActivity[2]=="End"){
 					PreActivity[1]=PreActivity[1]+"_"+PreActivity[2];
 				}
-				if(InserActivity[2]=="Start"||InserActivity[2]=="End"){
+				if(InserAct!="0"&&(InserActivity[2]=="Start"||InserActivity[2]=="End"))
+				{
 					InserActivity[1]=InserActivity[1]+"_"+InserActivity[2];
 				}
 				if(TargetActivity[2]=="Start"||TargetActivity[2]=="End"){
 					TargetActivity[1]=TargetActivity[1]+"_"+TargetActivity[2];
 				}
-				var keyValue="Insert "+TargetDecision[1]+" after "+PreActivity[1]+" with ( "+MainBranchCondition[1]+" ),( "+SupBranchCondition[1]+" , ";
-					if(InserActivity[0]!="none")
+				var keyValue;
+
+				keyValue="Insert "+TargetDecision[1]+" after "+PreActivity[1]+" with ( "+MainBranchCondition[1]+" ),( "+SupBranchCondition[1]+" , ";
+					if(InserAct!="0")
 						keyValue=keyValue+InserActivity[1]+" , ";
 					keyValue=keyValue+TargetActivity[1]+" ) in "+Usecase[1];
 				//console.log(keyValue);
@@ -1533,8 +1359,8 @@ Tracerule.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,id,T
 					operations[preactivityname]=PreActivity[0]+".element."+PreActivity[1];
 					operations[MainBranchConditionname]=MainBranchCondition[0]+".element."+MainBranchCondition[1];
 					operations[SupBranchConditionname]=SupBranchCondition[0]+".element."+SupBranchCondition[1];
-					if(InserActivity[1]=="none")
-						operations[insertactivity]=[];
+					if(InserAct=="0")
+						operations[insertactivity]="0";
 					else
 						operations[insertactivity]=InserActivity[0]+".element."+InserActivity[1];
 					operations[targetactivity]=TargetActivity[0]+".element."+TargetActivity[1];
@@ -1571,7 +1397,6 @@ Tracerule.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,id,T
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -1587,7 +1412,7 @@ Tracerule.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,id,T
 				callback(null, tracerules);
 			});
 		});
-	});
+	
 }
 
 Tracerule.saveInsertDecAfterDecCon = function saveInsertDecAfterDecCon(user,id,TarDec,InserDec,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,positions,callback){
@@ -1602,16 +1427,8 @@ Tracerule.saveInsertDecAfterDecCon = function saveInsertDecAfterDecCon(user,id,T
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
+
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -1689,7 +1506,6 @@ Tracerule.saveInsertDecAfterDecCon = function saveInsertDecAfterDecCon(user,id,T
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -1705,7 +1521,6 @@ Tracerule.saveInsertDecAfterDecCon = function saveInsertDecAfterDecCon(user,id,T
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 Tracerule.saveInsertDecBeforeAct = function saveInsertDecBeforeAct(user,id,TarDec,PostAct,Con1,Tar1,Con2,Tar2,UseCase,positions,callback){
@@ -1719,16 +1534,7 @@ Tracerule.saveInsertDecBeforeAct = function saveInsertDecBeforeAct(user,id,TarDe
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -1810,7 +1616,6 @@ Tracerule.saveInsertDecBeforeAct = function saveInsertDecBeforeAct(user,id,TarDe
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -1826,7 +1631,6 @@ Tracerule.saveInsertDecBeforeAct = function saveInsertDecBeforeAct(user,id,TarDe
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 Tracerule.saveInsertDecBeforeActWith = function saveInsertDecBeforeActWith(user,id,TarDec,PostAct,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,positions,callback){
@@ -1840,16 +1644,7 @@ Tracerule.saveInsertDecBeforeActWith = function saveInsertDecBeforeActWith(user,
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -1932,7 +1727,6 @@ Tracerule.saveInsertDecBeforeActWith = function saveInsertDecBeforeActWith(user,
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -1948,7 +1742,6 @@ Tracerule.saveInsertDecBeforeActWith = function saveInsertDecBeforeActWith(user,
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 Tracerule.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(user,id,TarDec,PostAct,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,positions,callback){
@@ -1963,16 +1756,7 @@ Tracerule.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(user,id
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -2052,7 +1836,7 @@ Tracerule.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(user,id
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				
 
 				if (err) {
 					callback(err, null);
@@ -2068,21 +1852,11 @@ Tracerule.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(user,id
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 Tracerule.deleteActivity = function deleteActivity(user,id,operation_name,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -2132,8 +1906,7 @@ Tracerule.deleteActivity = function deleteActivity(user,id,operation_name,positi
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
+				
 				if (err) {
 					callback(err, null);
 				}
@@ -2148,21 +1921,11 @@ Tracerule.deleteActivity = function deleteActivity(user,id,operation_name,positi
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 Tracerule.deleteDecision = function deleteDecision(user,id,operation_name,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -2212,7 +1975,7 @@ Tracerule.deleteDecision = function deleteDecision(user,id,operation_name,positi
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				
 
 				if (err) {
 					callback(err, null);
@@ -2228,7 +1991,6 @@ Tracerule.deleteDecision = function deleteDecision(user,id,operation_name,positi
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 Tracerule.deleteCondition = function deleteCondition(user,id,operation_name,positions,callback){
@@ -2240,7 +2002,7 @@ Tracerule.deleteCondition = function deleteCondition(user,id,operation_name,posi
 	
 		db.collection('tracerule', function(err, collection) {
 			if (err) {
-				mongodb.close();
+				//mongodb.close();
 				return callback(err);
 			}
 			var ObjectID = require("mongodb").ObjectID;
@@ -2292,7 +2054,7 @@ Tracerule.deleteCondition = function deleteCondition(user,id,operation_name,posi
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -2314,16 +2076,7 @@ Tracerule.deleteCondition = function deleteCondition(user,id,operation_name,posi
 Tracerule.deleteUseCase = function deleteUseCase(user,id,operation_name,positions,callback){
 	// 存入 Mongodb 的文檔
 	console.log("deleteUseCase: "+user+" "+id+" "+operation_name);
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -2400,7 +2153,7 @@ Tracerule.deleteUseCase = function deleteUseCase(user,id,operation_name,position
 										}
 
 										collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-											mongodb.close();
+										
 
 											if (err) {
 												callback(err, null);
@@ -2429,21 +2182,12 @@ Tracerule.deleteUseCase = function deleteUseCase(user,id,operation_name,position
 
 			
 		});
-	});
+
 }
 
 Tracerule.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,id,operation_name,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -2482,8 +2226,7 @@ Tracerule.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,id,ope
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
+				
 				if (err) {
 					callback(err, null);
 				}
@@ -2497,22 +2240,13 @@ Tracerule.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,id,ope
 
 				callback(null, tracerules);
 			});
-		});
+		
 	});
 }
 
 Tracerule.deleteInsertActBeforePost = function deleteInsertActBeforePost(user,id,operation_name,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -2551,8 +2285,7 @@ Tracerule.deleteInsertActBeforePost = function deleteInsertActBeforePost(user,id
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
+				
 				if (err) {
 					callback(err, null);
 				}
@@ -2567,21 +2300,11 @@ Tracerule.deleteInsertActBeforePost = function deleteInsertActBeforePost(user,id
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 Tracerule.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(user,id,operation_name,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -2620,7 +2343,7 @@ Tracerule.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(user,
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				
 
 				if (err) {
 					callback(err, null);
@@ -2636,21 +2359,11 @@ Tracerule.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(user,
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 Tracerule.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCon(user,id,operation_name,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -2689,7 +2402,6 @@ Tracerule.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCon(use
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -2705,22 +2417,12 @@ Tracerule.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCon(use
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 
 Tracerule.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,id,operation_name,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -2759,7 +2461,6 @@ Tracerule.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,id,ope
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -2775,21 +2476,10 @@ Tracerule.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,id,ope
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 Tracerule.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(user,id,operation_name,positions,callback){
-	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -2828,8 +2518,7 @@ Tracerule.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(user,
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
+				
 				if (err) {
 					callback(err, null);
 				}
@@ -2844,21 +2533,11 @@ Tracerule.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(user,
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 Tracerule.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user,id,operation_name,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -2897,7 +2576,7 @@ Tracerule.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user,id,o
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				
 
 				if (err) {
 					callback(err, null);
@@ -2913,22 +2592,11 @@ Tracerule.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user,id,o
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 
 Tracerule.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActWith(user,id,operation_name,positions,callback){
-	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -2967,8 +2635,7 @@ Tracerule.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActWith(u
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
+				
 				if (err) {
 					callback(err, null);
 				}
@@ -2983,22 +2650,13 @@ Tracerule.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActWith(u
 				callback(null, tracerules);
 			});
 		});
-	});
+
 }
 
 
 Tracerule.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCon(user,id,operation_name,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -3037,7 +2695,7 @@ Tracerule.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCon(use
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -3053,7 +2711,6 @@ Tracerule.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCon(use
 				callback(null, tracerules);
 			});
 		});
-	});
 }
 
 Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,descriptionMark,oldusecasedescription,usecasedescription,positions,hidden_field,projectID,callback)
@@ -3063,20 +2720,10 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 	var oldnames=oldname;
 	var newnames=newname;
 	var refer_num;
-	mongodb.open(function(err, db) {
-		if (err) {
-			console.log("#11");
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				console.log("#22");
-				mongodb.close();
-				return callback(err);
-			}
+	console.log("hello world!");
+	mongodb.getCollection('tracerule',function(collection){
 			//查找user属性为username的文档，如果username为null则匹配全部
-
+			console.log("come on baby");
 			var query = {};
 			var ObjectID = require("mongodb").ObjectID;
 			if (user) {
@@ -3097,13 +2744,12 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 				    console.log("doc._id:"+doc._id+" id:"+id);
 					if(doc._id==id)
 				    {
+				    	console.log("here!!!");
 						query2={$set:{"positions":positions}};
 							collection.update({"user":user,"_id":ObjectID(id)},query2,function(err){
 							  if(err){ console.warn(err.message);}
 							  else { console.log("here!");
-								
-							  }
-							  console.log("#444");
+								 console.log("#444");
 							  for(key in doc.elements)
 								{
 							
@@ -3132,6 +2778,8 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 										});
 					  				}
 								}
+							  }
+							 
 								});
 
 					
@@ -3210,8 +2858,7 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
+				
 				if (err) {
 					callback(err, null);
 				}
@@ -3230,7 +2877,7 @@ Tracerule.editUseCase = function editUseCase(user,id,nameMark,oldname,newname,de
 		
 		
 		
-	});
+
 }
 
 Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,descriptionMark,oldactivitydescription,activitydescription,executorMark,oldactivityexecutor,activityexecutor,positions,hidden_field,projectID,callback)
@@ -3242,18 +2889,7 @@ Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,
 	var newnames=newname;
 	var refer_num;
 	console.log("hallo");
-	mongodb.open(function(err, db) {
-		if (err) {
-			
-			return callback(err);
-		}
-	    console.log("edit1");
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 			console.log("edit2");
@@ -3396,7 +3032,7 @@ Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -3413,10 +3049,6 @@ Tracerule.editActivity = function editActivity(user,id,nameMark,oldname,newname,
 			});
 			
 		});
-		
-		
-		
-	});
 }
 
 Tracerule.editDecision = function editDecision(user,id,nameMark,oldname,newname,descriptionMark,olddecisiondescription,decisiondescription,executorMark,olddecisionexecutor,decisionexecutor,positions,hidden_field,callback)
@@ -3426,18 +3058,7 @@ Tracerule.editDecision = function editDecision(user,id,nameMark,oldname,newname,
 	var oldnames=oldname;
 	var newnames=newname;
 	var refer_num;
-	mongodb.open(function(err, db) {
-		if (err) {
-			
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 
@@ -3579,8 +3200,7 @@ Tracerule.editDecision = function editDecision(user,id,nameMark,oldname,newname,
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
+				
 				if (err) {
 					callback(err, null);
 				}
@@ -3597,9 +3217,6 @@ Tracerule.editDecision = function editDecision(user,id,nameMark,oldname,newname,
 			
 		});
 		
-		
-		
-	});
 }
 
 Tracerule.editCondition = function editCondition(user,id,projectID,nameMark,oldname,newname,descriptionMark,oldconditiondescription,conditiondescription,positions,hidden_field,callback)
@@ -3611,27 +3228,20 @@ Tracerule.editCondition = function editCondition(user,id,projectID,nameMark,oldn
 	var refer_num;
 	console.log("editCondition:");
 	console.log("id:"+id+" nameMark:"+nameMark+" oldname:"+oldnames+" newname:"+newnames+" descriptionMark:"+descriptionMark+" oldconditiondescription:"+oldconditiondescription+" conditiondescription:"+conditiondescription+" projectID:"+projectID);
-	mongodb.open(function(err, db) {
-		if (err) {
-			console.log("#11");
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				console.log("#22");
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
+			console.log("enter tracerule");
 
 			var query = {};
 			var ObjectID = require("mongodb").ObjectID;
 			if (user) {
 				query={"user":user,"projectID":projectID};
 			}
+			console.log(query);
 			collection.find(query).toArray(function(err, docs) {
+
+				console.log("enter find");
 
 				if (err) {
 					console.log("#33");
@@ -3674,7 +3284,9 @@ Tracerule.editCondition = function editCondition(user,id,projectID,nameMark,oldn
 			     							element[elementDescription]=conditiondescription;
 			     							element[elementType]="condition";
 			     							element[elementTime]=new Date();
-											collection.update({"user":doc.user,"_id":doc._id},{"$set":element});
+											collection.update({"user":doc.user,"_id":doc._id},{"$set":element},function(err){
+							
+									});
 					   					}
 					  				}
 								 }
@@ -3745,7 +3357,7 @@ Tracerule.editCondition = function editCondition(user,id,projectID,nameMark,oldn
 				
 				
 			});
-			console.log("what??");
+			
 			query = {};
 			if (id) {
 				
@@ -3756,7 +3368,7 @@ Tracerule.editCondition = function editCondition(user,id,projectID,nameMark,oldn
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				
 
 				if (err) {
 					callback(err, null);
@@ -3773,24 +3385,11 @@ Tracerule.editCondition = function editCondition(user,id,projectID,nameMark,oldn
 			});
 			
 		});
-		
-		
-		
-	});
 }
 
 Tracerule.savePositions=function savePositions(user,id,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -3802,26 +3401,19 @@ Tracerule.savePositions=function savePositions(user,id,positions,callback){
 			query2={$set:{"positions":positions}};
 			collection.update(query1,query2,function(err){
 					if(err) console.warn(err.message);
-					else {mongodb.close();console.log("Update positions success");callback(err);}
+					else {
+						//mongodb.close();
+						console.log("Update positions success");
+						callback(err);}
 				});
 
 		});
 
-	});
 }
 
 Tracerule.editTraceRuleGuardSelfname=function editTraceRuleGuardSelfname(user,id,guardname,selfname,positions,callback){
 	// 存入 Mongodb 的文檔
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('tracerule', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('tracerule',function(collection){
 			var ObjectID = require("mongodb").ObjectID;
 			//查找user属性为username的文档，如果username为null则匹配全部
 			var query1 = {};
@@ -3835,8 +3427,7 @@ Tracerule.editTraceRuleGuardSelfname=function editTraceRuleGuardSelfname(user,id
 					if(err) console.warn(err.message);
 					else {
 						collection.find(query1).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
+				
 				if (err) {
 					callback(err, null);
 				}
@@ -3855,5 +3446,4 @@ Tracerule.editTraceRuleGuardSelfname=function editTraceRuleGuardSelfname(user,id
 
 		});
 
-	});
 }

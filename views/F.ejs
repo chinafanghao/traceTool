@@ -65,6 +65,7 @@
                   projectID:$("#hidden_project_id").val()
                 },
                 success: function(data) {
+                  console.log("success load FeatureModel");
                 data.features.forEach(function(feature, index) {
                   var node = new FMTreeItem(feature.text, feature.description, feature.optionality, feature.VP, feature._id);
                   var parent = FMTreeHandler.idPrefix + feature.parent_id;
@@ -161,6 +162,7 @@
       <div class="myInside" id="constraints_cont">
         
       </div>
+      
       <script>
         $.ajax({
           type:"POST",
@@ -191,7 +193,7 @@
         });
 
       </script>
-       
+      
       </div>
     </div>
 

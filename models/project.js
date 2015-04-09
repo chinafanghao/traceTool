@@ -1,4 +1,5 @@
-var mongodb = require('./db');
+var db = require('./db');
+var mongodb = new db();
 
 function Project(username,name,time,trace_rule_id,info,_id) { //post means refinements list
 	this.user = username;
@@ -24,24 +25,14 @@ Project.prototype.save = function save(callback) {
 		info: this.info,
 	};
 
-	mongodb.open(function(err, db) {
-		if (err) {
-		  return callback(err);
-		}
-		
-		db.collection('Project', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('Project',function(collection){
 			collection.ensureIndex('user');
 			
 			collection.insert(Project, {safe: true}, function(err, Project) {
-				mongodb.close();
+				
 				callback(err, Project);
 			});
 		});
-	});
 };
 
 Project.addNewProject = function addNewProject(username,projectname,info,callback) {
@@ -53,17 +44,7 @@ Project.addNewProject = function addNewProject(username,projectname,info,callbac
 				trace_rule_id:[],
 				info:info
 			};
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	   
-	   db.collection('Project', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('Project',function(collection){
 		  
 			collection.ensureIndex('user');
 			collection.insert(newProject, {safe: true},function(err){
@@ -78,7 +59,7 @@ Project.addNewProject = function addNewProject(username,projectname,info,callbac
 						collection.ensureIndex('user');
 
 						collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-							mongodb.close();
+							
 
 							if (err) {
 								callback(err, null);
@@ -99,22 +80,12 @@ Project.addNewProject = function addNewProject(username,projectname,info,callbac
 				});
 
 		  });
-		
-	});
+
 };
 
 Project.get = function get(user, callback) {
 	
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('Project', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('Project',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 
@@ -123,9 +94,9 @@ Project.get = function get(user, callback) {
 				
 				query={"user":user};
 			}
-
+			console.log("Project.get:"+collection);
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				
 
 				if (err) {
 					callback(err, null);
@@ -142,21 +113,11 @@ Project.get = function get(user, callback) {
 				callback(null, Projects);
 			});
 		});
-	});
 };
 
 Project.getByName = function getByName(user, projectname,callback) {
 	console.log(user+"#");
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('Project', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('Project',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 
@@ -167,8 +128,7 @@ Project.getByName = function getByName(user, projectname,callback) {
 			}
 
 			collection.find(query).toArray(function(err, docs) {
-				mongodb.close();
-
+				
 				if (err) {
 					callback(err, null);
 				}
@@ -183,21 +143,11 @@ Project.getByName = function getByName(user, projectname,callback) {
 				callback(null, theproject);
 			});
 		});
-	});
 };
 
 Project.getByID = function getByID(user, ID,callback) {
 	console.log(user+"#");
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('Project', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('Project',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 
@@ -211,7 +161,6 @@ Project.getByID = function getByID(user, ID,callback) {
 			
 
 			collection.find(query).toArray(function(err, docs) {
-				mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -227,7 +176,6 @@ Project.getByID = function getByID(user, ID,callback) {
 				callback(null, theproject);
 			});
 		});
-	});
 };
 
 
@@ -235,16 +183,7 @@ Project.getByID = function getByID(user, ID,callback) {
 
 Project.del = function del(username,id,callback) {
 	
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('Project', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('Project',function(collection){
 			
 			//查找user属性为username的文档，如果username为null则匹配全部
 			
@@ -260,7 +199,6 @@ Project.del = function del(username,id,callback) {
 			}
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -276,26 +214,14 @@ Project.del = function del(username,id,callback) {
 				callback(null, Projects);
 			});
 		});
-	});
 };
 
 
 Project.updateProjectname = function updateProjectname(user,id,editname, callback) {
 	
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('Project', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('Project',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
-			
-
 			var query1={};
 			var query2={};
 			var ObjectID = require("mongodb").ObjectID;
@@ -309,8 +235,7 @@ Project.updateProjectname = function updateProjectname(user,id,editname, callbac
 					query={"user":user};
 				}
 				collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
+				
 				if (err) {
 					callback(err, null);
 				}
@@ -330,21 +255,11 @@ Project.updateProjectname = function updateProjectname(user,id,editname, callbac
 
 			
 		});
-	});
 };
 
 Project.deleteProject = function deleteProject(user,deleteID, callback) {
 	console.log("deleteProject");
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('Project', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('Project',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 			
@@ -357,7 +272,8 @@ Project.deleteProject = function deleteProject(user,deleteID, callback) {
 
 			collection.remove(query1,function(err){
 								if(err) {console.warn(err.message);
-												mongodb.close();}
+												//mongodb.close();
+											}
 								else {
 										console.log("delete element success");
 										var query = {};
@@ -366,7 +282,6 @@ Project.deleteProject = function deleteProject(user,deleteID, callback) {
 											query={"user":user};
 										}
 										collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-											mongodb.close();
 
 											if (err) {
 												callback(err, null);
@@ -385,25 +300,13 @@ Project.deleteProject = function deleteProject(user,deleteID, callback) {
 								});
 			
 		});
-	});
 };
 
 Project.editProject = function editProject(user,id,newname,newdescription, callback) {
 	
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('Project', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('Project',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
-			
-
 			var query1={};
 			var query2={};
 			var ObjectID = require("mongodb").ObjectID;
@@ -417,7 +320,7 @@ Project.editProject = function editProject(user,id,newname,newdescription, callb
 					query={"user":user,"_id":ObjectID(id)};
 				}
 				collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				
 
 				if (err) {
 					callback(err, null);
@@ -433,10 +336,6 @@ Project.editProject = function editProject(user,id,newname,newdescription, callb
 				callback(null, theproject,id);
 				});
 			});
-
-			
-
 			
 		});
-	});
 };

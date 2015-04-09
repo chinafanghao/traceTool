@@ -1,4 +1,5 @@
-var mongodb = require('./db');
+var db = require('./db');
+var mongodb = new db();
 var async = require('async');  
 
 function ElementDepency(username, element,dependee,depender,insidedepender,todepen,todepenNum,insidetodepen,type,projectID,_id) { //post means refinements list
@@ -31,40 +32,21 @@ ElementDepency.prototype.save = function save(callback) {
 		projectID:this.projectID
 	};
 
-	mongodb.open(function(err, db) {
-		if (err) {
-		  return callback(err);
-		}
-		
-		db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			
 			collection.insert(elementdepency, {safe: true}, function(err, elementdepency) {
-				mongodb.close();
+				//mongodb.close();
 				callback(err, elementdepency);
 			});
 		});
-	});
+	
 };
 
 
 ElementDepency.get = function get(user, projectID,callback) {
 	//console.log(user+"#"+projectID);
-	mongodb.open(function(err, db) {
-		if (err) {
-
-			return callback(err);
-		}
-	
-		db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 
@@ -76,7 +58,7 @@ ElementDepency.get = function get(user, projectID,callback) {
 			collection.ensureIndex('user');
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -93,22 +75,11 @@ ElementDepency.get = function get(user, projectID,callback) {
 				callback(null, elementdepencys);
 			});
 		});
-	});
 };
 
 ElementDepency.returnDeleteDependency = function returnDeleteDependency(username,deleteID, callback) {
 	
-	mongodb.open(function(err, db) {
-		if (err) {
-
-			return callback(err);
-		}
-	
-		db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 
@@ -120,7 +91,7 @@ ElementDepency.returnDeleteDependency = function returnDeleteDependency(username
 			collection.ensureIndex('user');
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -138,25 +109,13 @@ ElementDepency.returnDeleteDependency = function returnDeleteDependency(username
 				callback(null, elementdepencys);
 			});
 		});
-	});
 };
 
 ElementDepency.removeTraceRule = function removeTraceRule(user,deleteID,callback){
 	
 	var refer_num;
-	mongodb.open(function(err, db) {
-		if (err) {
-			
-			return callback(err);
-		}
-	var elementdepencys = [];
-		db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				
-				mongodb.close();
-				return callback(err);
-			}
-
+	mongodb.getCollection('elementdepency',function(collection){
+			var elementdepencys = [];
 			//查找user属性为username的文档，如果username为null则匹配全部
 
 			var query = {};
@@ -216,7 +175,7 @@ ElementDepency.removeTraceRule = function removeTraceRule(user,deleteID,callback
 			});
 			query={"user":user};
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -235,23 +194,14 @@ ElementDepency.removeTraceRule = function removeTraceRule(user,deleteID,callback
 			
 		});
 		
-	});
+	
 };
 
 
 
 ElementDepency.getToDepenNum = function getToDepenNum(user,element,callback) {
 	//console.log("user:"+user+" projectID:"+projectID+" element:"+element);
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('elementdepency',function(collection){
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 			
@@ -261,7 +211,7 @@ ElementDepency.getToDepenNum = function getToDepenNum(user,element,callback) {
 				query={"user":user,"element":element};
 			}
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -278,7 +228,6 @@ ElementDepency.getToDepenNum = function getToDepenNum(user,element,callback) {
 				callback(null, elementdepencys);
 			});
 		});
-	});
 };
 
 ElementDepency.replaceDependKeyName = function replaceDependKeyName(user,oldname,newname,hide_field,callback) {
@@ -287,18 +236,9 @@ ElementDepency.replaceDependKeyName = function replaceDependKeyName(user,oldname
 	var Newnames=hide_field+"_"+newname;
 
 	var refer_num;
-	mongodb.open(function(err, db) {
-		if (err) {
-			//console.log("#1");
-			return callback(err);
-		}
+	mongodb.getCollection('elementdepency',function(collection){
 	var elementdepencys = [];
-		db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				//console.log("#2");
-				mongodb.close();
-				return callback(err);
-			}
+		
 
 			//查找user属性为username的文档，如果username为null则匹配全部
 
@@ -419,7 +359,7 @@ ElementDepency.replaceDependKeyName = function replaceDependKeyName(user,oldname
 			});
 			query={"user":user};
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -438,7 +378,6 @@ ElementDepency.replaceDependKeyName = function replaceDependKeyName(user,oldname
 			
 		});
 		
-	});
 };
 
 
@@ -456,17 +395,7 @@ ElementDepency.saveDependee = function saveDependee(user,elementname,dependee,ty
 				type:type,
 				projectID:projectID
 			};
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 
 			collection.insert(elementdepency, {safe: true},function(err){
@@ -482,7 +411,7 @@ ElementDepency.saveDependee = function saveDependee(user,elementname,dependee,ty
 			collection.ensureIndex('user');
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -500,112 +429,8 @@ ElementDepency.saveDependee = function saveDependee(user,elementname,dependee,ty
 
 		  });
 		
-	});
 };
-/*
-ElementDepency.saveInsertBetween = function saveInsertBetween(user,TarAct,PreAct,PostAct,UseCase,current_guard_id,callback){
-		
-		mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		 db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
-			
-		
-			var traceruleID1=TarAct.split('_');
-			var traceruleID2=PreAct.split('_');
-			var traceruleID3=PostAct.split('_');
-			var traceruleID4=UseCase.split('_');
-			console.log(traceruleID1[1]+"^"+traceruleID2[1]+"^"+traceruleID3[1]+"^"+traceruleID4[1]);
-			var query1={"user":user,"element":traceruleID1[1]};
-			var query2={};
-			if(traceruleID2[0]!=traceruleID1[0])
-			{
-				var result=collection.findOne({'depender.name':PreAct});
-				if(result){
-			 	  collection.update({"depender.name":PreAct},{$inc:{"depender.$.refer_num":1}},{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("update Pre Act");
-				  });
-			 	}
-			    else{
-			    	collection.update(query1,{$push:{"depender":{"name":PreAct,"refer_num":0}}},{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("update Pre Act");
-				  });
 
-			    }
-			}
-
-			if(traceruleID3[0]!=traceruleID1[0])
-			{
-				var result=collection.findOne({'depender.name':PostAct});
-				if(result){
-			 	  collection.update({"depender.name":PostAct},{$inc:{"depender.$.refer_num":1}},{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("update Pre Act");
-				  });
-			 	}
-			    else{
-			    	collection.update(query1,{$push:{"depender":{"name":PostAct,"refer_num":0}}},{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("update Pre Act");
-				  });
-
-			    }
-			}
-
-			if(traceruleID4[0]!=traceruleID1[0])
-			{
-				var result=collection.findOne({'depender.name':UseCase});
-				if(result){
-			 	  collection.update({"depender.name":UseCase},{$inc:{"depender.$.refer_num":1}},{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("update Pre Act");
-				  });
-			 	}
-			    else{
-			    	collection.update(query1,{$push:{"depender":{"name":UseCase,"refer_num":0}}},{safe:true},function(err){
-					if(err) console.warn(err.message);
-					else console.log("update Pre Act");
-				  });
-
-			    }
-			}
-
-			var query = {};
-			if (user) {
-				
-				query={"user":user};
-			}
-			collection.ensureIndex('user');
-
-			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
-
-				if (err) {
-					callback(err, null);
-				}
-
-				var elementdepencys = [];
-				
-				docs.forEach(function(doc, index) {
-					var elementdepency = new ElementDepency(doc.user, doc.element,doc.dependee,doc.depender,doc.insidedepender,doc.todepen,doc.todepenNum,doc.insidetodepen,doc.type,doc._id);
-					elementdepencys.push(elementdepency);
-				});
-
-				callback(null, elementdepencys);
-			});
-
-		  });
-	});
-	}
-*/
 
 ElementDepency.saveInsertActAfterPre = function saveInsertActAfterPre(user,TarAct,PreAct,UseCase,current_guard_id,callback){
 		//console.log("saveInsertActAfterPre:"+TarAct+" "+PreAct+" "+UseCase);
@@ -615,17 +440,7 @@ ElementDepency.saveInsertActAfterPre = function saveInsertActAfterPre(user,TarAc
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
 		//console.log("saveInsertActAfterPre:"+TarAct+" "+PreAct+" "+UseCase);
-		mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		 db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
-			
+		mongodb.getCollection('elementdepency',function(collection){
 			
 			var traceruleID1=TarAct.split('_');
 			var traceruleID2=PreAct.split('_');
@@ -716,7 +531,7 @@ ElementDepency.saveInsertActAfterPre = function saveInsertActAfterPre(user,TarAc
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -733,7 +548,7 @@ ElementDepency.saveInsertActAfterPre = function saveInsertActAfterPre(user,TarAc
 			});
 
 		  });
-	});
+	
 	}
 
 ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,TarAct,PostAct,UseCase,current_guard_id,callback){
@@ -742,16 +557,7 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 			PostAct=PostAct.split(".")[0]+"_"+PostAct.split(".")[1];
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
-		mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		 db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('elementdepency',function(collection){
 			
 		
 			var traceruleID1=TarAct.split('_');
@@ -834,7 +640,7 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -851,7 +657,6 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 			});
 
 		  });
-	});
   }
 
   ElementDepency.saveInsertActAfterDecCon = function saveInsertActAfterDecCon(user,TarAct,Decision,Condition,UseCase,current_guard_id,callback){
@@ -862,16 +667,7 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
 		//console.log("saveInsertActAfterDecCon:"+TarAct+" "+Decision+" "+Condition+" "+UseCase);
-		mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		 db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('elementdepency',function(collection){
 			
 		
 			var traceruleID1=TarAct.split('_');
@@ -986,7 +782,7 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -1003,7 +799,7 @@ ElementDepency.saveInsertActBeforePost = function saveInsertActBeforePost(user,T
 			});
 
 		  });
-	});
+
   }
 
 ElementDepency.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(user,TarAct,PostAct,Condition,UseCase,current_guard_id,callback){
@@ -1013,18 +809,8 @@ ElementDepency.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(us
 			Condition=Condition.split(".")[0]+"_"+Condition.split(".")[1];
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
-		mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		 db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
-			
-		
+		mongodb.getCollection('elementdepency',function(collection){
+
 			var traceruleID1=TarAct.split('_');
 			var traceruleID2=PostAct.split('_');
 			var traceruleID3=Condition.split('_');
@@ -1138,7 +924,7 @@ ElementDepency.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(us
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -1155,7 +941,6 @@ ElementDepency.saveInsertActBeforeActCon = function saveInsertActBeforeActCon(us
 			});
 
 		  });
-	});
   }
 
 ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user,TarDec,PreAct,MainBranchCon,SupBranchCon,InserAct,TargetAct,UseCase,current_guard_id,callback){
@@ -1168,23 +953,21 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
 			TargetAct=TargetAct.split(".")[0]+"_"+TargetAct.split(".")[1];
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
-		mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		 db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('elementdepency',function(collection){
 			
-		
+			var markInserAct=false;
+			if(InserAct!="0")
+				markInserAct=true;
+
 			var traceruleID1=TarDec.split('_');
 			var traceruleID2=PreAct.split('_');
 			var traceruleID3=MainBranchCon.split('_');
 			var traceruleID4=SupBranchCon.split('_');
-			var traceruleID5=InserAct.split('_');
+
+			var traceruleID5;
+			if(InserAct!="0")
+			   traceruleID5=InserAct.split('_');
+			
 			var traceruleID6=TargetAct.split('_');
 			var traceruleID7=UseCase.split('_');
 			if(traceruleID2[2]=="Start"||traceruleID2[2]=="End"){
@@ -1292,7 +1075,8 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
 				});
 			}
 
-			if(InserAct!="" && traceruleID5[0]!=traceruleID1[0])
+		  if(InserAct!="0"){
+			if(traceruleID5[0]!=traceruleID1[0])
 			{
 				var dependerNum="depender."+InserAct+".refer_num";
 				var depender={};
@@ -1322,6 +1106,7 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
 				collection.update({"user":user,"element":traceruleID5[1]},{"$inc":insidedepender},function(){	
 				});
 			}
+		}
 
 			if(traceruleID6[0]!=traceruleID1[0])
 			{
@@ -1392,7 +1177,7 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -1409,7 +1194,6 @@ ElementDepency.saveInsertDecAfterActCon = function saveInsertDecAfterActCon(user
 			});
 
 		  });
-	});
   }
 
 ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user,TarDec,InserDec,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,current_guard_id,callback){
@@ -1424,16 +1208,7 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
 
-		mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		 db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('elementdepency',function(collection){
 			
 		
 			var traceruleID1=TarDec.split('_');
@@ -1676,7 +1451,7 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -1693,7 +1468,6 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			});
 
 		  });
-	});
   }
 
   ElementDepency.saveInsertDecBeforeAct = function saveInsertDecBeforeAct(user,TarDec,PostAct,Con1,Tar1,Con2,Tar2,UseCase,current_guard_id,callback){
@@ -1707,16 +1481,7 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
 
-		mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		 db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('elementdepency',function(collection){
 			
 		
 			var traceruleID1=TarDec.split('_');
@@ -1931,7 +1696,7 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -1948,7 +1713,6 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			});
 
 		  });
-	});
   }
 
   ElementDepency.saveInsertDecBeforeActWith = function saveInsertDecBeforeActWith(user,TarDec,PostAct,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,current_guard_id,callback){
@@ -1961,16 +1725,7 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			TargetDec=TargetDec.split(".")[0]+"_"+TargetDec.split(".")[1];
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
-		mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		 db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			
 		
 			var traceruleID1=TarDec.split('_');
@@ -2182,7 +1937,7 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -2199,7 +1954,7 @@ ElementDepency.saveInsertDecAfterDecCon = function saveInsertDecAfterActCon(user
 			});
 
 		  });
-	});
+
   }
 
 ElementDepency.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(user,TarDec,PostAct,InserCon,MainBranchCon,SupBranchCon,InserAct,TargetDec,UseCase,current_guard_id,callback){
@@ -2213,16 +1968,7 @@ ElementDepency.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(us
 			TargetDec=TargetDec.split(".")[0]+"_"+TargetDec.split(".")[1];
 			UseCase=UseCase.split(".")[0]+"_"+UseCase.split(".")[1];
 		}
-		mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		 db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+		mongodb.getCollection('elementdepency',function(collection){
 			
 		
 			var traceruleID1=TarDec.split('_');
@@ -2465,7 +2211,7 @@ ElementDepency.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(us
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -2482,21 +2228,10 @@ ElementDepency.saveInsertDecBeforeActCon = function saveInsertDecBeforeActCon(us
 			});
 
 		  });
-	});
   }
 
 ElementDepency.deleteActivityDependee = function deleteActivityDependee(user,id,operation_name,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			var name=operation_name.split(" ");
 			var length=name.length;
@@ -2515,7 +2250,7 @@ ElementDepency.deleteActivityDependee = function deleteActivityDependee(user,id,
 			collection.ensureIndex('user');
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -2533,21 +2268,10 @@ ElementDepency.deleteActivityDependee = function deleteActivityDependee(user,id,
 
 		  });
 		
-	});
 };
 
 ElementDepency.deleteDecisionDependee = function deleteDecisionDependee(user,id,operation_name,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			var name=operation_name.split(" ");
 			var length=name.length;
@@ -2566,7 +2290,7 @@ ElementDepency.deleteDecisionDependee = function deleteDecisionDependee(user,id,
 			collection.ensureIndex('user');
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -2583,22 +2307,11 @@ ElementDepency.deleteDecisionDependee = function deleteDecisionDependee(user,id,
 			});
 
 		  });
-		
-	});
+
 };
 
 ElementDepency.deleteConditionDependee = function deleteConditionDependee(user,id,operation_name,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			var name=operation_name.split(" ");
 			var length=name.length;
@@ -2617,7 +2330,7 @@ ElementDepency.deleteConditionDependee = function deleteConditionDependee(user,i
 			collection.ensureIndex('user');
 
 			collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -2635,21 +2348,10 @@ ElementDepency.deleteConditionDependee = function deleteConditionDependee(user,i
 
 		  });
 		
-	});
 };
 
 ElementDepency.deleteUseCaseDependee = function deleteUseCaseDependee(user,id,operation_name,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			var name=operation_name.split(" ");
 			var length=name.length;
@@ -2675,7 +2377,7 @@ ElementDepency.deleteUseCaseDependee = function deleteUseCaseDependee(user,id,op
 											collection.ensureIndex('user');
 
 												collection.find(query).sort({_id: 1}).toArray(function(err, docs) {
-												mongodb.close();
+												//mongodb.close();
 
 												if (err) {
 													callback(err, null);
@@ -2701,23 +2403,12 @@ ElementDepency.deleteUseCaseDependee = function deleteUseCaseDependee(user,id,op
 
 
 		  });
-		
-	});
+
 };
 
 //I2
 ElementDepency.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,id,operation_name,hide_field,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-		//console.log("deleteInsertActAfterPre:"+user+" "+id+" "+operation_name+" "+hide_field);
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			var name=operation_name.split(" ");
 			var length=name.length;
@@ -2815,7 +2506,7 @@ ElementDepency.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,i
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -2832,23 +2523,11 @@ ElementDepency.deleteInsertActAfterPre = function deleteInsertActAfterPre(user,i
 			});
 
 		  });
-		
-	});
 };
 
 //I3
 ElementDepency.deleteInsertActBeforePost = function deleteInsertActBeforePost(user,id,operation_name,hide_field,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			var name=operation_name.split(" ");
 			var length=name.length;
@@ -2935,7 +2614,7 @@ ElementDepency.deleteInsertActBeforePost = function deleteInsertActBeforePost(us
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -2952,23 +2631,11 @@ ElementDepency.deleteInsertActBeforePost = function deleteInsertActBeforePost(us
 			});
 
 		  });
-		
-	});
 };
 
 //I4
 ElementDepency.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(user,id,operation_name,hide_field,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			var name=operation_name.split(" ");
 			var length=name.length;
@@ -3087,7 +2754,7 @@ ElementDepency.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -3104,24 +2771,12 @@ ElementDepency.deleteInsertActAfterDecCon = function deleteInsertActAfterDecCon(
 			});
 
 		  });
-		
-	});
 };
 
 //I5
 
 ElementDepency.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCon(user,id,operation_name,hide_field,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			var name=operation_name.split(" ");
 			var length=name.length;
@@ -3240,7 +2895,7 @@ ElementDepency.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCo
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -3257,24 +2912,13 @@ ElementDepency.deleteInsertActBeforeActCon = function deleteInsertActBeforeActCo
 			});
 
 		  });
-		
-	});
+
 };
 
 //I6
 
 ElementDepency.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,id,operation_name,hide_field,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			var name=operation_name.split(" ");
 			var length=name.length;
@@ -3490,7 +3134,7 @@ ElementDepency.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,i
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -3507,24 +3151,12 @@ ElementDepency.deleteInsertDecAfterAct = function deleteInsertDecAfterAct(user,i
 			});
 
 		  });
-		
-	});
 };
 
 //I7
 
 ElementDepency.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(user,id,operation_name,hide_field,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			var name=operation_name.split(" ");
 			var length=name.length;
@@ -3774,7 +3406,7 @@ ElementDepency.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -3791,24 +3423,13 @@ ElementDepency.deleteInsertDecAfterDecCon = function deleteInsertDecAfterDecCon(
 			});
 
 		  });
-		
-	});
+
 };
 
 //I8
 
 ElementDepency.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user,id,operation_name,hide_field,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			var name=operation_name.split(" ");
 			var length=name.length;
@@ -4022,7 +3643,7 @@ ElementDepency.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -4040,23 +3661,12 @@ ElementDepency.deleteInsertDecBeforeAct = function deleteInsertDecBeforeAct(user
 
 		  });
 		
-	});
 };
 
 //I9
 
 ElementDepency.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActWith(user,id,operation_name,hide_field,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			var name=operation_name.split(" ");
 			var length=name.length;
@@ -4272,7 +3882,7 @@ ElementDepency.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActW
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -4289,24 +3899,12 @@ ElementDepency.deleteInsertDecBeforeActWith = function deleteInsertDecBeforeActW
 			});
 
 		  });
-		
-	});
 };
 
 //I10
 
 ElementDepency.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCon(user,id,operation_name,hide_field,callback){
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			var name=operation_name.split(" ");
 			var length=name.length;
@@ -4554,7 +4152,7 @@ ElementDepency.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCo
 			collection.ensureIndex('user');
 
 			collection.find(query, {limit:9}).sort({_id: 1}).toArray(function(err, docs) {
-				mongodb.close();
+				//mongodb.close();
 
 				if (err) {
 					callback(err, null);
@@ -4571,8 +4169,6 @@ ElementDepency.deleteInsertDecBeforeActCon = function deleteInsertDecBeforeActCo
 			});
 
 		  });
-		
-	});
 };
 
 
@@ -4586,17 +4182,7 @@ ElementDepency.editUseCaseDependee = function editUseCaseDependee(user,elementna
 				depender:[],
 				type:type
 			};
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-	
-	
-	   db.collection('elementdepency', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	mongodb.getCollection('elementdepency',function(collection){
 			collection.ensureIndex('user');
 			
 			var query1={"user":user,"depender":oldelementname};
@@ -4612,7 +4198,6 @@ ElementDepency.editUseCaseDependee = function editUseCaseDependee(user,elementna
 
 		  });
 		
-	});
 };
 
 ElementDepency.editUseCase = function editUseCase(user,id,usecasemark,oldusecasename,usecasename,descriptionmark,olddescription,description,positions){
