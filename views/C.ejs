@@ -376,11 +376,13 @@
                         var theID=process[keys].substring(0,process[keys].indexOf(":"));
                         console.log("theID:"+theID);
                         process[keys]=process[keys].substring(process[keys].indexOf(":")+1,process[keys].length);
+                        console.log("process[keys]:"+process[keys]);
                         var tempOp=process[keys].split("$");
                         console.log("length:"+tempOp.length);
+                        console.log("map[tempOp[1]]:"+map[tempOp[1]]+" "+"map[tempOp[2]]:"+map[tempOp[1]]);
                         if(tempOp.length>2){
                           var con1,con2,tar1,tar2;
-                          if(map[tempOp[1]].indexOf("yes")>-1){
+                          if(map[tempOp[1]].indexOf("yes")>-1||map[tempOp[1]].indexOf("Yes")>-1){
                             con1="Yes";
                             con2="No";
                           }else{
@@ -398,7 +400,7 @@
 
                         }else{
                           
-                          if(tempOp[0]!="yes"&&tempOp[0]!="no"){
+                          if(tempOp[0]!="Yes"&&tempOp[0]!="No"&&tempOp[0]!="yes"&&tempOp[0]!="no"){
                             if(tempOp[1]==undefined)
                               tempOp[1]="End";
                               $printStr+=" <td style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td style=\"width:33%;\"><p>"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tempOp[1]+"\" style=\"cursor: pointer;\">"+tempOp[1]+"</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td><td style=\"width:33%;\"><p>&nbsp;</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td>";
@@ -421,7 +423,7 @@
                         if(tempOp.length>2){
                           $printStr+="<td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:33%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:5%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:6%;border-right: black;\"><p>&nbsp;</p></td>";
                           var con1,con2,tar1,tar2;
-                          if(map[tempOp[1]].indexOf("yes")>-1){
+                          if(map[tempOp[1]].indexOf("Yes")>-1&&map[tempOp[1]].indexOf("yes")>-1){
                             con1="Yes";
                             con2="No";
                           }else{
@@ -439,7 +441,7 @@
 
                         }else{
                           
-                          if(tempOp[0]!="yes"&&tempOp[0]!="no"){
+                          if(tempOp[0]!="yes"&&tempOp[0]!="no"&&tempOp[0]!="Yes"&&tempOp[0]!="No"){
                             if(tempOp[1]==undefined)
                               tempOp[1]="End";
                               $printStr+=" <td style=\"width:6%;\"><p>&nbsp;</p></td><td style=\"width:33%;\"><p>&nbsp;</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;border-right:black\"><p>&nbsp;</p></td>";
@@ -833,7 +835,7 @@
                         if(tempOp.length>2){
                           var con1,con2,tar1,tar2;
                          
-                          if(map[tempOp[1]].indexOf("Yes")>-1){
+                          if(map[tempOp[1]].indexOf("Yes")>-1||map[tempOp[1]].indexOf("yes")>-1){
                             console.log("here");
                             con1="Yes";
                             con2="No";
@@ -852,7 +854,7 @@
 
                         }else{
                           
-                          if(tempOp[0]!="Yes"&&tempOp[0]!="No"){
+                          if(tempOp[0]!="Yes"&&tempOp[0]!="No"&&tempOp[0]!="yes"&&tempOp[0]!="no"){
                             if(tempOp[1]==undefined)
                               tempOp[1]="End";
                               $printStr+=" <td style=\"width:6%;\"><p value=\""+theID+"\">"+theID+"</p></td><td style=\"width:33%;\"><p>"+tempOp[0]+"</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;border-right: black;\"><p class=\"clickfindnext\" value=\""+tempOp[1]+"\" style=\"cursor: pointer;\">"+tempOp[1]+"</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td><td style=\"width:33%;\"><p>&nbsp;</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;\"><p>&nbsp;</p></td>";
@@ -875,7 +877,7 @@
                         if(tempOp.length>2){
                           $printStr+="<td rowspan=\"2\" style=\"width:6%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:33%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:5%;\"><p>&nbsp;</p></td><td rowspan=\"2\" style=\"width:6%;border-right: black;\"><p>&nbsp;</p></td>";
                           var con1,con2,tar1,tar2;
-                          if(map[tempOp[1]].indexOf("Yes")>-1){
+                          if(map[tempOp[1]].indexOf("Yes")>-1||map[tempOp[1]].indexOf("yes")>-1){
                             con1="Yes";
                             con2="No";
                           }else{
@@ -893,7 +895,7 @@
 
                         }else{
                           
-                          if(tempOp[0]!="yes"&&tempOp[0]!="no"){
+                          if(tempOp[0]!="Yes"&&tempOp[0]!="No"&&tempOp[0]!="yes"&&tempOp[0]!="no"){
                             if(tempOp[1]==undefined)
                               tempOp[1]="End";
                               $printStr+=" <td style=\"width:6%;\"><p>&nbsp;</p></td><td style=\"width:33%;\"><p>&nbsp;</p></td><td style=\"width:5%;\"><p>&nbsp;</p></td><td style=\"width:6%;border-right:black\"><p>&nbsp;</p></td>";

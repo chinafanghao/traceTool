@@ -66,9 +66,16 @@
                 },
                 success: function(data) {
                   console.log("success load FeatureModel");
+                  //console.log(data);
                 data.features.forEach(function(feature, index) {
+                  console.log("##########################################");
+                  //console.log(feature);
                   var node = new FMTreeItem(feature.text, feature.description, feature.optionality, feature.VP, feature._id);
+                  console.log("------------------------");
+                  console.log("FMTreeHandler:"+FMTreeHandler.idPrefix+"  "+"feature.parent_id:"+feature.parent_id);
+                  console.log("------------------------");
                   var parent = FMTreeHandler.idPrefix + feature.parent_id;
+                  console.log(parent);
                   FMTreeHandler.all[parent].add(node);
                 });
               },

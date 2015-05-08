@@ -4186,10 +4186,6 @@ ElementDepency.editUseCaseDependee = function editUseCaseDependee(user,elementna
 			collection.ensureIndex('user');
 			
 			var query1={"user":user,"depender":oldelementname};
-			
-
-
-
 
 					var query = {};
 		

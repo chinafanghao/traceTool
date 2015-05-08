@@ -2910,8 +2910,8 @@
         
         $usecasename=$("#usecasename").val();
         $usecasedescription=$("#usecasedescription").val();
-        if($usecasename.indexOf("_")>-1){
-          alert("Use case name can't include '_'");
+        if($usecasename.indexOf("_")>-1||$usecasename.indexOf(" ")>-1){
+          alert("Use case name can't include '_' or space");
         }else{
         $operation_position="";
         var $mark=false;
@@ -2944,7 +2944,7 @@
       },
       close: function() {
         //window.location.href="/doT/"+$selfname+"分<%=tracerules[0].user%>"+"分<%=tracerules[0].name%>"+"分<%=tracerules[0]._id%>分"+$current_guard_id;
-        if($("#usecasename").val()!=""&&$usecasename.indexOf("_")==-1){
+        if($("#usecasename").val()!=""&&$usecasename.indexOf("_")==-1&&$usecasename.indexOf(" ")==-1){
 
         //window.location.href="/createUseCase/"+"<%=tracerules[0].user%>"+"分<%=tracerules[0]._id%>分"+$usecasename+"分"+$usecasedescription+"分"+$operation_position+"分"+$current_guard_id;
           $.ajax({
