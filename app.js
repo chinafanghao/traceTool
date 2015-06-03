@@ -159,6 +159,7 @@ app.post('/updateVP', routes.updateVP);
 app.post('/removeSubtree', routes.removeSubtree);
 app.post('/addNewConstraint', routes.addNewConstraint);
 app.post('/getFeatureById', routes.getFeatureById);
+app.post('/getSonsById',routes.getSonsById); //输入一个id，返回子节点id数组
 app.post('/loadConstraints', routes.loadConstraints);
 app.post('/removeConstraint', routes.removeConstraint);
 
