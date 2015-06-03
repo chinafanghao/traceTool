@@ -3203,6 +3203,20 @@ exports.getFeatureById = function(req, res) {
 	});
 };
 
+exports.getSonsById = function(req, res) {
+	console.log("START \"getSonsById\"");
+	var _id = req.body._id;
+	Feature.getSonsById(_id, function(err, sons){
+		if (err) {
+			console.log("GET SONS BY ID FAILED");
+			req.flash('error', err);
+			return res.redirect('/');
+		}
+		res.send({'sons':sons});
+		console.log("FINISH SENDING");
+	});
+};
+
 exports.loadConstraints = function(req,res) {
 	var $projectID=req.body.projectID;
 	console.log("START \"loadConstraints\"");
