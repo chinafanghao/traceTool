@@ -82,6 +82,31 @@ Feature.getByTextAndRoot = function getByTextAndRoot(feature_text, feature_root,
 		});
 	});
 };
+
+Feature.getSonsById = function getSonsById(feature_id, callback) {
+	mongodb.collection('fmtree', function(err, collection) {
+		if (err) {
+			mongodb.close();
+			return callback(err);
+		}
+		var query = {};
+		if (feature_id) {
+			query.parent_id = ObjectID(feature_id);
+		}
+		collection.find(query).sort({text:1}).toArray(function(err, docs) {
+			//mongodb.close();
+			if (err) {
+				callback(err, null);
+			}
+			var sons = [];
+			docs.forEach(function(doc, index) {
+				var son = new Feature(doc);
+				sons.push(son);
+			});
+			callback(null, sons);
+		});
+	});
+};
 	
 Feature.getAll = function getAll(callback) {
   mongodb.getCollection('fmtree', function (collection) {
